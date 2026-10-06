@@ -235,3 +235,59 @@ function analyzeWithPrevious(actualVal, previousVal, actual, previous, eventName
   }
 }
 
+/**
+ * Analisis dampak berita pasar Investing.com terhadap XAU/USD (Emas) & USD.
+ * @param {string} title - Judul berita
+ * @param {string} category - Kategori berita
+ * @returns {Object} - Result analisis
+ */
+export function analyzeInvestingHeadline(title = '', category = '') {
+  const lower = title.toLowerCase();
+
+  // Keyword Bullish Emas (BUY XAU/USD)
+  const buyKeywords = [
+    'cut rate', 'rate cut', 'fed dovish', 'usd fall', 'dollar drop', 'dollar slip',
+    'gold rally', 'gold surge', 'gold jump', 'safe haven', 'inflation cool',
+    'geopolitical', 'war', 'recession', 'debt crisis', 'yield drop', 'tariff'
+  ];
+
+  // Keyword Bearish Emas (SELL XAU/USD)
+  const sellKeywords = [
+    'rate hike', 'fed hawkish', 'usd surge', 'dollar rally', 'dollar gain',
+    'yield surge', 'yield rise', 'yield hold', 'inflation rise', 'strong usd',
+    'strong dollar', 'gold fall', 'gold drop', 'gold slip', 'jobs surge'
+  ];
+
+  const hasBuy = buyKeywords.some(kw => lower.includes(kw));
+  const hasSell = sellKeywords.some(kw => lower.includes(kw));
+
+  if (hasBuy && !hasSell) {
+    return {
+      signal: 'BUY',
+      impact: 'HIGH',
+      direction: 'USD Melemah / Gold Safe Haven ↑',
+      impactText: 'Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.',
+      recommendation: 'BUY XAU/USD'
+    };
+  }
+
+  if (hasSell && !hasBuy) {
+    return {
+      signal: 'SELL',
+      impact: 'HIGH',
+      direction: 'USD Menguat / Yield Surge ↓',
+      impactText: 'Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.',
+      recommendation: 'SELL XAU/USD'
+    };
+  }
+
+  return {
+    signal: 'NEUTRAL',
+    impact: 'MEDIUM',
+    direction: 'Pasar Konsolidasi ↔',
+    impactText: 'Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.',
+    recommendation: 'HOLD / WAIT'
+  };
+}
+
+

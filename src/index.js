@@ -7,6 +7,7 @@ import config from './utils/config.js';
 import { createLogger } from './utils/logger.js';
 import { initBot, sendMessage, sendPhoto, sendBatchPhotos, getBot } from './bot/telegram.js';
 import { getHighImpactNews, clearCache } from './scraper/forexFactory.js';
+import { getInvestingNews, formatInvestingSummary } from './scraper/investing.js';
 import { analyzeSignal } from './engine/signalEngine.js';
 import { formatDailySummary, escapeMarkdown } from './formatter/messageFormatter.js';
 import { generateSignalCardImage } from './formatter/imageGenerator.js';
@@ -66,6 +67,15 @@ function startWebServer() {
     ];
 
     res.json({ events: defaultEvents });
+  });
+
+  app.get('/api/investing', async (req, res) => {
+    try {
+      const news = await getInvestingNews();
+      res.json({ news });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   });
 
   app.listen(PORT, () => {
@@ -148,6 +158,7 @@ Saya akan mengirimkan notifikasi berita ekonomi USD dalam bentuk *Gambar Card El
 *Perintah tersedia:*
 /check \\- Cek berita sekarang (mengirimkan Gambar Card)
 /today \\- Jadwal berita hari ini
+/investing \\- Berita \\& Indikator dari Investing\\.com
 /status \\- Status bot
 /help \\- Bantuan
 
@@ -218,6 +229,20 @@ _Notifikasi otomatis dikirim setiap jam \\(Senin\\-Jumat, 07:00\\-23:00 WIB\\)_`
     await sendMessage(statusMsg, chatId.toString());
   });
 
+  // /investing - Update berita & indikator dari Investing.com
+  bot.onText(/\/investing/, async (msg) => {
+    const chatId = msg.chat.id;
+    await sendMessage('⏳ _Mengambil berita \\& indikator dari Investing\\.com\\.\\.\\._', chatId.toString());
+
+    try {
+      const news = await getInvestingNews();
+      const summary = formatInvestingSummary(news);
+      await sendMessage(summary, chatId.toString());
+    } catch (err) {
+      await sendMessage(`❌ Error: ${escapeMarkdown(err.message)}`, chatId.toString());
+    }
+  });
+
   // /help - Bantuan
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
@@ -227,11 +252,12 @@ _Notifikasi otomatis dikirim setiap jam \\(Senin\\-Jumat, 07:00\\-23:00 WIB\\)_`
 *Perintah:*
 /check \\- Cek berita high\\-impact sekarang
 /today \\- Lihat jadwal berita hari ini
+/investing \\- Update berita \\& pasar Investing\\.com
 /status \\- Cek status bot \\& uptime
 /help \\- Tampilkan bantuan ini
 
 *Cara Kerja:*
-1\\. Bot mengambil data dari Forex Factory
+1\\. Bot mengambil data dari Forex Factory \\& Investing\\.com
 2\\. Filter berita high\\-impact USD
 3\\. Bandingkan Actual vs Forecast
 4\\. Kirim sinyal BUY/SELL XAU/USD
@@ -245,7 +271,7 @@ Setiap jam, Senin\\-Jumat, 07:00\\-23:00 WIB
     await sendMessage(helpMsg, chatId.toString());
   });
 
-  log.info('Bot commands registered: /start, /check, /today, /status, /help');
+  log.info('Bot commands registered: /start, /check, /today, /investing, /status, /help');
 }
 
 /**

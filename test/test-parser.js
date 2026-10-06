@@ -169,6 +169,18 @@ const fullSum = formatDailySummary([buyEvent, pmiEvent]);
 assert(fullSum.includes('2'), 'Summary with 2 events shows count');
 
 // =====================================================
+console.log('\n📰 TEST: formatInvestingSummary()');
+// =====================================================
+
+import { formatInvestingSummary } from '../src/scraper/investing.js';
+const emptyInv = formatInvestingSummary([]);
+assert(emptyInv.includes('Tidak ada berita'), 'Empty Investing summary shows "Tidak ada berita"');
+
+const sampleNews = [{ title: 'EUR/USD Forecast', timeWIB: 'Kam, 1 Okt • 18.00 WIB', category: 'Forex' }];
+const formattedInv = formatInvestingSummary(sampleNews);
+assert(formattedInv.includes('EUR/USD Forecast'), 'Formatted Investing summary includes title');
+
+// =====================================================
 // Summary
 // =====================================================
 console.log('\n═══════════════════════════════════');

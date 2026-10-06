@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XAU/USD Gold News & Signal Dashboard - Forex Factory</title>
+  <title>XAU/USD Gold - Economic News Analytics</title>
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,25 +22,28 @@
           <i class="fa-solid fa-bolt"></i>
         </div>
         <div class="logo-text">
-          <h1>XAU/USD <span>GOLD SIGNAL AI</span></h1>
-          <p>Forex Factory Economic News Analytics</p>
+          <h1>XAU/USD <span>GOLD</span></h1>
+          <p>Economic News Analytics</p>
         </div>
       </div>
 
       <div class="header-actions">
-        <div class="status-pill live">
+        <div class="status-pill live" id="status-pill">
           <span class="pulse-dot"></span>
-          <span id="system-status">LIVE SCRAPER ACTIVE</span>
+          <span id="system-status">SERVER CONNECTED</span>
         </div>
         <button id="btn-refresh" class="btn btn-secondary">
           <i class="fa-solid fa-arrows-rotate"></i> Refresh Data
         </button>
-        <button id="btn-telegram-sync" class="btn btn-primary">
-          <i class="fa-brands fa-telegram"></i> Telegram Bot Connected
-        </button>
       </div>
     </div>
   </header>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toast-message">Connected & Data refreshed successfully!</span>
+  </div>
 
   <main class="app-main">
     <!-- Hero / Live Market Overview Grid -->
@@ -94,7 +97,7 @@
           <div class="stat-box neutral">
             <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
             <div class="stat-info">
-              <span class="stat-label">BERITA HARI INI</span>
+              <span class="stat-label">TOTAL BERITA</span>
               <h2 id="count-total">0</h2>
             </div>
           </div>
@@ -103,7 +106,7 @@
         <!-- System Formula Information Box -->
         <div class="formula-info-box">
           <h4><i class="fa-solid fa-circle-info"></i> Logika Sinyal Fundamental XAU/USD</h4>
-          <p>Sinyal dihasilkan dari korelasi terbalik USD vs Emas (Gold). Sebelum rilis, perbandingan <b>Forecast vs Previous</b> memproyeksikan arah harga. Setelah rilis, perbandingan <b>Actual vs Forecast</b> mengonfirmasi sinyal.</p>
+          <p>Sinyal dihasilkan dari korelasi Forex Factory Calendar (Actual vs Forecast) dan analisis sentimen berita pasar realtime dari <b>Investing.com</b> terhadap Emas & USD.</p>
         </div>
       </div>
     </section>
@@ -113,15 +116,23 @@
       <div class="feed-header">
         <div class="feed-title">
           <h2><i class="fa-solid fa-newspaper color-gold"></i> Economic News Signals</h2>
-          <p>Forex Factory Calendar High & Medium Impact Events</p>
+          <p>Calendar High & Medium Impact Events</p>
         </div>
 
         <div class="filter-controls">
           <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="search-input" placeholder="Cari berita (mis. Unemployment, PMI)..." />
+            <input type="text" id="search-input" placeholder="Cari berita (mis. Unemployment, CPI, Fed)..." />
           </div>
 
+          <!-- Source Filter Tabs -->
+          <div class="source-tabs">
+            <button class="source-btn active" data-source="all"><i class="fa-solid fa-layer-group"></i> Semua Sumber</button>
+            <button class="source-btn" data-source="calendar"><i class="fa-solid fa-calendar-days"></i> Forex Factory</button>
+            <button class="source-btn" data-source="investing"><i class="fa-solid fa-globe"></i> Investing.com</button>
+          </div>
+
+          <!-- Impact Filter Tabs -->
           <div class="filter-tabs">
             <button class="filter-btn active" data-filter="all">Semua Impact</button>
             <button class="filter-btn" data-filter="high"><i class="fa-solid fa-circle color-red"></i> High Impact</button>
@@ -140,7 +151,7 @@
   <!-- Footer -->
   <footer class="app-footer">
     <div class="footer-container">
-      <p>&copy; 2026 Bot Script Notif XAU/USD — Powered by Forex Factory Calendar API & Telegram Bot Engine</p>
+      <p>&copy; 2026 Economic News Analytics XAU/USD — Powered by Forex Factory & Investing</p>
     </div>
   </footer>
 
