@@ -12,7 +12,20 @@ let cache = {
 };
 
 /**
- * Standard Modern Chrome Headers untuk menghindari Cloudflare block.
+function getJsonHeaders() {
+  const userAgent = config.USER_AGENTS[Math.floor(Math.random() * config.USER_AGENTS.length)] ||
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+
+  return {
+    'User-Agent': userAgent,
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Cache-Control': 'no-cache',
+  };
+}
+
+/**
+ * Standard Modern Chrome Headers untuk menghindari Cloudflare block pada HTML.
  */
 function getBrowserHeaders() {
   const userAgent = config.USER_AGENTS[Math.floor(Math.random() * config.USER_AGENTS.length)] ||
@@ -23,15 +36,6 @@ function getBrowserHeaders() {
     'Accept': 'application/json, text/html, application/xhtml+xml, */*',
     'Accept-Language': 'en-US,en;q=0.9',
     'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
-    'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-    'Sec-Ch-Ua-Mobile': '?0',
-    'Sec-Ch-Ua-Platform': '"Windows"',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'none',
-    'Sec-Fetch-User': '?1',
-    'Upgrade-Insecure-Requests': '1',
   };
 }
 
@@ -116,7 +120,7 @@ async function fetchLiveRealtimeNews() {
     try {
       log.info(`Fetching Live JSON API: ${endpointUrl}`);
       const res = await axios.get(endpointUrl, {
-        headers: getBrowserHeaders(),
+        headers: getJsonHeaders(),
         timeout: 10000,
       });
 
@@ -159,13 +163,12 @@ async function fetchLiveRealtimeNews() {
 
   // Jika jaringan lokal / ISP memblokir total domain ForexFactory
   log.error('❌ Seluruh percobaan live fetch ke ForexFactory mengalami timeout atau terhalang koneksi jaringan lokal/ISP.');
-  log.error('💡 Catatan: Saat di-deploy ke hosting server (Railway/VPS), koneksi ke ForexFactory akan langsung 100% lancar tanpa terhalang ISP lokal.');
   
   return [];
 }
 
 /**
- * Ambil semua berita USD High & Medium Impact real-time hari ini.
+ * Ambil semua berita USD High & Medium Impact real-time.
  * @returns {Promise<Array<Object>>}
  */
 export async function getHighImpactNews() {
@@ -182,6 +185,11 @@ export async function getHighImpactNews() {
     const isHighOrMed = e.impact === 'high' || e.impact === 'medium';
     return isUSD && isHighOrMed;
   });
+
+  if (filtered.length === 0) {
+    log.info(`Tidak ada High/Medium impact, menampilkan ${allEvents.length} event USD yang tersedia hari ini.`);
+    return allEvents;
+  }
 
   log.info(`Ditemukan ${filtered.length} berita USD real-time (High & Medium Impact)`);
   return filtered;
