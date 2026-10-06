@@ -1,9 +1,12 @@
+import fs from 'fs';
+import path from 'path';
 import axios from 'axios';
 import config from '../utils/config.js';
 import { createLogger } from '../utils/logger.js';
 import { parseCalendarHTML, parseEconomicValue } from './parser.js';
 
 const log = createLogger('Scraper');
+const CACHE_FILE_PATH = path.resolve('scratch', 'calendar_cache.json');
 
 // Cache untuk menghindari request berlebihan (TTL 15 menit)
 let cache = {
@@ -11,12 +14,39 @@ let cache = {
   timestamp: 0,
 };
 
+// Load disk cache saat inisialisasi jika ada
+try {
+  if (fs.existsSync(CACHE_FILE_PATH)) {
+    const fileContent = fs.readFileSync(CACHE_FILE_PATH, 'utf-8');
+    const parsedFile = JSON.parse(fileContent);
+    if (Array.isArray(parsedFile) && parsedFile.length > 0) {
+      cache.data = parsedFile;
+      cache.timestamp = Date.now();
+      log.info(`💾 Berhasil memuat ${parsedFile.length} data kalender dari disk cache.`);
+    }
+  }
+} catch (e) {
+  log.warn(`Gagal membaca disk cache: ${e.message}`);
+}
+
+function saveDiskCache(data) {
+  try {
+    const dir = path.dirname(CACHE_FILE_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(CACHE_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    log.warn(`Gagal menyimpan disk cache: ${e.message}`);
+  }
+}
+
 /**
  * Headers untuk JSON API endpoints.
  */
 function getJsonHeaders() {
   const userAgent = config.USER_AGENTS[Math.floor(Math.random() * config.USER_AGENTS.length)] ||
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
   return {
     'User-Agent': userAgent,
@@ -31,7 +61,7 @@ function getJsonHeaders() {
  */
 function getBrowserHeaders() {
   const userAgent = config.USER_AGENTS[Math.floor(Math.random() * config.USER_AGENTS.length)] ||
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
   return {
     'User-Agent': userAgent,
@@ -51,10 +81,17 @@ function delay(ms) {
 /**
  * Format raw JSON event dari Forex Factory nodedata API menjadi event terstruktur real-time.
  */
-function parseJsonEvents(jsonArray) {
-  if (!Array.isArray(jsonArray)) return [];
+function parseJsonEvents(jsonInput) {
+  let jsonArray = jsonInput;
+  if (typeof jsonInput === 'string') {
+    try {
+      jsonArray = JSON.parse(jsonInput);
+    } catch (e) {
+      return [];
+    }
+  }
 
-  const nowWIBDate = new Date();
+  if (!Array.isArray(jsonArray)) return [];
 
   return jsonArray
     .filter(item => item && (item.country === 'USD' || item.currency === 'USD'))
@@ -104,18 +141,19 @@ async function fetchLiveRealtimeNews() {
   const now = Date.now();
 
   // 1. Cek Cache jika masih valid (15 menit)
-  if (cache.data && (now - cache.timestamp) < config.CACHE_TTL_MS) {
+  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < config.CACHE_TTL_MS) {
     log.info('Menggunakan data berita live real-time dari cache');
     return cache.data;
   }
 
   log.info('🌐 Mengambil data berita ekonomi USD REAL-TIME dari Forex Factory...');
 
-  // 2. STRATEGI 1: Official Live JSON Feed (Utama)
+  // 2. STRATEGI 1: Official Live JSON Feed & Public Proxies
+  const targetUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
   const jsonEndpoints = [
-    'https://nfs.faireconomy.media/ff_calendar_thisweek.json',
-    'https://nodedata.forexfactory.com/forex/calendar/thisweek.json',
-    'https://nodedata.forexfactory.com/forex/calendar/today.json',
+    targetUrl,
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl),
+    'https://corsproxy.io/?url=' + encodeURIComponent(targetUrl),
   ];
 
   for (const endpointUrl of jsonEndpoints) {
@@ -126,12 +164,15 @@ async function fetchLiveRealtimeNews() {
         timeout: 10000,
       });
 
-      if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-        log.info(`✅ Live JSON API Berhasil! (${res.data.length} total event diterima secara real-time)`);
+      if (res.status === 200 && res.data) {
         const parsed = parseJsonEvents(res.data);
-        cache.data = parsed;
-        cache.timestamp = now;
-        return parsed;
+        if (parsed.length > 0) {
+          log.info(`✅ Live JSON API Berhasil! (${parsed.length} USD event diterima secara real-time)`);
+          cache.data = parsed;
+          cache.timestamp = now;
+          saveDiskCache(parsed);
+          return parsed;
+        }
       }
     } catch (err) {
       log.warn(`Live JSON API (${endpointUrl}) timeout/error: ${err.message}`);
@@ -154,6 +195,7 @@ async function fetchLiveRealtimeNews() {
         if (allEvents.length > 0) {
           cache.data = allEvents;
           cache.timestamp = now;
+          saveDiskCache(allEvents);
           return allEvents;
         }
       }
@@ -163,9 +205,13 @@ async function fetchLiveRealtimeNews() {
     }
   }
 
-  // Jika jaringan lokal / ISP memblokir total domain ForexFactory
-  log.error('❌ Seluruh percobaan live fetch ke ForexFactory mengalami timeout atau terhalang koneksi jaringan lokal/ISP.');
-  
+  // 4. STRATEGI 3: Fallback ke Stale Cache jika jaringan/rate-limit terganggu
+  if (cache.data && cache.data.length > 0) {
+    log.warn('⚠️ Menggunakan data stale cache karena koneksi live mengalami rate-limit/timeout.');
+    return cache.data;
+  }
+
+  log.error('❌ Seluruh percobaan live fetch ke ForexFactory mengalami timeout atau terhalang koneksi jaringan.');
   return [];
 }
 
