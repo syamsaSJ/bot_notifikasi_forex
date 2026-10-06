@@ -2,7 +2,7 @@
 let calendarEvents = [];
 let investingNews = [];
 let activeSource = 'all'; // 'all', 'calendar', 'investing'
-let activeTime = 'today'; // 'today', 'weekly'
+let activeTime = 'weekly'; // 'today', 'weekly'
 let activeFilter = 'all'; // 'all', 'high', 'medium'
 let searchQuery = '';
 
@@ -137,7 +137,9 @@ function renderDashboard() {
     if (activeTime === 'today') {
       const itemDate = item.date || '';
       const itemTimeWIB = item.timeWIB || '';
-      matchesTime = (itemDate === todayWIBStr) || itemTimeWIB.includes(`${todayDayNum} ${todayMonthName}`) || itemTimeWIB.includes('Hari Ini');
+      const pubDate = item.pubDate || '';
+      const searchStr = `${todayDayNum} ${todayMonthName}`;
+      matchesTime = (itemDate === todayWIBStr) || itemTimeWIB.includes(searchStr) || pubDate.includes(searchStr) || itemTimeWIB.includes('Hari Ini');
     }
 
     // Impact filter
@@ -182,11 +184,14 @@ function renderDashboard() {
 
   // Render HTML
   if (filtered.length === 0) {
+    const emptyMsg = activeTime === 'today'
+      ? 'Tidak ada rilis berita khusus hari ini. Klik tab "Minggu Ini" untuk melihat seluruh kalender berita minggu ini.'
+      : 'Gunakan tombol refresh untuk memperbarui data Forex Factory & Investing.com live.';
     container.innerHTML = `
       <div class="empty-state">
         <i class="fa-solid fa-calendar-check"></i>
         <h3>Tidak Ada Berita / Signals</h3>
-        <p>Gunakan tombol refresh untuk memperbarui data Forex Factory & Investing.com live.</p>
+        <p>${emptyMsg}</p>
       </div>
     `;
     return;
