@@ -12,6 +12,8 @@ let cache = {
 };
 
 /**
+ * Headers untuk JSON API endpoints.
+ */
 function getJsonHeaders() {
   const userAgent = config.USER_AGENTS[Math.floor(Math.random() * config.USER_AGENTS.length)] ||
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
