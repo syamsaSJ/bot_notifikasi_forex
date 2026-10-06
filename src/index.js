@@ -24,49 +24,17 @@ function startWebServer() {
   app.use(express.static('public'));
 
   app.get('/api/news', async (req, res) => {
-    // Trigger background update
-    getHighImpactNews().then(events => {
+    try {
+      const events = await getHighImpactNews();
       if (events && events.length > 0) {
         latestNewsCache = events.map(e => ({ ...e, signal: analyzeSignal(e) }));
+        return res.json({ events: latestNewsCache });
       }
-    }).catch(() => {});
-
-    if (latestNewsCache.length > 0) {
-      return res.json({ events: latestNewsCache });
+      return res.json({ events: latestNewsCache || [] });
+    } catch (err) {
+      log.error('Error in /api/news:', err.message);
+      res.status(500).json({ error: err.message, events: [] });
     }
-
-    // Default Live Events jika scraper pertama sedang memproses
-    const defaultEvents = [
-      {
-        event: 'Unemployment Claims',
-        timeWIB: 'Kam, 1 Okt • 19.30 WIB',
-        impact: 'medium',
-        actual: '-',
-        forecast: '201K',
-        previous: '197K',
-        signal: analyzeSignal({ event: 'Unemployment Claims', actual: '-', forecast: '201K', previous: '197K' })
-      },
-      {
-        event: 'ISM Manufacturing PMI',
-        timeWIB: 'Kam, 1 Okt • 21.00 WIB',
-        impact: 'medium',
-        actual: '-',
-        forecast: '54.8',
-        previous: '54.6',
-        signal: analyzeSignal({ event: 'ISM Manufacturing PMI', actual: '-', forecast: '54.8', previous: '54.6' })
-      },
-      {
-        event: 'Non-Farm Employment Change (NFP)',
-        timeWIB: 'Jum, 2 Okt • 19.30 WIB',
-        impact: 'high',
-        actual: '142K',
-        forecast: '164K',
-        previous: '114K',
-        signal: analyzeSignal({ event: 'Non-Farm Employment Change', actual: '142K', forecast: '164K', previous: '114K' })
-      }
-    ];
-
-    res.json({ events: defaultEvents });
   });
 
   app.get('/api/investing', async (req, res) => {

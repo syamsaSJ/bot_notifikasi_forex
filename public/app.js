@@ -100,80 +100,11 @@ async function fetchNewsData() {
 
 // Sample Data Fallback
 function getSampleCalendarData() {
-  return [
-    {
-      event: 'Unemployment Claims',
-      timeWIB: 'Kam, 1 Okt • 19.30 WIB',
-      impact: 'medium',
-      actual: '-',
-      forecast: '201K',
-      previous: '197K',
-      source: 'Forex Factory',
-      signal: {
-        signal: 'BUY',
-        predictionText: 'USD diperkirakan melemah (data lebih buruk). Hubungan terbalik emas & USD memproyeksikan XAU/USD menguat. Rekomendasi BUY.'
-      }
-    },
-    {
-      event: 'ISM Manufacturing PMI',
-      timeWIB: 'Kam, 1 Okt • 21.00 WIB',
-      impact: 'medium',
-      actual: '-',
-      forecast: '54.8',
-      previous: '54.6',
-      source: 'Forex Factory',
-      signal: {
-        signal: 'SELL',
-        predictionText: 'USD diperkirakan menguat (data lebih baik). Hubungan terbalik emas & USD memproyeksikan XAU/USD melemah. Rekomendasi SELL.'
-      }
-    },
-    {
-      event: 'Non-Farm Employment Change (NFP)',
-      timeWIB: 'Jum, 2 Okt • 19.30 WIB',
-      impact: 'high',
-      actual: '142K',
-      forecast: '164K',
-      previous: '114K',
-      source: 'Forex Factory',
-      signal: {
-        signal: 'BUY',
-        predictionText: 'USD melemah (data lebih buruk dari perkiraan). Hubungan terbalik emas & USD memproyeksikan XAU/USD menguat. Rekomendasi BUY.'
-      }
-    }
-  ];
+  return [];
 }
 
 function getSampleInvestingData() {
-  return [
-    {
-      title: 'Nasdaq 100 Hits Another Record as 10-Year Yield Holds at 5.3%',
-      pubDate: 'Oct 06, 2026',
-      timeWIB: 'Sel, 6 Okt • 13.50 WIB',
-      category: 'Market Overview',
-      source: 'Investing.com',
-      analysis: {
-        signal: 'SELL',
-        impact: 'HIGH',
-        direction: 'USD Menguat / Yield Surge ↓',
-        impactText: 'Kenaikan imbal hasil obligasi 10-tahun menekan pergerakan Emas (XAU/USD). Rekomendasi SELL / Hati-hati tekanan jual.',
-        recommendation: 'SELL XAU/USD'
-      }
-    },
-    {
-      title: 'Bitcoin and Gold Test Key Support: Who Holds the Line First?',
-      pubDate: 'Oct 06, 2026',
-      timeWIB: 'Sel, 6 Okt • 14.10 WIB',
-      category: 'Komoditas & Emas',
-      source: 'Investing.com',
-      analysis: {
-        signal: 'BUY',
-        impact: 'HIGH',
-        direction: 'USD Melemah / Gold Safe Haven ↑',
-        impactText: 'Sentimen pasar safe haven meningkatkan daya tarik Emas di area support kuat. Rekomendasi BUY.',
-        recommendation: 'BUY XAU/USD'
-      }
-    }
-  ];
+  return [];
 }
 
 // Render Dashboard
