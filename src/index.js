@@ -15,6 +15,7 @@ import { startScheduler, getNextRun } from './scheduler/cronJob.js';
 
 const log = createLogger('Main');
 
+const sentNotifications = new Set();
 let latestNewsCache = [];
 
 function startWebServer() {
@@ -91,12 +92,17 @@ async function mainTask() {
       const signal = analyzeSignal(event);
       log.info(`${event.event}: ${signal.signal} (${signal.reason})`);
 
-      // 4. Generate Gambar CardNotif
-      const imageBuffer = await generateSignalCardImage(event, signal);
-
-      // 5. Kirim Gambar via Telegram Bot
-      await sendPhoto(imageBuffer);
-      log.info(`Notifikasi gambar terkirim untuk: ${event.event}`);
+      // 4. Generate Gambar CardNotif & Kirim (dengan fallback ke Teks jika canvas gagal)
+      try {
+        const imageBuffer = await generateSignalCardImage(event, signal);
+        await sendPhoto(imageBuffer);
+        log.info(`Notifikasi gambar terkirim untuk: ${event.event}`);
+      } catch (imgErr) {
+        log.warn(`Gagal generate/kirim gambar untuk ${event.event}, kirim sebagai teks: ${imgErr.message}`);
+        const textMsg = formatMessage(event, signal);
+        await sendMessage(textMsg);
+        log.info(`Notifikasi teks terkirim untuk: ${event.event}`);
+      }
 
       // Track sebagai sudah dikirim
       sentNotifications.add(eventKey);
@@ -151,8 +157,14 @@ _Notifikasi otomatis dikirim setiap jam \\(Senin\\-Jumat, 07:00\\-23:00 WIB\\)_`
 
       for (const event of events) {
         const signal = analyzeSignal(event);
-        const imageBuffer = await generateSignalCardImage(event, signal);
-        await sendPhoto(imageBuffer, '', chatId.toString());
+        try {
+          const imageBuffer = await generateSignalCardImage(event, signal);
+          await sendPhoto(imageBuffer, '', chatId.toString());
+        } catch (imgErr) {
+          log.warn(`Gagal kirim gambar /check, kirim teks: ${imgErr.message}`);
+          const textMsg = formatMessage(event, signal);
+          await sendMessage(textMsg, chatId.toString());
+        }
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
     } catch (err) {
