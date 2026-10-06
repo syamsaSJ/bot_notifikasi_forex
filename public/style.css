@@ -413,7 +413,7 @@ body {
   width: 100%;
 }
 
-.source-tabs, .filter-tabs {
+.source-tabs, .time-tabs, .filter-tabs {
   display: flex;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -422,7 +422,7 @@ body {
   gap: 0.25rem;
 }
 
-.source-btn, .filter-btn {
+.source-btn, .time-btn, .filter-btn {
   background: transparent;
   border: none;
   color: var(--text-secondary);
@@ -438,6 +438,7 @@ body {
 }
 
 .source-btn.active, .source-btn:hover,
+.time-btn.active, .time-btn:hover,
 .filter-btn.active, .filter-btn:hover {
   background: var(--card-border);
   color: var(--text-main);
@@ -447,6 +448,12 @@ body {
   background: linear-gradient(135deg, #2D3748, #1A202C);
   border: 1px solid rgba(245, 158, 11, 0.4);
   color: var(--accent-gold);
+}
+
+.time-btn.active {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: #FFF;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
 }
 
 /* Notification Cards Grid */

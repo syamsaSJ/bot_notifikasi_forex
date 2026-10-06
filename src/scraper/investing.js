@@ -70,15 +70,19 @@ export async function getInvestingNews() {
           }) + ' WIB';
 
           const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
           const dayName = dayNames[dateObj.getDay()];
           const dayNum = dateObj.getDate();
-          const timeDisplay = `${dayName}, ${dayNum} • ${timeWIB}`;
+          const monthName = monthNames[dateObj.getMonth()];
+          const timeDisplay = `${dayName}, ${dayNum} ${monthName} • ${timeWIB}`;
+          const dateStr = dateObj.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
 
           const title = item.title?.[0] || 'Investing.com News';
           const analysis = analyzeInvestingHeadline(title, feed.name);
 
           allNews.push({
             title,
+            date: dateStr,
             link: item.link?.[0] || 'https://www.investing.com',
             pubDate: rawDate,
             timeWIB: timeDisplay,

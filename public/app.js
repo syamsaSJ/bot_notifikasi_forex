@@ -2,6 +2,7 @@
 let calendarEvents = [];
 let investingNews = [];
 let activeSource = 'all'; // 'all', 'calendar', 'investing'
+let activeTime = 'today'; // 'today', 'weekly'
 let activeFilter = 'all'; // 'all', 'high', 'medium'
 let searchQuery = '';
 
@@ -10,6 +11,7 @@ const container = document.getElementById('news-cards-container');
 const searchInput = document.getElementById('search-input');
 const filterBtns = document.querySelectorAll('.filter-btn');
 const sourceBtns = document.querySelectorAll('.source-btn');
+const timeBtns = document.querySelectorAll('.time-btn');
 const btnRefresh = document.getElementById('btn-refresh');
 const countBuy = document.getElementById('count-buy');
 const countSell = document.getElementById('count-sell');
@@ -120,8 +122,24 @@ function renderDashboard() {
     investingNews.forEach(item => combinedItems.push({ ...item, itemType: 'investing' }));
   }
 
+  // Time & Date Filtering (Today vs Weekly)
+  const todayDateObj = new Date();
+  const todayWIBStr = todayDateObj.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+  const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  const todayDayNum = todayDateObj.getDate();
+  const todayMonthName = monthNames[todayDateObj.getMonth()];
+
   // Filter Items
   const filtered = combinedItems.filter(item => {
+    // Time filter
+    let matchesTime = true;
+    if (activeTime === 'today') {
+      const itemDate = item.date || '';
+      const itemTimeWIB = item.timeWIB || '';
+      matchesTime = (itemDate === todayWIBStr) || itemTimeWIB.includes(`${todayDayNum} ${todayMonthName}`) || itemTimeWIB.includes('Hari Ini');
+    }
+
     // Impact filter
     let imp = 'medium';
     if (item.itemType === 'calendar') {
@@ -134,7 +152,7 @@ function renderDashboard() {
     const searchText = (item.event || item.title || '').toLowerCase();
     const matchesSearch = !searchQuery || searchText.includes(searchQuery.toLowerCase());
 
-    return matchesImpact && matchesSearch;
+    return matchesTime && matchesImpact && matchesSearch;
   });
 
   // Calculate Metrics
@@ -297,6 +315,15 @@ sourceBtns.forEach(btn => {
     sourceBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     activeSource = btn.dataset.source;
+    renderDashboard();
+  });
+});
+
+timeBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    timeBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeTime = btn.dataset.time;
     renderDashboard();
   });
 });

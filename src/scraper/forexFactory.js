@@ -60,7 +60,7 @@ function parseJsonEvents(jsonArray) {
     .filter(item => item && (item.country === 'USD' || item.currency === 'USD'))
     .map(item => {
       const dateObj = new Date(item.date || Date.now());
-      const dateStr = dateObj.toISOString().split('T')[0];
+      const dateStr = dateObj.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
 
       const timeWIBStr = dateObj.toLocaleTimeString('id-ID', {
         timeZone: 'Asia/Jakarta',
