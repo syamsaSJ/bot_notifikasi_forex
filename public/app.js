@@ -145,7 +145,8 @@ function renderDashboard() {
     // Impact filter
     let imp = 'medium';
     if (item.itemType === 'calendar') {
-      imp = (item.impact || '').toLowerCase().includes('high') ? 'high' : 'medium';
+      const itemImp = (item.impact || '').toLowerCase();
+      imp = itemImp.includes('high') ? 'high' : itemImp.includes('medium') ? 'medium' : 'low';
     } else {
       imp = item.analysis && item.analysis.impact ? item.analysis.impact.toLowerCase() : 'medium';
     }

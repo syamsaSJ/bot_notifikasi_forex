@@ -108,9 +108,14 @@ export function parseCalendarHTML(html) {
     const previous = $row.find('td.calendar__previous span').text().trim() ||
                      $row.find('td.calendar__previous').text().trim();
 
+    const timeWIBStr = convertETtoWIB(currentTime, currentDate);
+    const fullTimeDisplay = `${currentDate} • ${timeWIBStr}`;
+    const todayWIBStr = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+
     events.push({
-      date: currentDate,
-      time: currentTime,
+      date: todayWIBStr,
+      time: currentTime || timeWIBStr,
+      timeWIB: fullTimeDisplay,
       currency,
       impact,
       event: eventName,
