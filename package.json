@@ -1,0 +1,30 @@
+{
+  "name": "bot-script-notif",
+  "version": "1.0.0",
+  "description": "Sistem Notifikasi Ekonomi & Sinyal Otomatis XAU/USD (Forex Factory)",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
+    "test": "node test/test-parser.js"
+  },
+  "keywords": [
+    "forex",
+    "xauusd",
+    "telegram-bot",
+    "forex-factory"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@napi-rs/canvas": "^1.0.10",
+    "axios": "^1.20.0",
+    "cheerio": "^1.2.0",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "node-schedule": "^2.1.1",
+    "node-telegram-bot-api": "^0.66.0",
+    "xml2js": "^0.6.2"
+  }
+}

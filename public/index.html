@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XAU/USD Gold News & Signal Dashboard - Forex Factory</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div class="logo-text">
+          <h1>XAU/USD <span>GOLD SIGNAL AI</span></h1>
+          <p>Forex Factory Economic News Analytics</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="status-pill live">
+          <span class="pulse-dot"></span>
+          <span id="system-status">LIVE SCRAPER ACTIVE</span>
+        </div>
+        <button id="btn-refresh" class="btn btn-secondary">
+          <i class="fa-solid fa-arrows-rotate"></i> Refresh Data
+        </button>
+        <button id="btn-telegram-sync" class="btn btn-primary">
+          <i class="fa-brands fa-telegram"></i> Telegram Bot Connected
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- Hero / Live Market Overview Grid -->
+    <section class="overview-grid">
+      <!-- Live TradingView Chart Embed Card -->
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-chart-line color-gold"></i>
+            <h3>Live XAU/USD Gold Price Chart</h3>
+          </div>
+          <div class="market-badge">
+            <span id="gold-price-status">XAU/USD • REALTIME</span>
+          </div>
+        </div>
+        <div class="chart-container" id="tradingview-container">
+          <!-- TradingView Widget -->
+          <div class="tradingview-widget-container" style="height:100%;width:100%">
+            <div id="tradingview_xauusd" style="height:calc(100% - 32px);width:100%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics & Summary Box -->
+      <div class="card summary-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-bullseye color-emerald"></i>
+            <h3>Ringkasan Sinyal Hari Ini</h3>
+          </div>
+          <span class="date-badge" id="current-date-display">Kam, 1 Okt 2026</span>
+        </div>
+
+        <div class="metrics-stat-grid">
+          <div class="stat-box buy">
+            <div class="stat-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">REKOMENDASI BUY</span>
+              <h2 id="count-buy">0</h2>
+            </div>
+          </div>
+
+          <div class="stat-box sell">
+            <div class="stat-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">REKOMENDASI SELL</span>
+              <h2 id="count-sell">0</h2>
+            </div>
+          </div>
+
+          <div class="stat-box neutral">
+            <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">BERITA HARI INI</span>
+              <h2 id="count-total">0</h2>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Formula Information Box -->
+        <div class="formula-info-box">
+          <h4><i class="fa-solid fa-circle-info"></i> Logika Sinyal Fundamental XAU/USD</h4>
+          <p>Sinyal dihasilkan dari korelasi terbalik USD vs Emas (Gold). Sebelum rilis, perbandingan <b>Forecast vs Previous</b> memproyeksikan arah harga. Setelah rilis, perbandingan <b>Actual vs Forecast</b> mengonfirmasi sinyal.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- News Feed Controls & Filters -->
+    <section class="feed-section">
+      <div class="feed-header">
+        <div class="feed-title">
+          <h2><i class="fa-solid fa-newspaper color-gold"></i> Economic News Signals</h2>
+          <p>Forex Factory Calendar High & Medium Impact Events</p>
+        </div>
+
+        <div class="filter-controls">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-input" placeholder="Cari berita (mis. Unemployment, PMI)..." />
+          </div>
+
+          <div class="filter-tabs">
+            <button class="filter-btn active" data-filter="all">Semua Impact</button>
+            <button class="filter-btn" data-filter="high"><i class="fa-solid fa-circle color-red"></i> High Impact</button>
+            <button class="filter-btn" data-filter="medium"><i class="fa-solid fa-circle color-orange"></i> Medium Impact</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Cards Container Grid -->
+      <div class="cards-grid" id="news-cards-container">
+        <!-- Cards loaded dynamically via JavaScript -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 Bot Script Notif XAU/USD — Powered by Forex Factory Calendar API & Telegram Bot Engine</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

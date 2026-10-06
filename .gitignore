@@ -1,0 +1,5 @@
+node_modules/
+.env
+*.log
+implementation_plan.md
+video referensi.mp4
