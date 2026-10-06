@@ -107,6 +107,7 @@ async function fetchLiveRealtimeNews() {
 
   // 2. STRATEGI 1: Official Live JSON Feed (Utama)
   const jsonEndpoints = [
+    'https://nfs.faireconomy.media/ff_calendar_thisweek.json',
     'https://nodedata.forexfactory.com/forex/calendar/thisweek.json',
     'https://nodedata.forexfactory.com/forex/calendar/today.json',
   ];
