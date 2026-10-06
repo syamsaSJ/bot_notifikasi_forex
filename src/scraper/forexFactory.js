@@ -181,20 +181,11 @@ export async function getHighImpactNews() {
     return [];
   }
 
-  // Filter berita USD dengan High & Medium Impact
-  const filtered = allEvents.filter(e => {
-    const isUSD = (e.currency || '').toUpperCase() === 'USD';
-    const isHighOrMed = e.impact === 'high' || e.impact === 'medium';
-    return isUSD && isHighOrMed;
-  });
+  // Filter semua berita USD
+  const usdEvents = allEvents.filter(e => (e.currency || '').toUpperCase() === 'USD');
 
-  if (filtered.length === 0) {
-    log.info(`Tidak ada High/Medium impact, menampilkan ${allEvents.length} event USD yang tersedia hari ini.`);
-    return allEvents;
-  }
-
-  log.info(`Ditemukan ${filtered.length} berita USD real-time (High & Medium Impact)`);
-  return filtered;
+  log.info(`Ditemukan ${usdEvents.length} berita USD real-time dari Forex Factory`);
+  return usdEvents;
 }
 
 /**

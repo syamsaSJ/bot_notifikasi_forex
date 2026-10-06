@@ -546,6 +546,7 @@ body {
 
 .impact-badge.high { background: var(--accent-high); }
 .impact-badge.medium { background: var(--accent-medium); }
+.impact-badge.low { background: #4B5563; }
 
 /* Metrics Row */
 .metrics-row {

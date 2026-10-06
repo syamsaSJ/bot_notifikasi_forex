@@ -211,8 +211,9 @@ function renderCalendarCard(item) {
   const signalObj = item.signal || {};
   const signalType = signalObj.signal || 'HOLD';
   const predictionText = signalObj.predictionText || 'Analisis korelasi fundamental XAU/USD.';
-  const impactClass = (item.impact || 'medium').toLowerCase().includes('high') ? 'high' : 'medium';
-  const impactLabel = impactClass === 'high' ? '🔴 HIGH' : '🟠 MEDIUM';
+  const rawImpact = (item.impact || 'medium').toLowerCase();
+  const impactClass = rawImpact.includes('high') ? 'high' : rawImpact.includes('medium') ? 'medium' : 'low';
+  const impactLabel = impactClass === 'high' ? '🔴 HIGH' : impactClass === 'medium' ? '🟠 MEDIUM' : '🟡 LOW';
 
   const actDisp = item.actual && item.actual !== '' ? item.actual : '-';
   const foreDisp = item.forecast && item.forecast !== '' ? item.forecast : '-';
