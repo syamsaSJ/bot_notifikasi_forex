@@ -1,5 +1,6 @@
 import { parseEconomicValue } from '../scraper/parser.js';
 import { createLogger } from '../utils/logger.js';
+import { analyzeHeadlineWithGroq } from '../services/groqAnalyzer.js';
 
 const log = createLogger('SignalEngine');
 
@@ -311,4 +312,20 @@ export function analyzeInvestingHeadline(title = '', category = '') {
     impactText: 'Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.',
     recommendation: 'HOLD / WAIT'
   };
+}
+
+/**
+ * Analisis headline berita menggunakan Groq AI terlebih dahulu,
+ * dengan fallback ke rule-based jika Groq AI tidak tersedia/gagal.
+ * 
+ * @param {string} title - Judul berita
+ * @param {string} category - Kategori/sumber berita
+ * @returns {Promise<Object>} - Result analisis
+ */
+export async function analyzeHeadlineAsync(title = '', category = '') {
+  const aiResult = await analyzeHeadlineWithGroq(title, category);
+  if (aiResult) {
+    return aiResult;
+  }
+  return analyzeInvestingHeadline(title, category);
 }

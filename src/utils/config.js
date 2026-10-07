@@ -6,6 +6,11 @@ export default {
   TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN || '',
   TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID || '',
 
+  // News & AI APIs
+  NEWSDATA_API_KEY: process.env.NEWSDATA_API_KEY || '',
+  GNEWS_API_KEY: process.env.GNEWS_API_KEY || '',
+  GROQ_API_KEY: process.env.GROQ_API_KEY || '',
+
   // Timezone (default: Asia/Jakarta = WIB)
   TIMEZONE: process.env.TIMEZONE || 'Asia/Jakarta',
 
@@ -16,9 +21,9 @@ export default {
   SCRAPE_TIMEOUT_MS: 15000,
   SCRAPE_RETRY_COUNT: 3,
   SCRAPE_RETRY_DELAY_MS: 2000,
-  CACHE_TTL_MS: 1 * 60 * 1000, // 1 menit untuk polling realtime
+  CACHE_TTL_MS: 1 * 60 * 1000, // 1 menit
 
-  // Cron: Setiap 1 menit, Senin-Jumat (Default Realtime Polling)
+  // Cron: Setiap 1 menit, Senin-Jumat
   CRON_EXPRESSION: process.env.CRON_EXPRESSION || '* * * * 1-5',
 
   // Logging

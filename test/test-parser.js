@@ -7,6 +7,7 @@ import { parseEconomicValue, convertETtoWIB, formatWIBTime, parseToDateObj } fro
 import { analyzeSignal, isInvertedIndicator } from '../src/engine/signalEngine.js';
 import { formatMessage, formatDailySummary, formatHeadlineDigest } from '../src/formatter/messageFormatter.js';
 import { logScrapeResult, getScrapeLogs, getSourceHealth, formatLogsTelegram } from '../src/utils/scrapeLogger.js';
+import { isRelevantToXAUUSD } from '../src/utils/newsFilter.js';
 
 let passed = 0;
 let failed = 0;
@@ -71,6 +72,16 @@ assert(isInvertedIndicator('Unemployment Claims') === true, 'Unemployment Claims
 assert(isInvertedIndicator('Non-Farm Employment Change') === false, 'NFP → Normal');
 
 // =====================================================
+console.log('\n🛡️ TEST: Filter Berita Relevant XAU/USD vs Sampah');
+// =====================================================
+
+assert(isRelevantToXAUUSD('Gold rallies to $2,650 as Fed signals rate cuts') === true, 'Gold/Fed news → RELEVANT (true)');
+assert(isRelevantToXAUUSD('US Dollar surges following strong CPI inflation data') === true, 'USD/CPI news → RELEVANT (true)');
+assert(isRelevantToXAUUSD('Bitcoin dips as over $400 million in crypto longs are liquidated') === false, 'Bitcoin/Crypto news → FILTERED OUT (false)');
+assert(isRelevantToXAUUSD('Tesla Q3 earnings report released, price target raised') === false, 'Tesla/Stock news → FILTERED OUT (false)');
+assert(isRelevantToXAUUSD('EUR/JPY technical analysis for upcoming session') === false, 'Cross currency non-USD → FILTERED OUT (false)');
+
+// =====================================================
 console.log('\n📋 TEST: Scrape Logger & Error Tracking');
 // =====================================================
 
@@ -97,3 +108,4 @@ console.log('══════════════════════�
 if (failed > 0) {
   process.exit(1);
 }
+
