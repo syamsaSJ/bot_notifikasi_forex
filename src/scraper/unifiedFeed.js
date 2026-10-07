@@ -5,12 +5,8 @@ import { createLogger } from '../utils/logger.js';
 import { formatWIBTime, parseToDateObj } from './parser.js';
 import { logScrapeResult } from '../utils/scrapeLogger.js';
 import { getHighImpactNews } from './forexFactory.js';
-<<<<<<< HEAD
-import { analyzeSignal, analyzeInvestingHeadline, isGoldRelevant } from '../engine/signalEngine.js';
-=======
 import { analyzeSignal, analyzeInvestingHeadline, analyzeHeadlineAsync } from '../engine/signalEngine.js';
 import { isRelevantToXAUUSD } from '../utils/newsFilter.js';
->>>>>>> a368874 (update terbaru v3)
 
 const log = createLogger('UnifiedFeed');
 
@@ -28,11 +24,6 @@ function getHeaders() {
   };
 }
 
-<<<<<<< HEAD
-async function fetchNewsHeadlines() {
-  const headlines = [];
-  const allSources = [...INVESTING_FEEDS, ...EXTRA_FEEDS];
-=======
 /**
  * Fetch headline berita dari ForexLive.com RSS feed.
  */
@@ -42,7 +33,6 @@ async function fetchForexLiveRss() {
     'https://www.forexlive.com/feed/news',
     'https://investinglive.com/feed/',
   ];
->>>>>>> a368874 (update terbaru v3)
 
   for (const url of urls) {
     try {
@@ -51,45 +41,6 @@ async function fetchForexLiveRss() {
         const parsed = await xml2js.parseStringPromise(res.data);
         const items = parsed?.rss?.channel?.[0]?.item || [];
 
-<<<<<<< HEAD
-        items.forEach(item => {
-          const title = item.title?.[0] || 'Market News';
-          const category = feed.name;
-          const sourceName = item.source?.[0] ? (typeof item.source[0] === 'object' ? item.source[0]._ : item.source[0]) : feed.name;
-
-          const rawItem = { title, category, source: sourceName };
-
-          // FILTER EKSKLUSIF: Hanya sertakan berita yang RELEVAN dengan pergerakan XAU/USD GOLD
-          if (!isGoldRelevant(rawItem)) {
-            return;
-          }
-
-          const rawDate = item.pubDate?.[0] || item['dc:date']?.[0] || '';
-          const dateObj = parseToDateObj(rawDate);
-          const wibInfo = formatWIBTime(dateObj);
-          const link = item.link?.[0] || (typeof item.guid?.[0] === 'string' ? item.guid[0] : '#');
-
-          const analysis = analyzeInvestingHeadline(title, feed.name);
-
-          headlines.push({
-            id: `news_${dateObj.getTime()}_${title.slice(0, 20)}`,
-            itemType: 'investing',
-            source: sourceName || 'Investing.com',
-            title,
-            link,
-            pubDate: rawDate,
-            date: wibInfo.dateStr,
-            timeWIB: wibInfo.displayWIB,
-            timestamp: wibInfo.timestamp,
-            category: feed.name,
-            analysis,
-            signal: analysis,
-            isGoldRelevant: true,
-          });
-        });
-
-        logScrapeResult(`RSS:${feed.name}`, true, items.length);
-=======
         if (items.length > 0) {
           logScrapeResult('ForexLive', true, items.length);
 
@@ -119,7 +70,6 @@ async function fetchForexLiveRss() {
             })
             .filter(item => isRelevantToXAUUSD(item.title));
         }
->>>>>>> a368874 (update terbaru v3)
       }
     } catch (err) {
       log.warn(`Gagal fetch ForexLive (${url}): ${err.message}`);
@@ -130,8 +80,6 @@ async function fetchForexLiveRss() {
   return [];
 }
 
-<<<<<<< HEAD
-=======
 /**
  * Fetch headline berita dari NewsData.io API.
  */
@@ -270,6 +218,11 @@ async function fetchGNewsRss() {
   }
 }
 
+/**
+ * Ambil Feed Terpadu Realtime:
+ * 1. Kalender Ekonomi: Forex Factory RSS XML
+ * 2. News Headlines: ForexLive.com + NewsData.io API + GNews API + GNews RSS
+ */
 export async function getUnifiedFeed(forceRefresh = false) {
   const now = Date.now();
 
