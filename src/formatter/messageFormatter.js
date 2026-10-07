@@ -1,10 +1,8 @@
 import { createLogger } from '../utils/logger.js';
+import { formatLogsTelegram } from '../utils/scrapeLogger.js';
 
 const log = createLogger('Formatter');
 
-/**
- * Format impact tag (MEDIUM / HIGH).
- */
 function getImpactBadge(impactStr) {
   const imp = (impactStr || '').toLowerCase();
   if (imp.includes('high') || imp.includes('red')) return '🔴 HIGH';
@@ -16,9 +14,6 @@ function getImpactBadge(impactStr) {
  * Format card notifikasi utama (persis layout screenshot client).
  */
 export function formatMessage(event, signal) {
-  const isBuy = signal.signal === 'BUY';
-  const isSell = signal.signal === 'SELL';
-
   const impactBadge = getImpactBadge(event.impact);
   const timeStr = event.timeWIB || event.time || 'TBD';
 
@@ -46,13 +41,11 @@ ${escapeMarkdown(predictionText)}
  * Format ringkasan harian.
  */
 export function formatDailySummary(events) {
-  if (events.length === 0) {
-    return `📅 *JADWAL HIGH & MEDIUM IMPACT HARI INI*
+  if (!events || events.length === 0) {
+    return `📅 *JADWAL BERITA EKONOMI HARI INI*
 ━━━━━━━━━━━━━━━━━━━━━━━━
 
-✅ Tidak ada berita high\\/medium impact USD hari ini\\.
-
-_Market kemungkinan bergerak tenang tanpa lonjakan volatilitas tinggi\\._`;
+✅ Tidak ada berita high/medium impact USD untuk hari ini\\.`;
   }
 
   let message = `📅 *JADWAL BERITA EKONOMI HARI INI*
@@ -61,7 +54,7 @@ _Market kemungkinan bergerak tenang tanpa lonjakan volatilitas tinggi\\._`;
   events.forEach((event, index) => {
     const statusEmoji = event.actual && event.actual !== '-' ? '✅' : '⏰';
     const impactBadge = getImpactBadge(event.impact);
-    message += `${index + 1}\\. ${statusEmoji} *${escapeMarkdown(event.event)}*\n`;
+    message += `${index + 1}\\. ${statusEmoji} *${escapeMarkdown(event.event || event.title)}*\n`;
     message += `   📅 ${escapeMarkdown(event.timeWIB || event.time)} • ${escapeMarkdown(impactBadge)}\n`;
     if (event.actual && event.actual !== '-') {
       message += `   📊 Actual: ${escapeMarkdown(event.actual)} | Forecast: ${escapeMarkdown(event.forecast)} | Prev: ${escapeMarkdown(event.previous)}\n`;
@@ -78,10 +71,30 @@ _Total: ${events.length} berita USD_`;
 }
 
 /**
- * Escape karakter khusus untuk Telegram MarkdownV2.
+ * Format digest headline berita terbaru dengan rekomendasi sinyal.
  */
+export function formatHeadlineDigest(newsItems) {
+  if (!newsItems || newsItems.length === 0) return null;
+
+  let msg = `📰 *BERITA & ANALISIS SENTIMEN PASAR REALTIME*
+━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  newsItems.forEach((item, index) => {
+    const sigEmoji = item.signal.signal === 'BUY' ? '🟢 BUY' : item.signal.signal === 'SELL' ? '🔴 SELL' : '⚪ HOLD';
+    msg += `${index + 1}\\. *[${escapeMarkdown(item.source)}]* ${escapeMarkdown(item.title)}\n`;
+    msg += `   📊 *Sinyal XAU/USD:* ${sigEmoji} \\| ${escapeMarkdown(item.signal.direction || 'Sentimen Pasar')}\n`;
+    msg += `   ⏰ ${escapeMarkdown(item.timeWIB)}\n\n`;
+  });
+
+  msg += `━━━━━━━━━━━━━━━━━━━━━━━━
+_Sumber: Investing.com & Pasar Forex Realtime_`;
+
+  return msg;
+}
+
+export { formatLogsTelegram };
+
 export function escapeMarkdown(text) {
   if (!text) return '';
   return text.replace(/([_\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
 }
-

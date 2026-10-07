@@ -8,10 +8,6 @@ const log = createLogger('TelegramBot');
 
 let bot = null;
 
-/**
- * Inisialisasi Telegram Bot.
- * @returns {TelegramBot} - Bot instance
- */
 export function initBot() {
   if (!config.TELEGRAM_BOT_TOKEN) {
     log.error('TELEGRAM_BOT_TOKEN tidak ditemukan di .env!');
@@ -28,12 +24,6 @@ export function initBot() {
   return bot;
 }
 
-/**
- * Kirim pesan ke chat/channel yang ditentukan.
- * @param {string} message - Pesan dalam format MarkdownV2
- * @param {string} [chatId] - Chat ID target (default dari config)
- * @returns {Promise<Object>} - Telegram message object
- */
 export async function sendMessage(message, chatId) {
   const targetChatId = chatId || config.TELEGRAM_CHAT_ID;
 
@@ -54,7 +44,6 @@ export async function sendMessage(message, chatId) {
     log.info(`Pesan terkirim ke chat ${targetChatId}`);
     return result;
   } catch (err) {
-    // Fallback: coba kirim tanpa markdown jika parsing gagal
     if (err.message?.includes('parse') || err.message?.includes('markdown')) {
       log.warn('MarkdownV2 gagal, kirim sebagai plain text...');
       try {
@@ -76,32 +65,6 @@ export async function sendMessage(message, chatId) {
   }
 }
 
-/**
- * Kirim batch pesan dengan delay antar pesan (anti rate-limit).
- */
-export async function sendBatchMessages(messages, delayMs = 1000, chatId) {
-  const results = [];
-  for (let i = 0; i < messages.length; i++) {
-    try {
-      const result = await sendMessage(messages[i], chatId);
-      results.push(result);
-    } catch (err) {
-      log.error(`Gagal kirim pesan ${i + 1}/${messages.length}:`, err.message);
-    }
-
-    if (i < messages.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, delayMs));
-    }
-  }
-  return results;
-}
-
-/**
- * Kirim gambar card notifikasi ke Telegram channel/chat target.
- * @param {Buffer} imageBuffer - Buffer gambar PNG
- * @param {string} [caption] - Caption opsional
- * @param {string} [chatId] - Target Chat ID
- */
 export async function sendPhoto(imageBuffer, caption = '', chatId) {
   const targetChatId = chatId || config.TELEGRAM_CHAT_ID;
 
@@ -126,30 +89,6 @@ export async function sendPhoto(imageBuffer, caption = '', chatId) {
   }
 }
 
-/**
- * Kirim batch gambar notifikasi.
- */
-export async function sendBatchPhotos(imageBuffers, delayMs = 1500, chatId) {
-  const results = [];
-  for (let i = 0; i < imageBuffers.length; i++) {
-    try {
-      const result = await sendPhoto(imageBuffers[i], '', chatId);
-      results.push(result);
-    } catch (err) {
-      log.error(`Gagal kirim gambar ${i + 1}/${imageBuffers.length}:`, err.message);
-    }
-
-    if (i < imageBuffers.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, delayMs));
-    }
-  }
-  return results;
-}
-
-/**
- * Dapatkan bot instance.
- */
 export function getBot() {
   return bot;
 }
-

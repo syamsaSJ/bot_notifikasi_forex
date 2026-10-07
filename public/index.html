@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XAU/USD Gold - Economic News Analytics</title>
+  <title>XAU/USD Gold - Realtime Economic News & Fundamental Signals</title>
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
         </div>
         <div class="logo-text">
           <h1>XAU/USD <span>GOLD</span></h1>
-          <p>Economic News Analytics</p>
+          <p>Realtime Fundamental Signals (WIB)</p>
         </div>
       </div>
 
@@ -32,8 +32,11 @@
           <span class="pulse-dot"></span>
           <span id="system-status">SERVER CONNECTED</span>
         </div>
-        <button id="btn-refresh" class="btn btn-secondary">
-          <i class="fa-solid fa-arrows-rotate"></i> Refresh Data
+        <button id="btn-toggle-logs" class="btn btn-secondary">
+          <i class="fa-solid fa-list-check"></i> Scraper Logs
+        </button>
+        <button id="btn-refresh" class="btn btn-primary">
+          <i class="fa-solid fa-arrows-rotate"></i> Refresh Realtime
         </button>
       </div>
     </div>
@@ -42,7 +45,28 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast hidden">
     <i class="fa-solid fa-circle-check"></i>
-    <span id="toast-message">Connected & Data refreshed successfully!</span>
+    <span id="toast-message">Terhubung! Data berita & sinyal diperbarui.</span>
+  </div>
+
+  <!-- Modal / Collapsible Scraper Health Logs -->
+  <div id="logs-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-shield-halved color-gold"></i> Log Scraping & Status Sumber Data</h3>
+        <button id="btn-close-logs" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="source-health-grid" id="source-health-container">
+          <!-- Filled dynamically -->
+        </div>
+        <div class="logs-table-container">
+          <h4><i class="fa-solid fa-triangle-exclamation color-orange"></i> Riwayat Log & Error Terakhir</h4>
+          <div id="scrape-logs-list" class="logs-list">
+            <!-- Filled dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <main class="app-main">
@@ -56,11 +80,10 @@
             <h3>Live XAU/USD Gold Price Chart</h3>
           </div>
           <div class="market-badge">
-            <span id="gold-price-status">XAU/USD • REALTIME</span>
+            <span id="gold-price-status">XAU/USD • REALTIME WIB</span>
           </div>
         </div>
         <div class="chart-container" id="tradingview-container">
-          <!-- TradingView Widget -->
           <div class="tradingview-widget-container" style="height:100%;width:100%">
             <div id="tradingview_xauusd" style="height:calc(100% - 32px);width:100%"></div>
           </div>
@@ -74,7 +97,7 @@
             <i class="fa-solid fa-bullseye color-emerald"></i>
             <h3>Ringkasan Sinyal Hari Ini</h3>
           </div>
-          <span class="date-badge" id="current-date-display">Kam, 1 Okt 2026</span>
+          <span class="date-badge" id="current-date-display">WIB Timezone</span>
         </div>
 
         <div class="metrics-stat-grid">
@@ -105,8 +128,8 @@
 
         <!-- System Formula Information Box -->
         <div class="formula-info-box">
-          <h4><i class="fa-solid fa-circle-info"></i> Logika Sinyal Fundamental XAU/USD</h4>
-          <p>Sinyal dihasilkan dari korelasi Forex Factory Calendar (Actual vs Forecast) dan analisis sentimen berita pasar realtime dari <b>Investing.com</b> terhadap Emas & USD.</p>
+          <h4><i class="fa-solid fa-circle-info"></i> Unified Realtime Fundamental Feed</h4>
+          <p>Berita ekonomi (ForexFactory) & headline pasar (Investing.com) digabungkan menjadi 1 aliran terpadu realtime yang diurutkan sesuai jam rilis WIB terbaru.</p>
         </div>
       </div>
     </section>
@@ -115,27 +138,27 @@
     <section class="feed-section">
       <div class="feed-header">
         <div class="feed-title">
-          <h2><i class="fa-solid fa-newspaper color-gold"></i> Economic News Signals</h2>
-          <p>Calendar High & Medium Impact Events</p>
+          <h2><i class="fa-solid fa-newspaper color-gold"></i> Unified Realtime News & Signals</h2>
+          <p>Aliran Terpadu Berita Ekonomi USD & Sentimen Pasar Gold XAU/USD (WIB)</p>
         </div>
 
         <div class="filter-controls">
           <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="search-input" placeholder="Cari berita (mis. Unemployment, CPI, Fed)..." />
+            <input type="text" id="search-input" placeholder="Cari berita (mis. Unemployment, Fed, CPI)..." />
           </div>
 
           <!-- Source Filter Tabs -->
           <div class="source-tabs">
-            <button class="source-btn active" data-source="all"><i class="fa-solid fa-layer-group"></i> Semua Sumber</button>
-            <button class="source-btn" data-source="calendar"><i class="fa-solid fa-calendar-days"></i> Forex Factory</button>
-            <button class="source-btn" data-source="investing"><i class="fa-solid fa-globe"></i> Investing.com</button>
+            <button class="source-btn active" data-source="all"><i class="fa-solid fa-layer-group"></i> Gabungan</button>
+            <button class="source-btn" data-source="calendar"><i class="fa-solid fa-calendar-days"></i> Kalender Ekonomi</button>
+            <button class="source-btn" data-source="investing"><i class="fa-solid fa-globe"></i> Berita Pasar</button>
           </div>
 
           <!-- Time Filter Tabs -->
           <div class="time-tabs">
-            <button class="time-btn" data-time="today"><i class="fa-solid fa-clock"></i> Hari Ini</button>
-            <button class="time-btn active" data-time="weekly"><i class="fa-solid fa-calendar-week"></i> Minggu Ini</button>
+            <button class="time-btn active" data-time="today"><i class="fa-solid fa-clock"></i> Hari Ini (WIB)</button>
+            <button class="time-btn" data-time="all"><i class="fa-solid fa-calendar-week"></i> Semua Terbaru</button>
           </div>
 
           <!-- Impact Filter Tabs -->
@@ -143,7 +166,6 @@
             <button class="filter-btn active" data-filter="all">Semua Impact</button>
             <button class="filter-btn" data-filter="high"><i class="fa-solid fa-circle color-red"></i> High Impact</button>
             <button class="filter-btn" data-filter="medium"><i class="fa-solid fa-circle color-orange"></i> Medium Impact</button>
-            <button class="filter-btn" data-filter="low"><i class="fa-solid fa-circle color-gold"></i> Low Impact</button>
           </div>
         </div>
       </div>
@@ -158,7 +180,7 @@
   <!-- Footer -->
   <footer class="app-footer">
     <div class="footer-container">
-      <p>&copy; 2026 Economic News Analytics XAU/USD — Powered by Forex Factory & Investing</p>
+      <p>&copy; 2026 XAU/USD Gold Realtime Analytics — Unified Feed (WIB Timezone)</p>
     </div>
   </footer>
 

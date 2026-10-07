@@ -3,18 +3,18 @@ import path from 'path';
 import axios from 'axios';
 import config from '../utils/config.js';
 import { createLogger } from '../utils/logger.js';
-import { parseCalendarHTML, parseEconomicValue } from './parser.js';
+import { parseCalendarHTML, parseEconomicValue, formatWIBTime } from './parser.js';
+import { logScrapeResult } from '../utils/scrapeLogger.js';
 
-const log = createLogger('Scraper');
+const log = createLogger('ForexFactoryScraper');
 const CACHE_FILE_PATH = path.resolve('scratch', 'calendar_cache.json');
 
-// Cache untuk menghindari request berlebihan (TTL 15 menit)
 let cache = {
   data: null,
   timestamp: 0,
 };
 
-// Load disk cache saat inisialisasi jika ada
+// Load disk cache jika ada
 try {
   if (fs.existsSync(CACHE_FILE_PATH)) {
     const fileContent = fs.readFileSync(CACHE_FILE_PATH, 'utf-8');
@@ -22,7 +22,7 @@ try {
     if (Array.isArray(parsedFile) && parsedFile.length > 0) {
       cache.data = parsedFile;
       cache.timestamp = Date.now();
-      log.info(`💾 Berhasil memuat ${parsedFile.length} data kalender dari disk cache.`);
+      log.info(`💾 Memuat ${parsedFile.length} data kalender dari cache disk.`);
     }
   }
 } catch (e) {
@@ -41,9 +41,6 @@ function saveDiskCache(data) {
   }
 }
 
-/**
- * Headers untuk JSON API endpoints.
- */
 function getJsonHeaders() {
   const userAgent = config.USER_AGENTS[Math.floor(Math.random() * config.USER_AGENTS.length)] ||
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
@@ -56,69 +53,27 @@ function getJsonHeaders() {
   };
 }
 
-/**
- * Standard Modern Chrome Headers untuk menghindari Cloudflare block pada HTML.
- */
-function getBrowserHeaders() {
-  const userAgent = config.USER_AGENTS[Math.floor(Math.random() * config.USER_AGENTS.length)] ||
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
-
-  return {
-    'User-Agent': userAgent,
-    'Accept': 'application/json, text/html, application/xhtml+xml, */*',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Cache-Control': 'no-cache',
-  };
-}
-
-/**
- * Delay helper.
- */
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/**
- * Format raw JSON event dari Forex Factory nodedata API menjadi event terstruktur real-time.
- */
 function parseJsonEvents(jsonInput) {
   let jsonArray = jsonInput;
   if (typeof jsonInput === 'string') {
-    try {
-      jsonArray = JSON.parse(jsonInput);
-    } catch (e) {
-      return [];
-    }
+    try { jsonArray = JSON.parse(jsonInput); } catch (e) { return []; }
   }
-
   if (!Array.isArray(jsonArray)) return [];
 
   return jsonArray
     .filter(item => item && (item.country === 'USD' || item.currency === 'USD'))
     .map(item => {
       const dateObj = new Date(item.date || Date.now());
-      const dateStr = dateObj.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
-
-      const timeWIBStr = dateObj.toLocaleTimeString('id-ID', {
-        timeZone: 'Asia/Jakarta',
-        hour: '2-digit',
-        minute: '2-digit',
-      }) + ' WIB';
-
-      const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-
-      const dayName = dayNames[dateObj.getDay()];
-      const dayNum = dateObj.getDate();
-      const monthName = monthNames[dateObj.getMonth()];
-      const fullTimeDisplay = `${dayName}, ${dayNum} ${monthName} • ${timeWIBStr}`;
-
+      const wibInfo = formatWIBTime(dateObj);
       const impactStr = (item.impact || 'medium').toLowerCase();
 
       return {
-        date: dateStr,
-        time: item.time || timeWIBStr,
-        timeWIB: fullTimeDisplay,
+        id: `ff_${item.date || ''}_${item.title || item.event}`,
+        source: 'Forex Factory',
+        date: wibInfo.dateStr,
+        time: item.time || wibInfo.timeWIBStr,
+        timeWIB: wibInfo.displayWIB,
+        timestamp: wibInfo.timestamp,
         currency: 'USD',
         impact: impactStr.includes('high') ? 'high' : impactStr.includes('medium') ? 'medium' : 'low',
         event: item.title || item.event || 'Economic News',
@@ -133,22 +88,46 @@ function parseJsonEvents(jsonInput) {
 }
 
 /**
- * Ambil data secara LIVE REALTIME dari berbagai endpoint Forex Factory.
- * TIDAK MENGGUNAKAN FALLBACK DATASET STIS/MOCK HARI LALU.
- * @returns {Promise<Array<Object>>}
+ * Fetch Nasdaq Economic Calendar sebagai pengisi actual jika ada.
  */
-async function fetchLiveRealtimeNews() {
+async function fetchNasdaqCalendarActuals() {
+  try {
+    const todayStr = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/New_York' });
+    const url = `https://api.nasdaq.com/api/calendar/economicevents?date=${todayStr}`;
+    const res = await axios.get(url, { headers: getJsonHeaders(), timeout: 10000 });
+    const rows = res.data?.data?.rows || [];
+    const nasdaqMap = {};
+
+    rows.filter(r => /United States/i.test(r.country || '')).forEach(r => {
+      if (r.eventName) {
+        nasdaqMap[r.eventName.toLowerCase().trim()] = {
+          actual: r.actual && r.actual !== '&nbsp;' ? r.actual : '-',
+          consensus: r.consensus && r.consensus !== ' ' ? r.consensus : '-',
+          previous: r.previous && r.previous !== ' ' ? r.previous : '-',
+        };
+      }
+    });
+
+    logScrapeResult('NasdaqCalendar', true, rows.length);
+    return nasdaqMap;
+  } catch (err) {
+    logScrapeResult('NasdaqCalendar', false, 0, err.message);
+    return {};
+  }
+}
+
+/**
+ * Fetch data berita kalender Forex Factory secara live.
+ */
+export async function fetchLiveRealtimeNews() {
   const now = Date.now();
 
-  // 1. Cek Cache jika masih valid (15 menit)
-  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < config.CACHE_TTL_MS) {
-    log.info('Menggunakan data berita live real-time dari cache');
+  // Cache 5 menit untuk responsivitas realtime
+  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < (5 * 60 * 1000)) {
     return cache.data;
   }
 
-  log.info('🌐 Mengambil data berita ekonomi USD REAL-TIME dari Forex Factory...');
-
-  // 2. STRATEGI 1: Official Live JSON Feed & Public Proxies
+  log.info('🌐 Fetching Forex Factory USD economic events...');
   const targetUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
   const jsonEndpoints = [
     targetUrl,
@@ -156,9 +135,10 @@ async function fetchLiveRealtimeNews() {
     'https://corsproxy.io/?url=' + encodeURIComponent(targetUrl),
   ];
 
+  let errors = [];
+
   for (const endpointUrl of jsonEndpoints) {
     try {
-      log.info(`Fetching Live JSON API: ${endpointUrl}`);
       const res = await axios.get(endpointUrl, {
         headers: getJsonHeaders(),
         timeout: 10000,
@@ -167,7 +147,25 @@ async function fetchLiveRealtimeNews() {
       if (res.status === 200 && res.data) {
         const parsed = parseJsonEvents(res.data);
         if (parsed.length > 0) {
-          log.info(`✅ Live JSON API Berhasil! (${parsed.length} USD event diterima secara real-time)`);
+          // Coba lengkapi data actual dari Nasdaq jika Forex Factory masukan '-'
+          const nasdaqData = await fetchNasdaqCalendarActuals();
+          parsed.forEach(e => {
+            if (e.actual === '-') {
+              const lowerEvt = e.event.toLowerCase().trim();
+              for (const [nName, nObj] of Object.entries(nasdaqData)) {
+                if (nName.includes(lowerEvt) || lowerEvt.includes(nName)) {
+                  if (nObj.actual !== '-') {
+                    e.actual = nObj.actual;
+                    e.actualValue = parseEconomicValue(nObj.actual);
+                  }
+                  break;
+                }
+              }
+            }
+          });
+
+          log.info(`✅ Forex Factory JSON Berhasil! (${parsed.length} USD events)`);
+          logScrapeResult('ForexFactory', true, parsed.length);
           cache.data = parsed;
           cache.timestamp = now;
           saveDiskCache(parsed);
@@ -175,69 +173,28 @@ async function fetchLiveRealtimeNews() {
         }
       }
     } catch (err) {
-      log.warn(`Live JSON API (${endpointUrl}) timeout/error: ${err.message}`);
+      errors.push(err.message);
+      log.warn(`ForexFactory endpoint error (${endpointUrl}): ${err.message}`);
     }
   }
 
-  // 3. STRATEGI 2: Web Scraping Halaman HTML Forex Factory Calendar
-  const htmlUrl = `${config.FOREX_FACTORY_URL}?day=today`;
-  for (let attempt = 1; attempt <= 2; attempt++) {
-    try {
-      log.info(`Scraping Live HTML Forex Factory (attempt ${attempt}/2)...`);
-      const res = await axios.get(htmlUrl, {
-        headers: getBrowserHeaders(),
-        timeout: 12000,
-      });
+  logScrapeResult('ForexFactory', false, 0, errors.join(' | '));
 
-      if (res.status === 200 && res.data) {
-        log.info('✅ Live HTML Web Scraping Berhasil secara real-time');
-        const allEvents = parseCalendarHTML(res.data);
-        if (allEvents.length > 0) {
-          cache.data = allEvents;
-          cache.timestamp = now;
-          saveDiskCache(allEvents);
-          return allEvents;
-        }
-      }
-    } catch (err) {
-      log.warn(`Live HTML Scraping attempt ${attempt} timeout/error: ${err.message}`);
-      await delay(1000);
-    }
-  }
-
-  // 4. STRATEGI 3: Fallback ke Stale Cache jika jaringan/rate-limit terganggu
+  // Fallback ke stale cache jika ada
   if (cache.data && cache.data.length > 0) {
-    log.warn('⚠️ Menggunakan data stale cache karena koneksi live mengalami rate-limit/timeout.');
+    log.warn('⚠️ Menggunakan data stale cache kalender karena koneksi live gagal.');
     return cache.data;
   }
 
-  log.error('❌ Seluruh percobaan live fetch ke ForexFactory mengalami timeout atau terhalang koneksi jaringan.');
   return [];
 }
 
-/**
- * Ambil semua berita USD High & Medium Impact real-time.
- * @returns {Promise<Array<Object>>}
- */
 export async function getHighImpactNews() {
   const allEvents = await fetchLiveRealtimeNews();
-
-  if (!Array.isArray(allEvents) || allEvents.length === 0) {
-    log.info('Tidak ada event berita USD real-time yang didapatkan saat ini.');
-    return [];
-  }
-
-  // Filter semua berita USD
-  const usdEvents = allEvents.filter(e => (e.currency || '').toUpperCase() === 'USD');
-
-  log.info(`Ditemukan ${usdEvents.length} berita USD real-time dari Forex Factory`);
-  return usdEvents;
+  if (!Array.isArray(allEvents)) return [];
+  return allEvents.filter(e => (e.currency || '').toUpperCase() === 'USD');
 }
 
-/**
- * Invalidate cache.
- */
 export function clearCache() {
   cache = { data: null, timestamp: 0 };
-  log.info('Cache di-clear');
 }

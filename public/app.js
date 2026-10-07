@@ -1,8 +1,7 @@
 // State Management
-let calendarEvents = [];
-let investingNews = [];
+let unifiedNewsEvents = [];
 let activeSource = 'all'; // 'all', 'calendar', 'investing'
-let activeTime = 'weekly'; // 'today', 'weekly'
+let activeTime = 'today'; // 'today', 'all'
 let activeFilter = 'all'; // 'all', 'high', 'medium'
 let searchQuery = '';
 
@@ -22,7 +21,14 @@ const statusPill = document.getElementById('status-pill');
 const toast = document.getElementById('toast');
 const toastMessage = document.getElementById('toast-message');
 
-// Initialize TradingView Live Widget
+// Modal Scrape Logs Elements
+const btnToggleLogs = document.getElementById('btn-toggle-logs');
+const btnCloseLogs = document.getElementById('btn-close-logs');
+const logsModal = document.getElementById('logs-modal');
+const sourceHealthContainer = document.getElementById('source-health-container');
+const scrapeLogsList = document.getElementById('scrape-logs-list');
+
+// Initialize TradingView Widget
 function initTradingView() {
   if (typeof TradingView !== 'undefined') {
     new TradingView.widget({
@@ -32,7 +38,7 @@ function initTradingView() {
       "timezone": "Asia/Jakarta",
       "theme": "dark",
       "style": "1",
-      "locale": "en",
+      "locale": "id",
       "toolbar_bg": "#15161C",
       "enable_publishing": false,
       "allow_symbol_change": true,
@@ -41,7 +47,6 @@ function initTradingView() {
   }
 }
 
-// Show Toast Notification
 function showToast(message, isSuccess = true) {
   if (!toast || !toastMessage) return;
   toastMessage.textContent = message;
@@ -51,148 +56,150 @@ function showToast(message, isSuccess = true) {
   }, 3500);
 }
 
-// Fetch Live Economic News & Investing Data
+// Fetch Unified Realtime News Feed
 async function fetchNewsData() {
   if (btnRefresh) btnRefresh.classList.add('loading');
   if (systemStatus) systemStatus.textContent = 'CONNECTING...';
 
   try {
-    const [resCalendar, resInvesting] = await Promise.allSettled([
-      fetch('/api/news').then(r => r.json()),
-      fetch('/api/investing').then(r => r.json())
-    ]);
+    const res = await fetch('/api/news');
+    const data = await res.json();
 
-    let isConnected = false;
-
-    if (resCalendar.status === 'fulfilled' && resCalendar.value && resCalendar.value.events) {
-      calendarEvents = resCalendar.value.events;
-      isConnected = true;
-    } else {
-      calendarEvents = getSampleCalendarData();
-    }
-
-    if (resInvesting.status === 'fulfilled' && resInvesting.value && resInvesting.value.news) {
-      investingNews = resInvesting.value.news;
-      isConnected = true;
-    } else {
-      investingNews = getSampleInvestingData();
-    }
-
-    if (isConnected) {
-      if (systemStatus) systemStatus.textContent = 'CONNECTED & LIVE';
+    if (data && Array.isArray(data.events)) {
+      unifiedNewsEvents = data.events;
+      if (systemStatus) systemStatus.textContent = 'REALTIME LIVE (WIB)';
       if (statusPill) statusPill.className = 'status-pill live';
-      showToast('✅ Terhubung! Data Forex Factory & Investing.com berhasil diperbarui.');
+      showToast('✅ Berhasil! Feed berita terpadu & sinyal XAU/USD diperbarui.');
     } else {
-      if (systemStatus) systemStatus.textContent = 'OFFLINE (PREVIEW MODE)';
-      if (statusPill) statusPill.className = 'status-pill offline';
-      showToast('⚠️ Gagal terhubung ke server. Menggunakan mode preview.', false);
+      unifiedNewsEvents = [];
+      if (systemStatus) systemStatus.textContent = 'NO DATA';
     }
 
     renderDashboard();
+    fetchScrapeLogs();
   } catch (err) {
     console.error('Fetch news error:', err);
-    calendarEvents = getSampleCalendarData();
-    investingNews = getSampleInvestingData();
-    if (systemStatus) systemStatus.textContent = 'PREVIEW MODE';
-    renderDashboard();
+    if (systemStatus) systemStatus.textContent = 'OFFLINE MODE';
+    if (statusPill) statusPill.className = 'status-pill offline';
+    showToast('⚠️ Gagal terhubung ke server berita.', false);
   } finally {
     if (btnRefresh) btnRefresh.classList.remove('loading');
   }
 }
 
-// Sample Data Fallback
-function getSampleCalendarData() {
-  return [];
+// Fetch Scraping Health & Log Errors
+async function fetchScrapeLogs() {
+  try {
+    const res = await fetch('/api/scrape-logs');
+    const data = await res.json();
+
+    if (data && sourceHealthContainer) {
+      const healthObj = data.health || {};
+      const keys = Object.keys(healthObj);
+
+      if (keys.length === 0) {
+        sourceHealthContainer.innerHTML = '<div class="health-item">Belum ada aktivitas scraper.</div>';
+      } else {
+        sourceHealthContainer.innerHTML = keys.map(k => {
+          const s = healthObj[k];
+          const isOk = s.status === 'OK';
+          return `
+            <div class="health-card ${isOk ? 'ok' : 'err'}">
+              <div class="health-title">
+                <i class="fa-solid ${isOk ? 'fa-circle-check color-emerald' : 'fa-triangle-exclamation color-red'}"></i>
+                <strong>${k}</strong>
+              </div>
+              <div class="health-meta">
+                <span>Status: <b>${s.status}</b></span>
+                <span>Jumlah: <b>${s.itemCount} items</b></span>
+                <span>WIB: ${s.lastCheckWIB || '-'}</span>
+              </div>
+              ${s.lastError ? `<div class="health-error">${s.lastError}</div>` : ''}
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    if (data && Array.isArray(data.logs) && scrapeLogsList) {
+      if (data.logs.length === 0) {
+        scrapeLogsList.innerHTML = '<div class="log-item empty">Tidak ada log error scraping. All systems running smooth.</div>';
+      } else {
+        scrapeLogsList.innerHTML = data.logs.map(l => `
+          <div class="log-item ${l.success ? 'success' : 'error'}">
+            <span class="log-time">[${l.timeWIB}]</span>
+            <span class="log-source">[${l.source}]</span>
+            <span class="log-msg">${l.error ? l.error : `Sukses mengambil ${l.itemCount} berita`}</span>
+          </div>
+        `).join('');
+      }
+    }
+  } catch (err) {
+    console.error('Fetch scrape logs error:', err);
+  }
 }
 
-function getSampleInvestingData() {
-  return [];
-}
-
-// Render Dashboard
+// Render Main Dashboard
 function renderDashboard() {
-  // Combine items
-  let combinedItems = [];
-
-  if (activeSource === 'all' || activeSource === 'calendar') {
-    calendarEvents.forEach(item => combinedItems.push({ ...item, itemType: 'calendar' }));
-  }
-
-  if (activeSource === 'all' || activeSource === 'investing') {
-    investingNews.forEach(item => combinedItems.push({ ...item, itemType: 'investing' }));
-  }
-
-  // Time & Date Filtering (Today vs Weekly)
-  const todayDateObj = new Date();
-  const todayWIBStr = todayDateObj.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
-  const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-  const todayDayNum = todayDateObj.getDate();
-  const todayMonthName = monthNames[todayDateObj.getMonth()];
-
-  // Filter Items
-  const filtered = combinedItems.filter(item => {
-    // Time filter
-    let matchesTime = true;
-    if (activeTime === 'today') {
-      const itemDate = item.date || '';
-      const itemTimeWIB = item.timeWIB || '';
-      const pubDate = item.pubDate || '';
-      const searchStr = `${todayDayNum} ${todayMonthName}`;
-      matchesTime = (itemDate === todayWIBStr) || itemTimeWIB.includes(searchStr) || pubDate.includes(searchStr) || itemTimeWIB.includes('Hari Ini');
-    }
-
-    // Impact filter
-    let imp = 'medium';
-    if (item.itemType === 'calendar') {
-      const itemImp = (item.impact || '').toLowerCase();
-      imp = itemImp.includes('high') ? 'high' : itemImp.includes('medium') ? 'medium' : 'low';
-    } else {
-      imp = item.analysis && item.analysis.impact ? item.analysis.impact.toLowerCase() : 'medium';
-    }
-
-    const matchesImpact = activeFilter === 'all' || imp === activeFilter;
-    const searchText = (item.event || item.title || '').toLowerCase();
-    const matchesSearch = !searchQuery || searchText.includes(searchQuery.toLowerCase());
-
-    return matchesTime && matchesImpact && matchesSearch;
+  // 1. Source Filtering
+  let filtered = unifiedNewsEvents.filter(item => {
+    if (activeSource === 'calendar' && item.itemType !== 'calendar') return false;
+    if (activeSource === 'investing' && item.itemType !== 'investing') return false;
+    return true;
   });
 
-  // Calculate Metrics
+  // 2. Time Filtering (Today vs All Latest)
+  const todayWIBStr = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+  if (activeTime === 'today') {
+    filtered = filtered.filter(item => {
+      const itemDate = item.date || '';
+      const itemTimeWIB = item.timeWIB || '';
+      return itemDate === todayWIBStr || itemTimeWIB.includes('Hari Ini');
+    });
+  }
+
+  // 3. Impact Filtering
+  if (activeFilter !== 'all') {
+    filtered = filtered.filter(item => {
+      let imp = (item.impact || item.analysis?.impact || 'medium').toLowerCase();
+      return imp.includes(activeFilter);
+    });
+  }
+
+  // 4. Search Query Filter
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(item => {
+      const text = (item.event || item.title || '').toLowerCase();
+      return text.includes(q);
+    });
+  }
+
+  // Calculate Sinyal Metrics
   let buyCount = 0;
   let sellCount = 0;
 
-  combinedItems.forEach(item => {
-    let sig = 'HOLD';
-    if (item.itemType === 'calendar') {
-      sig = item.signal ? item.signal.signal : 'HOLD';
-    } else {
-      sig = item.analysis ? item.analysis.signal : 'NEUTRAL';
-    }
+  unifiedNewsEvents.forEach(item => {
+    const sig = item.signal ? item.signal.signal : item.analysis ? item.analysis.signal : 'HOLD';
     if (sig === 'BUY') buyCount++;
     if (sig === 'SELL') sellCount++;
   });
 
   if (countBuy) countBuy.textContent = buyCount;
   if (countSell) countSell.textContent = sellCount;
-  if (countTotal) countTotal.textContent = combinedItems.length;
+  if (countTotal) countTotal.textContent = unifiedNewsEvents.length;
 
-  // Set Date
   if (dateDisplay) {
     const now = new Date();
-    dateDisplay.textContent = now.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    dateDisplay.textContent = now.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Jakarta' }) + ' (WIB)';
   }
 
-  // Render HTML
   if (filtered.length === 0) {
-    const emptyMsg = activeTime === 'today'
-      ? 'Tidak ada rilis berita khusus hari ini. Klik tab "Minggu Ini" untuk melihat seluruh kalender berita minggu ini.'
-      : 'Gunakan tombol refresh untuk memperbarui data Forex Factory & Investing.com live.';
     container.innerHTML = `
       <div class="empty-state">
         <i class="fa-solid fa-calendar-check"></i>
-        <h3>Tidak Ada Berita / Signals</h3>
-        <p>${emptyMsg}</p>
+        <h3>Tidak Ada Berita / Sinyal Sesuai Filter</h3>
+        <p>Gunakan tab filter "Semua Terbaru" untuk melihat seluruh rilis berita realtime.</p>
       </div>
     `;
     return;
@@ -207,11 +214,10 @@ function renderDashboard() {
   }).join('');
 }
 
-// Render Forex Factory Calendar Card
 function renderCalendarCard(item) {
   const signalObj = item.signal || {};
   const signalType = signalObj.signal || 'HOLD';
-  const predictionText = signalObj.predictionText || 'Analisis korelasi fundamental XAU/USD.';
+  const predictionText = signalObj.predictionText || 'Analisis fundamental XAU/USD.';
   const rawImpact = (item.impact || 'medium').toLowerCase();
   const impactClass = rawImpact.includes('high') ? 'high' : rawImpact.includes('medium') ? 'medium' : 'low';
   const impactLabel = impactClass === 'high' ? '🔴 HIGH' : impactClass === 'medium' ? '🟠 MEDIUM' : '🟡 LOW';
@@ -224,9 +230,9 @@ function renderCalendarCard(item) {
     <div class="signal-card calendar-card">
       <div class="signal-card-header">
         <div class="event-info">
-          <span class="source-badge ff"><i class="fa-solid fa-calendar-days"></i> Forex Factory</span>
-          <h3>${item.event}</h3>
-          <span class="time-tag">${item.timeWIB || item.time || '19.30 WIB'}</span>
+          <span class="source-badge ff"><i class="fa-solid fa-calendar-days"></i> Kalender Ekonomi • USD</span>
+          <h3>${item.event || item.title}</h3>
+          <span class="time-tag"><i class="fa-regular fa-clock"></i> ${item.timeWIB || item.time || 'WIB'}</span>
         </div>
         <span class="impact-badge ${impactClass}">${impactLabel}</span>
       </div>
@@ -248,36 +254,33 @@ function renderCalendarCard(item) {
       </div>
 
       <div class="prediction-box">
-        <div class="title">PREDIKSI & ANALISIS</div>
+        <div class="title">PREDIKSI & KORELASI EMAS</div>
         <div class="body">${predictionText}</div>
       </div>
 
       <div class="card-action-bar">
-        <span class="source-tag"><i class="fa-solid fa-globe"></i> ForexFactory Calendar</span>
-        <div class="action-btns">
-          <button class="btn-icon" title="Salin Teks" onclick="copyCardText('${escape(item.event)}', '${signalType}', '${escape(predictionText)}')">
-            <i class="fa-regular fa-copy"></i>
-          </button>
-        </div>
+        <span class="source-tag"><i class="fa-solid fa-globe"></i> Forex Factory Calendar</span>
+        <button class="btn-icon" title="Salin Teks" onclick="copyCardText('${escape(item.event || item.title)}', '${signalType}', '${escape(predictionText)}')">
+          <i class="fa-regular fa-copy"></i> Salin
+        </button>
       </div>
     </div>
   `;
 }
 
-// Render Investing.com News & AI Sentiment Card
 function renderInvestingCard(item) {
-  const analysis = item.analysis || { signal: 'NEUTRAL', impact: 'MEDIUM', direction: 'Netral', impactText: 'Analisis pasar.' };
-  const signalType = analysis.signal || 'NEUTRAL';
-  const impactClass = (analysis.impact || 'medium').toLowerCase() === 'high' ? 'high' : 'medium';
+  const analysis = item.analysis || { signal: 'NEUTRAL', impact: 'MEDIUM', direction: 'Sentimen Pasar', impactText: 'Analisis berita pasar.' };
+  const signalType = analysis.signal || 'HOLD';
+  const impactClass = (analysis.impact || 'medium').toLowerCase().includes('high') ? 'high' : 'medium';
   const impactLabel = impactClass === 'high' ? '🔴 HIGH SENTIMENT' : '🟠 MEDIUM SENTIMENT';
 
   return `
     <div class="signal-card investing-card">
       <div class="signal-card-header">
         <div class="event-info">
-          <span class="source-badge inv"><i class="fa-solid fa-globe"></i> Investing.com • ${item.category || 'Forex'}</span>
+          <span class="source-badge inv"><i class="fa-solid fa-newspaper"></i> ${item.source || 'Investing.com'} • ${item.category || 'Forex'}</span>
           <h3 class="news-title">${item.title}</h3>
-          <span class="time-tag">${item.timeWIB || 'Hari Ini'}</span>
+          <span class="time-tag"><i class="fa-regular fa-clock"></i> ${item.timeWIB || 'Hari Ini (WIB)'}</span>
         </div>
         <span class="impact-badge ${impactClass}">${impactLabel}</span>
       </div>
@@ -285,38 +288,35 @@ function renderInvestingCard(item) {
       <div class="metrics-row">
         <div class="signal-badge-card ${signalType}">${signalType}</div>
         <div class="metric-box wide">
-          <span class="label">DAMPAK PASAR & KORELASI</span>
+          <span class="label">ARAH DAMPAK PASAR</span>
           <span class="value font-sm">${analysis.direction}</span>
         </div>
       </div>
 
       <div class="prediction-box investing-analysis">
-        <div class="title">ANALISIS DAMPAK INVESTING</div>
+        <div class="title">ANALISIS SENTIMEN & REFERENSI</div>
         <div class="body">${analysis.impactText}</div>
       </div>
 
       <div class="card-action-bar">
-        <a href="${item.link || '#'}" target="_blank" class="source-tag link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Baca di Investing.com</a>
-        <div class="action-btns">
-          <button class="btn-icon" title="Salin Berita" onclick="copyCardText('${escape(item.title)}', '${signalType}', '${escape(analysis.impactText)}')">
-            <i class="fa-regular fa-copy"></i>
-          </button>
-        </div>
+        <a href="${item.link || '#'}" target="_blank" class="source-tag link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Baca Sumber Berita</a>
+        <button class="btn-icon" title="Salin Berita" onclick="copyCardText('${escape(item.title)}', '${signalType}', '${escape(analysis.impactText)}')">
+          <i class="fa-regular fa-copy"></i> Salin
+        </button>
       </div>
     </div>
   `;
 }
 
-// Copy Helper
 window.copyCardText = function(eventRaw, signal, textRaw) {
   const event = unescape(eventRaw);
   const text = unescape(textRaw);
-  const clipStr = `${event}\nSignal: ${signal}\n\nANALISIS:\n${text}`;
+  const clipStr = `${event}\nSinyal XAU/USD: ${signal}\n\nPREDIKSI & ANALISIS:\n${text}`;
   navigator.clipboard.writeText(clipStr);
   showToast('📋 Teks notifikasi berhasil disalin!');
 };
 
-// Event Listeners
+// Event Listeners for Filters
 sourceBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     sourceBtns.forEach(b => b.classList.remove('active'));
@@ -355,8 +355,23 @@ if (btnRefresh) {
   btnRefresh.addEventListener('click', fetchNewsData);
 }
 
-// Init on DOM Load
+// Scraper Logs Modal Listeners
+if (btnToggleLogs && logsModal) {
+  btnToggleLogs.addEventListener('click', () => {
+    logsModal.classList.remove('hidden');
+    fetchScrapeLogs();
+  });
+}
+
+if (btnCloseLogs && logsModal) {
+  btnCloseLogs.addEventListener('click', () => {
+    logsModal.classList.add('hidden');
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initTradingView();
   fetchNewsData();
+  // Auto refresh data di web setiap 30 detik
+  setInterval(fetchNewsData, 30000);
 });
