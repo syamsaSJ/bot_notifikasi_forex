@@ -67,9 +67,9 @@ async function fetchNewsData() {
 
     if (data && Array.isArray(data.events)) {
       unifiedNewsEvents = data.events;
-      if (systemStatus) systemStatus.textContent = 'REALTIME LIVE (WIB)';
+      if (systemStatus) systemStatus.textContent = 'REALTIME XAU/USD FILTERED';
       if (statusPill) statusPill.className = 'status-pill live';
-      showToast('✅ Berhasil! Feed berita terpadu & sinyal XAU/USD diperbarui.');
+      showToast('✅ Feed berita & sinyal khusus pergerakan XAU/USD GOLD diperbarui!');
     } else {
       unifiedNewsEvents = [];
       if (systemStatus) systemStatus.textContent = 'NO DATA';
@@ -197,9 +197,9 @@ function renderDashboard() {
   if (filtered.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <i class="fa-solid fa-calendar-check"></i>
-        <h3>Tidak Ada Berita / Sinyal Sesuai Filter</h3>
-        <p>Gunakan tab filter "Semua Terbaru" untuk melihat seluruh rilis berita realtime.</p>
+        <i class="fa-solid fa-coins color-gold"></i>
+        <h3>Tidak Ada Berita / Sinyal XAU/USD Gold Sesuai Filter</h3>
+        <p>Seluruh berita telah difilter khusus yang berdampak pada pergerakan Emas & USD. Klik "Semua Terbaru" untuk melihat rilis minggu ini.</p>
       </div>
     `;
     return;
@@ -230,7 +230,7 @@ function renderCalendarCard(item) {
     <div class="signal-card calendar-card">
       <div class="signal-card-header">
         <div class="event-info">
-          <span class="source-badge ff"><i class="fa-solid fa-calendar-days"></i> Kalender Ekonomi • USD</span>
+          <span class="source-badge ff"><i class="fa-solid fa-coins color-gold"></i> XAU/USD GOLD • ${item.source || 'Forex Factory'}</span>
           <h3>${item.event || item.title}</h3>
           <span class="time-tag"><i class="fa-regular fa-clock"></i> ${item.timeWIB || item.time || 'WIB'}</span>
         </div>
@@ -259,7 +259,7 @@ function renderCalendarCard(item) {
       </div>
 
       <div class="card-action-bar">
-        <span class="source-tag"><i class="fa-solid fa-globe"></i> Forex Factory Calendar</span>
+        <span class="source-tag"><i class="fa-solid fa-globe"></i> Kalender Ekonomi US</span>
         <button class="btn-icon" title="Salin Teks" onclick="copyCardText('${escape(item.event || item.title)}', '${signalType}', '${escape(predictionText)}')">
           <i class="fa-regular fa-copy"></i> Salin
         </button>
@@ -269,16 +269,16 @@ function renderCalendarCard(item) {
 }
 
 function renderInvestingCard(item) {
-  const analysis = item.analysis || { signal: 'NEUTRAL', impact: 'MEDIUM', direction: 'Sentimen Pasar', impactText: 'Analisis berita pasar.' };
+  const analysis = item.analysis || { signal: 'NEUTRAL', impact: 'MEDIUM', direction: 'Sentimen Emas', impactText: 'Analisis berita pasar.' };
   const signalType = analysis.signal || 'HOLD';
   const impactClass = (analysis.impact || 'medium').toLowerCase().includes('high') ? 'high' : 'medium';
-  const impactLabel = impactClass === 'high' ? '🔴 HIGH SENTIMENT' : '🟠 MEDIUM SENTIMENT';
+  const impactLabel = impactClass === 'high' ? '🔴 HIGH IMPACT' : '🟠 MEDIUM IMPACT';
 
   return `
     <div class="signal-card investing-card">
       <div class="signal-card-header">
         <div class="event-info">
-          <span class="source-badge inv"><i class="fa-solid fa-newspaper"></i> ${item.source || 'Investing.com'} • ${item.category || 'Forex'}</span>
+          <span class="source-badge inv"><i class="fa-solid fa-coins color-gold"></i> XAU/USD GOLD • ${item.source || 'Investing.com'}</span>
           <h3 class="news-title">${item.title}</h3>
           <span class="time-tag"><i class="fa-regular fa-clock"></i> ${item.timeWIB || 'Hari Ini (WIB)'}</span>
         </div>
@@ -288,13 +288,13 @@ function renderInvestingCard(item) {
       <div class="metrics-row">
         <div class="signal-badge-card ${signalType}">${signalType}</div>
         <div class="metric-box wide">
-          <span class="label">ARAH DAMPAK PASAR</span>
+          <span class="label">PROYEKSI PERGERAKAN EMAS</span>
           <span class="value font-sm">${analysis.direction}</span>
         </div>
       </div>
 
       <div class="prediction-box investing-analysis">
-        <div class="title">ANALISIS SENTIMEN & REFERENSI</div>
+        <div class="title">ANALISIS SENTIMEN PASAR</div>
         <div class="body">${analysis.impactText}</div>
       </div>
 
@@ -313,7 +313,7 @@ window.copyCardText = function(eventRaw, signal, textRaw) {
   const text = unescape(textRaw);
   const clipStr = `${event}\nSinyal XAU/USD: ${signal}\n\nPREDIKSI & ANALISIS:\n${text}`;
   navigator.clipboard.writeText(clipStr);
-  showToast('📋 Teks notifikasi berhasil disalin!');
+  showToast('📋 Teks notifikasi disalin!');
 };
 
 // Event Listeners for Filters
@@ -372,6 +372,5 @@ if (btnCloseLogs && logsModal) {
 document.addEventListener('DOMContentLoaded', () => {
   initTradingView();
   fetchNewsData();
-  // Auto refresh data di web setiap 30 detik
   setInterval(fetchNewsData, 30000);
 });

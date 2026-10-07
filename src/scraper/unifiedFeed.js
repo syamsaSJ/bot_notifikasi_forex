@@ -5,11 +5,10 @@ import { createLogger } from '../utils/logger.js';
 import { formatWIBTime, parseToDateObj } from './parser.js';
 import { logScrapeResult } from '../utils/scrapeLogger.js';
 import { getHighImpactNews } from './forexFactory.js';
-import { analyzeSignal, analyzeInvestingHeadline } from '../engine/signalEngine.js';
+import { analyzeSignal, analyzeInvestingHeadline, isGoldRelevant } from '../engine/signalEngine.js';
 
 const log = createLogger('UnifiedFeed');
 
-// Cache feed terpadu selama 1 menit agar realtime tapi hemat request
 let unifiedCache = {
   data: null,
   timestamp: 0,
@@ -37,9 +36,6 @@ function getHeaders() {
   };
 }
 
-/**
- * Fetch semua headline berita dari Investing.com RSS Feeds & Extra Feeds.
- */
 async function fetchNewsHeadlines() {
   const headlines = [];
   const allSources = [...INVESTING_FEEDS, ...EXTRA_FEEDS];
@@ -52,13 +48,21 @@ async function fetchNewsHeadlines() {
         const items = parsed?.rss?.channel?.[0]?.item || [];
 
         items.forEach(item => {
+          const title = item.title?.[0] || 'Market News';
+          const category = feed.name;
+          const sourceName = item.source?.[0] ? (typeof item.source[0] === 'object' ? item.source[0]._ : item.source[0]) : feed.name;
+
+          const rawItem = { title, category, source: sourceName };
+
+          // FILTER EKSKLUSIF: Hanya sertakan berita yang RELEVAN dengan pergerakan XAU/USD GOLD
+          if (!isGoldRelevant(rawItem)) {
+            return;
+          }
+
           const rawDate = item.pubDate?.[0] || item['dc:date']?.[0] || '';
           const dateObj = parseToDateObj(rawDate);
           const wibInfo = formatWIBTime(dateObj);
-
-          const title = item.title?.[0] || 'Market News';
           const link = item.link?.[0] || (typeof item.guid?.[0] === 'string' ? item.guid[0] : '#');
-          const sourceName = item.source?.[0] ? (typeof item.source[0] === 'object' ? item.source[0]._ : item.source[0]) : feed.name;
 
           const analysis = analyzeInvestingHeadline(title, feed.name);
 
@@ -75,6 +79,7 @@ async function fetchNewsHeadlines() {
             category: feed.name,
             analysis,
             signal: analysis,
+            isGoldRelevant: true,
           });
         });
 
@@ -89,19 +94,14 @@ async function fetchNewsHeadlines() {
   return headlines;
 }
 
-/**
- * Ambil Feed Terpadu Realtime (Kalender ForexFactory + News Headlines).
- * Menggabungkan, mendeduplikasi, dan mengurutkan berita terbaru di paling atas.
- */
 export async function getUnifiedFeed(forceRefresh = false) {
   const now = Date.now();
 
-  // Cache 45 detik untuk kecepatan dashboard & bot
-  if (!forceRefresh && unifiedCache.data && (now - unifiedCache.timestamp) < 45000) {
+  if (!forceRefresh && unifiedCache.data && (now - unifiedCache.timestamp) < 30000) {
     return unifiedCache.data;
   }
 
-  log.info('🌐 Mengambil & Memproses Unified Realtime News Feed...');
+  log.info('🌐 Mengambil & Memproses Unified Realtime News Feed (Filter XAU/USD Gold)...');
 
   try {
     const [calendarEvents, newsHeadlines] = await Promise.all([
@@ -115,37 +115,40 @@ export async function getUnifiedFeed(forceRefresh = false) {
       }),
     ]);
 
-    // Format calendar events ke bentuk unified item
-    const formattedCalendarItems = calendarEvents.map(evt => {
-      const signal = analyzeSignal(evt);
-      return {
-        id: `cal_${evt.date}_${evt.event}`,
-        itemType: 'calendar',
-        source: 'Forex Factory',
-        event: evt.event,
-        title: evt.event,
-        date: evt.date,
-        time: evt.time,
-        timeWIB: evt.timeWIB,
-        timestamp: evt.timestamp || Date.now(),
-        currency: 'USD',
-        impact: evt.impact,
-        actual: evt.actual,
-        forecast: evt.forecast,
-        previous: evt.previous,
-        signal,
-        analysis: {
-          signal: signal.signal,
-          direction: signal.direction,
-          impactText: signal.predictionText,
-        }
-      };
-    });
+    // Format calendar events & filter hanya yang relevan XAU/USD Gold
+    const formattedCalendarItems = calendarEvents
+      .filter(evt => isGoldRelevant({ title: evt.event, event: evt.event }))
+      .map(evt => {
+        const signal = analyzeSignal(evt);
+        return {
+          id: `cal_${evt.date}_${evt.event}`,
+          itemType: 'calendar',
+          source: 'Forex Factory',
+          event: evt.event,
+          title: evt.event,
+          date: evt.date,
+          time: evt.time,
+          timeWIB: evt.timeWIB,
+          timestamp: evt.timestamp || Date.now(),
+          currency: 'USD',
+          impact: evt.impact,
+          actual: evt.actual,
+          forecast: evt.forecast,
+          previous: evt.previous,
+          signal,
+          analysis: {
+            signal: signal.signal,
+            direction: signal.direction,
+            impactText: signal.predictionText,
+          },
+          isGoldRelevant: true,
+        };
+      });
 
     // Combine all
     const allCombined = [...formattedCalendarItems, ...newsHeadlines];
 
-    // Deduplikasi berdasarkan title/event (dengan toleransi substring)
+    // Deduplikasi berdasarkan title/event
     const seenTitles = new Set();
     const deduplicated = [];
 
@@ -161,7 +164,7 @@ export async function getUnifiedFeed(forceRefresh = false) {
     // Urutkan berdasarkan timestamp terbaru di atas
     deduplicated.sort((a, b) => b.timestamp - a.timestamp);
 
-    log.info(`✅ Unified Feed Berhasil: Total ${deduplicated.length} items (Kalender: ${formattedCalendarItems.length}, News: ${newsHeadlines.length})`);
+    log.info(`✅ Unified Feed Filtered Gold Berhasil: Total ${deduplicated.length} items (Kalender: ${formattedCalendarItems.length}, News: ${newsHeadlines.length})`);
 
     unifiedCache.data = deduplicated;
     unifiedCache.timestamp = now;

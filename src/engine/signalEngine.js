@@ -8,8 +8,6 @@ const log = createLogger('SignalEngine');
  * Untuk indikator ini, logika dibalik:
  *   Actual < Forecast → USD Menguat (karena lebih rendah = lebih baik)
  *   Actual > Forecast → USD Melemah (karena lebih tinggi = lebih buruk)
- * 
- * Contoh: Unemployment Claims — semakin sedikit klaim pengangguran = ekonomi bagus.
  */
 const INVERTED_INDICATORS = [
   'unemployment claims',
@@ -21,36 +19,70 @@ const INVERTED_INDICATORS = [
 ];
 
 /**
- * Cek apakah indikator termasuk "inverted" (angka rendah = bagus).
- * @param {string} eventName - Nama event
- * @returns {boolean}
+ * Cek apakah indikator termasuk "inverted".
  */
 export function isInvertedIndicator(eventName) {
-  const lower = eventName.toLowerCase();
+  const lower = (eventName || '').toLowerCase();
   return INVERTED_INDICATORS.some(inv => lower.includes(inv));
 }
 
 /**
+ * Filter utama relevansi pergerakan XAU/USD GOLD.
+ * Hanya mengembalikan true jika berita/event berkaitan langsung dengan Emas, Suku Bunga Fed, USD, Inflasi, Tenaga Kerja US, atau Geopolitik.
+ * @param {Object} item - Event kalender atau headline berita
+ * @returns {boolean}
+ */
+export function isGoldRelevant(item) {
+  const title = (item.event || item.title || '').toLowerCase();
+  const category = (item.category || '').toLowerCase();
+  const source = (item.source || '').toLowerCase();
+  const fullText = `${title} ${category} ${source}`;
+
+  // 1. Keyword Langsung Emas & Logam Mulia
+  const goldKeywords = ['gold', 'xau', 'xauusd', 'yellow metal', 'bullion', 'precious metal'];
+  if (goldKeywords.some(kw => fullText.includes(kw))) {
+    return true;
+  }
+
+  // 2. Keyword Utama Penggerak USD & Suku Bunga Fed (Makroekonomi US)
+  const usdFedKeywords = [
+    'fed', 'fomc', 'powell', 'dollar', 'usd', 'dxy', 'greenback', 'treasury', 'yield',
+    'interest rate', 'rate cut', 'rate hike', 'monetary policy', 'central bank',
+    'inflation', 'cpi', 'ppi', 'pce', 'nfp', 'payroll', 'unemployment', 'jobless',
+    'non-farm', 'gdp', 'pmi', 'retail sales', 'uom consumer', 'michigan sentiment',
+    'cb consumer confidence', 'trade balance', 'fomc meeting', 'fomc minutes'
+  ];
+
+  // 3. Keyword Geopolitik & Risk Sentiment
+  const geoKeywords = ['geopolitical', 'safe haven', 'safe-haven', 'war', 'middle east', 'tariff', 'recession', 'debt ceiling'];
+
+  const matchesUsdFed = usdFedKeywords.some(kw => fullText.includes(kw));
+  const matchesGeo = geoKeywords.some(kw => fullText.includes(kw));
+
+  if (matchesUsdFed || matchesGeo) {
+    // Filter pengecualian (Exclude berita minyak/gas/mikro lokal jika TIDAK menyebut Emas)
+    const excludeKeywords = ['crude oil', 'gasoline', 'natural gas', 'mortgage', 'car sales', 'truck sales', 'api weekly', 'eia crude'];
+    if (excludeKeywords.some(ex => fullText.includes(ex)) && !goldKeywords.some(gkw => fullText.includes(gkw))) {
+      return false;
+    }
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Analisis sinyal XAU/USD berdasarkan data ekonomi.
- * 
- * Logika utama:
- * - Indikator Normal: Actual > Forecast → USD Menguat → SELL XAU/USD
- * - Indikator Normal: Actual < Forecast → USD Melemah → BUY XAU/USD
- * - Indikator Inverted: Logika dibalik
- * 
- * @param {Object} event - Event object dari scraper
- * @returns {Object} - Signal result
  */
 export function analyzeSignal(event) {
   const { actual, forecast, previous, event: eventName } = event;
 
-  // Parse nilai
   const actualVal = parseEconomicValue(actual);
   const forecastVal = parseEconomicValue(forecast);
   const previousVal = parseEconomicValue(previous);
   const isInverted = isInvertedIndicator(eventName);
 
-  // 1. KASUS PRE-RELEASE (Data Actual belum dirilis)
+  // KASUS PRE-RELEASE
   if (actualVal === null) {
     if (forecastVal !== null && previousVal !== null) {
       const diff = forecastVal - previousVal;
@@ -69,8 +101,6 @@ export function analyzeSignal(event) {
         };
       }
 
-      // Inverted: Forecast > Previous = Klaim naik = Ekonomi jelek = USD Melemah = BUY
-      // Normal: Forecast > Previous = Ekonomi membaik = USD Menguat = SELL
       const usdStrong = isInverted ? diff < 0 : diff > 0;
 
       if (usdStrong) {
@@ -107,7 +137,7 @@ export function analyzeSignal(event) {
       xauDirection: 'Belum Diketahui',
       emoji: '⏳',
       reason: 'Data belum dirilis dan perbandingan Forecast vs Previous tidak lengkap',
-      predictionText: 'Menunggu data rilis resmi dari Forex Factory.',
+      predictionText: 'Menunggu rilis data resmi penggerak XAU/USD.',
       analysis: forecastVal !== null
         ? `Jika Actual < ${forecast} → USD Melemah → BUY XAUUSD\nJika Actual > ${forecast} → USD Menguat → SELL XAUUSD`
         : 'Forecast dan Previous tidak lengkap, menunggu rilis data.',
@@ -115,7 +145,7 @@ export function analyzeSignal(event) {
     };
   }
 
-  // 2. KASUS POST-RELEASE (Data Actual sudah dirilis)
+  // KASUS POST-RELEASE
   if (forecastVal === null) {
     if (previousVal !== null) {
       return analyzeWithPrevious(actualVal, previousVal, actual, previous, eventName);
@@ -133,7 +163,6 @@ export function analyzeSignal(event) {
     };
   }
 
-  // Bandingkan Actual vs Forecast
   const diff = actualVal - forecastVal;
   const percentDiff = forecastVal !== 0 ? Math.abs(diff / forecastVal) * 100 : 0;
 
@@ -151,7 +180,7 @@ export function analyzeSignal(event) {
       emoji: '⚪',
       reason: `Actual (${actual}) = Forecast (${forecast}) → Netral`,
       predictionText: `USD netral. Actual (${actual}) sesuai dengan Forecast (${forecast}). Hubungan terbalik emas & USD memproyeksikan XAU/USD konsolidasi.`,
-      analysis: 'Data sesuai ekspektasi. Tidak ada pergerakan signifikan yang diharapkan.',
+      analysis: 'Data sesuai ekspektasi.',
       strength: 'Netral',
     };
   }
@@ -185,9 +214,6 @@ export function analyzeSignal(event) {
   }
 }
 
-/**
- * Fallback: analisis dengan Previous jika Forecast tidak tersedia.
- */
 function analyzeWithPrevious(actualVal, previousVal, actual, previous, eventName) {
   const isInverted = isInvertedIndicator(eventName);
   const diff = actualVal - previousVal;
@@ -217,7 +243,7 @@ function analyzeWithPrevious(actualVal, previousVal, actual, previous, eventName
       emoji: '🔴',
       reason: `Actual (${actual}) vs Previous (${previous}) → USD Menguat`,
       predictionText: 'USD menguat dibanding periode lalu (data lebih baik). Hubungan terbalik emas & USD memproyeksikan XAU/USD melemah. Rekomendasi SELL.',
-      analysis: 'Dibandingkan dengan Previous (Forecast tidak tersedia).',
+      analysis: 'Dibandingkan dengan Previous.',
       strength: 'Sedang',
     };
   } else {
@@ -229,7 +255,7 @@ function analyzeWithPrevious(actualVal, previousVal, actual, previous, eventName
       emoji: '🟢',
       reason: `Actual (${actual}) vs Previous (${previous}) → USD Melemah`,
       predictionText: 'USD melemah dibanding periode lalu (data lebih buruk). Hubungan terbalik emas & USD memproyeksikan XAU/USD menguat. Rekomendasi BUY.',
-      analysis: 'Dibandingkan dengan Previous (Forecast tidak tersedia).',
+      analysis: 'Dibandingkan dengan Previous.',
       strength: 'Sedang',
     };
   }
@@ -237,9 +263,6 @@ function analyzeWithPrevious(actualVal, previousVal, actual, previous, eventName
 
 /**
  * Analisis dampak berita pasar Investing.com terhadap XAU/USD (Emas) & USD.
- * @param {string} title - Judul berita
- * @param {string} category - Kategori berita
- * @returns {Object} - Result analisis
  */
 export function analyzeInvestingHeadline(title = '', category = '') {
   const lower = title.toLowerCase();
@@ -247,8 +270,8 @@ export function analyzeInvestingHeadline(title = '', category = '') {
   // Keyword Bullish Emas (BUY XAU/USD)
   const buyKeywords = [
     'cut rate', 'rate cut', 'fed dovish', 'usd fall', 'dollar drop', 'dollar slip',
-    'gold rally', 'gold surge', 'gold jump', 'safe haven', 'inflation cool',
-    'geopolitical', 'war', 'recession', 'debt crisis', 'yield drop', 'tariff'
+    'gold rally', 'gold surge', 'gold jump', 'gold rise', 'gold gain', 'safe haven',
+    'inflation cool', 'geopolitical', 'war', 'recession', 'debt crisis', 'yield drop', 'tariff'
   ];
 
   // Keyword Bearish Emas (SELL XAU/USD)
@@ -289,5 +312,3 @@ export function analyzeInvestingHeadline(title = '', category = '') {
     recommendation: 'HOLD / WAIT'
   };
 }
-
-
