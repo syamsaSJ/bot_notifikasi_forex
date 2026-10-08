@@ -1,9 +1,43 @@
+import fs from 'fs';
+import path from 'path';
 import axios from 'axios';
 import config from '../utils/config.js';
 import { createLogger } from '../utils/logger.js';
 import { logScrapeResult } from '../utils/scrapeLogger.js';
 
 const log = createLogger('GroqAnalyzer');
+
+const AI_CACHE_FILE = path.resolve('scratch', 'ai_analysis_cache.json');
+
+// Memory & Disk cache untuk Groq AI Analysis
+let aiDiskCache = {};
+
+// Load cache dari disk jika ada
+try {
+  if (fs.existsSync(AI_CACHE_FILE)) {
+    const raw = fs.readFileSync(AI_CACHE_FILE, 'utf-8');
+    aiDiskCache = JSON.parse(raw);
+    log.info(`💾 Memuat ${Object.keys(aiDiskCache).length} hasil analisis Groq AI dari cache disk.`);
+  }
+} catch (e) {
+  log.warn(`Gagal membaca disk cache Groq AI: ${e.message}`);
+}
+
+function saveAiCache() {
+  try {
+    const dir = path.dirname(AI_CACHE_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(AI_CACHE_FILE, JSON.stringify(aiDiskCache, null, 2), 'utf-8');
+  } catch (e) {
+    log.warn(`Gagal menyimpan disk cache Groq AI: ${e.message}`);
+  }
+}
+
+function getHeadlineKey(headline = '') {
+  return String(headline).toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+}
 
 // Model Groq terverifikasi aktif untuk akun pengguna
 const GROQ_MODELS = [
@@ -12,14 +46,31 @@ const GROQ_MODELS = [
   'qwen/qwen3.8-27b',
 ];
 
+let rateLimitCooldownUntil = 0;
+
 /**
- * Analisis sentimen berita XAU/USD menggunakan Groq AI.
+ * Analisis sentimen berita XAU/USD menggunakan Groq AI dengan Disk Cache Hemat Token.
  * 
  * @param {string} headline - Judul/headline berita
  * @param {string} source - Sumber berita
  * @returns {Promise<Object|null>} - Result analisis atau null jika gagal/API error
  */
 export async function analyzeHeadlineWithGroq(headline, source = '') {
+  if (!headline) return null;
+
+  const cacheKey = getHeadlineKey(headline);
+
+  // 1. Cek jika sudah pernah dianalisis & ada di disk cache JSON (Hemat API Call & Token!)
+  if (aiDiskCache[cacheKey]) {
+    log.debug(`💾 Cache hit Groq AI untuk: "${headline.slice(0, 30)}..."`);
+    return aiDiskCache[cacheKey];
+  }
+
+  // 2. Cek jika sedang dalam Cooldown Rate Limit (429)
+  if (Date.now() < rateLimitCooldownUntil) {
+    return null; // Fallback instan ke rule-based tanpa membebankan API
+  }
+
   const apiKey = config.GROQ_API_KEY;
   if (!apiKey || apiKey.includes('your_')) {
     return null;
@@ -78,7 +129,8 @@ Tanggapi HANYA dengan JSON valid tanpa format markdown tambahan dengan skema ber
         const parsed = JSON.parse(content);
         log.info(`🤖 Groq AI (${model}) Analysis Sukses: "${headline.slice(0, 35)}..." -> ${parsed.signal}`);
         logScrapeResult('GroqAI', true, 1);
-        return {
+
+        const resultObj = {
           signal: parsed.signal || 'NEUTRAL',
           impact: parsed.impact || 'MEDIUM',
           direction: parsed.direction || 'Pasar Konsolidasi ↔',
@@ -87,8 +139,19 @@ Tanggapi HANYA dengan JSON valid tanpa format markdown tambahan dengan skema ber
           aiAnalyzed: true,
           aiModel: model,
         };
+
+        // Simpan ke disk cache JSON agar tidak perlu request ulang
+        aiDiskCache[cacheKey] = resultObj;
+        saveAiCache();
+
+        return resultObj;
       }
     } catch (err) {
+      if (err.response?.status === 429) {
+        rateLimitCooldownUntil = Date.now() + 60000;
+        log.warn('⚠️ Groq AI Rate Limit (429) terdeteksi. Cooldown 60s diaktifkan. Fallback instan ke rule-based.');
+        break;
+      }
       log.warn(`⚠️ Groq AI model ${model} gagal: ${err.message}. Mencoba model alternatif...`);
     }
   }

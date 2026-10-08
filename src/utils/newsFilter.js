@@ -47,7 +47,8 @@ const NEGATIVE_KEYWORDS = [
 
   // Hiburan / Olahraga / Penghargaan Non-Finansial
   'football', 'soccer', 'nba', 'nfl', 'movie', 'actor', 'actress', 'hollywood',
-  'gold medal', 'gold award', 'gold star', 'youtube gold', 'magazine'
+  'gold medal', 'gold award', 'gold star', 'youtube gold', 'magazine',
+  'adidas', 'sneakers', 'statue', 'basketball', 'tip-off'
 ];
 
 // Escape special regex characters in keywords

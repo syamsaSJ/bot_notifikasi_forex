@@ -11,6 +11,18 @@ export default {
   GNEWS_API_KEY: process.env.GNEWS_API_KEY || '',
   GROQ_API_KEY: process.env.GROQ_API_KEY || '',
 
+  // RapidAPI - Forex Factory Scraper (sumber utama kalender ekonomi realtime)
+  RAPIDAPI_KEY: process.env.RAPIDAPI_KEY || '',
+  RAPIDAPI_FF_HOST: process.env.RAPIDAPI_FF_HOST || 'forex-factory-scraper1.p.rapidapi.com',
+  // Refresh jadwal berkala (default 6 jam) - hemat kuota
+  RAPIDAPI_CALENDAR_TTL_MS: parseInt(process.env.RAPIDAPI_CALENDAR_TTL_MS, 10) || 6 * 60 * 60 * 1000,
+  // Jeda minimal antar request RapidAPI (default 2 menit)
+  RAPIDAPI_MIN_INTERVAL_MS: parseInt(process.env.RAPIDAPI_MIN_INTERVAL_MS, 10) || 2 * 60 * 1000,
+  // Tunggu setelah jam rilis sebelum fetch 'actual' (default 45 detik)
+  RAPIDAPI_RELEASE_DELAY_MS: parseInt(process.env.RAPIDAPI_RELEASE_DELAY_MS, 10) || 45 * 1000,
+  // Batas waktu menunggu 'actual' setelah jam rilis (default 10 menit)
+  RAPIDAPI_RELEASE_WINDOW_MS: parseInt(process.env.RAPIDAPI_RELEASE_WINDOW_MS, 10) || 10 * 60 * 1000,
+
   // Timezone (default: Asia/Jakarta = WIB)
   TIMEZONE: process.env.TIMEZONE || 'Asia/Jakarta',
 

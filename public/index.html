@@ -73,16 +73,36 @@
     <!-- Hero / Live Market Overview Grid -->
     <section class="overview-grid">
       <!-- Live TradingView Chart Embed Card -->
-      <div class="card chart-card">
+      <div class="card chart-card" id="chart-card-wrapper">
         <div class="card-header">
           <div class="card-title">
             <i class="fa-solid fa-chart-line color-gold"></i>
             <h3>Live XAU/USD Gold Price Chart</h3>
           </div>
           <div class="market-badge">
-            <span id="gold-price-status">XAU/USD • REALTIME WIB</span>
+            <span class="pulse-dot-active"></span>
+            <span id="gold-price-status">SSE STREAM • WIB</span>
           </div>
         </div>
+
+        <!-- Zero-Delay Fast Release Alert Banner Overlay -->
+        <div id="fast-release-banner" class="fast-release-banner hidden">
+          <div class="banner-content">
+            <div class="banner-top">
+              <span class="flash-tag"><i class="fa-solid fa-bolt-lightning"></i> ⚡ RILIS BERITA INSTAN (0 DELAY)</span>
+              <span class="banner-time" id="fast-release-time">22:48 WIB</span>
+            </div>
+            <div class="banner-body">
+              <div class="banner-signal-badge" id="fast-release-signal">BUY</div>
+              <div class="banner-details">
+                <h4 id="fast-release-title">Judul Rilis Berita Ekonomi Baru</h4>
+                <p id="fast-release-desc">Groq AI: Sentimen Emas & USD</p>
+              </div>
+              <button class="banner-close-btn" onclick="hideFastReleaseBanner()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+        </div>
+
         <div class="chart-container" id="tradingview-container">
           <div class="tradingview-widget-container" style="height:100%;width:100%">
             <div id="tradingview_xauusd" style="height:calc(100% - 32px);width:100%"></div>
@@ -128,8 +148,8 @@
 
         <!-- System Formula Information Box -->
         <div class="formula-info-box">
-          <h4><i class="fa-solid fa-circle-info"></i> Forex Factory & NewsData/GNews API</h4>
-          <p>Berita kalender (Forex Factory) & headline pasar (NewsData.io & GNews API) digabungkan menjadi 1 aliran terpadu realtime yang diurutkan sesuai jam rilis WIB terbaru.</p>
+          <h4><i class="fa-solid fa-circle-info"></i> Calender Economic & News Forex</h4>
+          <p>Berita kalender & headline pasar digabungkan menjadi 1 aliran terpadu realtime yang diurutkan sesuai jam rilis WIB terbaru.</p>
         </div>
       </div>
     </section>
@@ -138,8 +158,8 @@
     <section class="feed-section">
       <div class="feed-header">
         <div class="feed-title">
-          <h2><i class="fa-solid fa-newspaper color-gold"></i> Realtime Forex Factory & News Feed</h2>
-          <p>Aliran Terpadu Kalender Ekonomi Forex Factory & Headline News API (WIB)</p>
+          <h2><i class="fa-solid fa-newspaper color-gold"></i> Realtime Forex Calender Economic & News Feed</h2>
+          <p>Kalender Ekonomi Forex & Headline News</p>
         </div>
 
         <div class="filter-controls">

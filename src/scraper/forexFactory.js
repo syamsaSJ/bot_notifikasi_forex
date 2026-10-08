@@ -180,8 +180,8 @@ function parseJsonEvents(jsonInput) {
 export async function fetchLiveRealtimeNews() {
   const now = Date.now();
 
-  // Cache 5 menit untuk responsivitas realtime
-  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < (5 * 60 * 1000)) {
+  // Cache 30 detik untuk kelancaran realtime tanpa delay rilis
+  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < (30 * 1000)) {
     return cache.data;
   }
 
@@ -251,8 +251,26 @@ export async function fetchLiveRealtimeNews() {
   return [];
 }
 
+import { scrapeLiveCalendarWithPuppeteer } from './puppeteerScraper.js';
+import { fetchRapidApiCalendar } from './rapidApiCalendar.js';
+
 export async function getHighImpactNews() {
-  const allEvents = await fetchLiveRealtimeNews();
+  // 1. Sumber utama: RapidAPI Forex Factory Scraper (realtime, termasuk 'actual')
+  let allEvents = await fetchRapidApiCalendar().catch(err => {
+    log.warn(`RapidAPI error: ${err.message}`);
+    return null;
+  });
+
+  // 2. Fallback: scrape HTML asli dengan Puppeteer
+  if (!allEvents || allEvents.length === 0) {
+    allEvents = await scrapeLiveCalendarWithPuppeteer();
+  }
+
+  // 3. Fallback terakhir: API XML gratis FairEconomy
+  if (!allEvents || allEvents.length === 0) {
+    allEvents = await fetchLiveRealtimeNews();
+  }
+
   if (!Array.isArray(allEvents)) return [];
   return allEvents.filter(e => (e.currency || '').toUpperCase() === 'USD');
 }

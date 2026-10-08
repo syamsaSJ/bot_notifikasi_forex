@@ -67,7 +67,7 @@ async function fetchNewsData() {
 
     if (data && Array.isArray(data.events)) {
       unifiedNewsEvents = data.events;
-      if (systemStatus) systemStatus.textContent = 'REALTIME XAU/USD FILTERED';
+      if (systemStatus) systemStatus.textContent = 'REALTIME XAU/USD';
       if (statusPill) statusPill.className = 'status-pill live';
       showToast('✅ Feed berita & sinyal khusus pergerakan XAU/USD GOLD diperbarui!');
     } else {
@@ -316,6 +316,120 @@ window.copyCardText = function(eventRaw, signal, textRaw) {
   showToast('📋 Teks notifikasi disalin!');
 };
 
+// Web Audio API Audio Chime Synthesizer (0 Delay Alert Sound)
+function playFastReleaseSound(signal = 'BUY') {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    if (signal === 'BUY') {
+      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
+      osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.3); // A6 note
+    } else if (signal === 'SELL') {
+      osc.frequency.setValueAtTime(600, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.3);
+    } else {
+      osc.frequency.setValueAtTime(523, ctx.currentTime);
+    }
+
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.4);
+  } catch (e) {
+    console.warn('Audio alert disabled:', e);
+  }
+}
+
+// Banner Overlay di atas TradingView Chart
+window.hideFastReleaseBanner = function() {
+  const banner = document.getElementById('fast-release-banner');
+  if (banner) banner.classList.add('hidden');
+};
+
+function showFastReleaseBanner(item) {
+  const banner = document.getElementById('fast-release-banner');
+  const bannerTime = document.getElementById('fast-release-time');
+  const bannerSignal = document.getElementById('fast-release-signal');
+  const bannerTitle = document.getElementById('fast-release-title');
+  const bannerDesc = document.getElementById('fast-release-desc');
+  const chartWrapper = document.getElementById('chart-card-wrapper');
+
+  if (!banner) return;
+
+  const sig = item.signal ? item.signal.signal : (item.analysis ? item.analysis.signal : 'NEUTRAL');
+  const title = item.event || item.title || 'Rilis Berita Baru';
+  const desc = item.analysis ? item.analysis.impactText : (item.signal ? item.signal.predictionText : 'Analisis fundamental XAU/USD.');
+
+  if (bannerTime) bannerTime.textContent = item.timeWIB || new Date().toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta' }) + ' WIB';
+  if (bannerSignal) {
+    bannerSignal.textContent = sig;
+    bannerSignal.className = `banner-signal-badge ${sig}`;
+  }
+  if (bannerTitle) bannerTitle.textContent = title;
+  if (bannerDesc) bannerDesc.textContent = desc;
+
+  banner.classList.remove('hidden');
+
+  // Flash border pada TradingView chart container
+  if (chartWrapper) {
+    chartWrapper.classList.remove('flash-buy', 'flash-sell');
+    chartWrapper.classList.add(sig === 'BUY' ? 'flash-buy' : sig === 'SELL' ? 'flash-sell' : 'flash-buy');
+    setTimeout(() => {
+      chartWrapper.classList.remove('flash-buy', 'flash-sell');
+    }, 6000);
+  }
+
+  playFastReleaseSound(sig);
+}
+
+// Init SSE EventSource (0 Delay Realtime Push)
+function initRealtimeSSE() {
+  try {
+    const evtSource = new EventSource('/api/stream');
+
+    evtSource.addEventListener('NEWS_RELEASE', (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload && payload.item) {
+          const item = payload.item;
+          console.log('⚡ 0-DELAY SSE RELEASE RECEIVED:', item);
+
+          // Cek apakah item sudah ada untuk menghindari duplikat
+          const exists = unifiedNewsEvents.some(e => e.id === item.id || (e.title === item.title && e.date === item.date));
+          if (!exists) {
+            unifiedNewsEvents.unshift(item);
+            renderDashboard();
+            showFastReleaseBanner(item);
+            showToast(`⚡ 0-DELAY RELEASE: ${item.event || item.title}`, true);
+          }
+        }
+      } catch (e) {
+        console.error('SSE parse error:', e);
+      }
+    });
+
+    evtSource.onopen = () => {
+      console.log('⚡ SSE Stream Terhubung (0 Delay Active)');
+      if (systemStatus) systemStatus.textContent = '⚡ 0-DELAY SSE CONNECTED';
+      if (statusPill) statusPill.className = 'status-pill live';
+    };
+
+    evtSource.onerror = (err) => {
+      console.warn('SSE Stream disconnected, retrying in background...', err);
+    };
+  } catch (e) {
+    console.warn('SSE not supported, falling back to 30s polling:', e);
+  }
+}
+
 // Event Listeners for Filters
 sourceBtns.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -372,5 +486,6 @@ if (btnCloseLogs && logsModal) {
 document.addEventListener('DOMContentLoaded', () => {
   initTradingView();
   fetchNewsData();
+  initRealtimeSSE();
   setInterval(fetchNewsData, 30000);
 });

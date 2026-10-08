@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import axios from 'axios';
 import xml2js from 'xml2js';
 import config from '../utils/config.js';
@@ -9,11 +11,39 @@ import { analyzeSignal, analyzeInvestingHeadline, analyzeHeadlineAsync } from '.
 import { isRelevantToXAUUSD } from '../utils/newsFilter.js';
 
 const log = createLogger('UnifiedFeed');
+const UNIFIED_CACHE_FILE = path.resolve('scratch', 'unified_feed_cache.json');
 
 let unifiedCache = {
   data: null,
   timestamp: 0,
 };
+
+// Load persistent disk cache jika ada
+try {
+  if (fs.existsSync(UNIFIED_CACHE_FILE)) {
+    const raw = fs.readFileSync(UNIFIED_CACHE_FILE, 'utf-8');
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      unifiedCache.data = parsed;
+      unifiedCache.timestamp = Date.now();
+      log.info(`💾 Memuat ${parsed.length} items feed terpadu dari cache disk.`);
+    }
+  }
+} catch (e) {
+  log.warn(`Gagal membaca disk cache feed terpadu: ${e.message}`);
+}
+
+function saveUnifiedDiskCache(data) {
+  try {
+    const dir = path.dirname(UNIFIED_CACHE_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(UNIFIED_CACHE_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    log.warn(`Gagal menyimpan disk cache feed terpadu: ${e.message}`);
+  }
+}
 
 function getHeaders() {
   return {
@@ -22,6 +52,52 @@ function getHeaders() {
     'Accept-Language': 'en-US,en;q=0.9',
     'Cache-Control': 'no-cache',
   };
+}
+
+/**
+ * Fetch headline berita dari Forex Factory (via Google News RSS Index).
+ */
+async function fetchForexFactoryNews() {
+  const url = 'https://news.google.com/rss/search?q=site:forexfactory.com&hl=en-US&gl=US&ceid=US:en';
+  try {
+    const res = await axios.get(url, { headers: getHeaders(), timeout: 8000, responseType: 'text' });
+    const parsed = await xml2js.parseStringPromise(res.data);
+    const items = parsed?.rss?.channel?.[0]?.item || [];
+
+    logScrapeResult('ForexFactoryNews', true, items.length);
+
+    return items
+      .map(item => {
+        let title = item.title?.[0] || 'Forex Factory News';
+        title = title.replace(/\s*-\s*Forex Factory\s*$/i, '');
+
+        const rawDate = item.pubDate?.[0] || '';
+        const dateObj = parseToDateObj(rawDate);
+        const wibInfo = formatWIBTime(dateObj);
+        const link = item.link?.[0] || 'https://www.forexfactory.com/news';
+        const analysis = analyzeInvestingHeadline(title, 'Forex Factory News');
+
+        return {
+          id: `ff_news_${dateObj.getTime()}_${title.slice(0, 15)}`,
+          itemType: 'investing',
+          source: 'Forex Factory News',
+          title,
+          link,
+          pubDate: rawDate,
+          date: wibInfo.dateStr,
+          timeWIB: wibInfo.displayWIB,
+          timestamp: wibInfo.timestamp,
+          category: 'Forex Factory',
+          analysis,
+          signal: analysis,
+        };
+      })
+      .filter(item => isRelevantToXAUUSD(item.title));
+  } catch (err) {
+    log.warn(`Gagal fetch Forex Factory News: ${err.message}`);
+    logScrapeResult('ForexFactoryNews', false, 0, err.message);
+    return [];
+  }
 }
 
 /**
@@ -220,7 +296,7 @@ async function fetchGNewsRss() {
 
 /**
  * Ambil Feed Terpadu Realtime:
- * 1. Kalender Ekonomi: Forex Factory RSS XML
+ * 1. Kalender Ekonomi: RapidAPI Forex Factory Scraper (fallback: Puppeteer -> Forex Factory RSS XML)
  * 2. News Headlines: ForexLive.com + NewsData.io API + GNews API + GNews RSS
  */
 export async function getUnifiedFeed(forceRefresh = false) {
@@ -233,11 +309,12 @@ export async function getUnifiedFeed(forceRefresh = false) {
   log.info('🌐 Mengambil & Memproses Feed Realtime (Forex Factory + ForexLive + News API)...');
 
   try {
-    const [calendarEvents, forexLiveItems, newsDataIoItems, gnewsApiItems, gnewsRssItems] = await Promise.all([
+    const [calendarEvents, ffNewsItems, forexLiveItems, newsDataIoItems, gnewsApiItems, gnewsRssItems] = await Promise.all([
       getHighImpactNews().catch(err => {
         log.error('Error in getHighImpactNews:', err.message);
         return [];
       }),
+      fetchForexFactoryNews().catch(() => []),
       fetchForexLiveRss().catch(() => []),
       fetchNewsDataIo().catch(() => []),
       fetchGNewsApi().catch(() => []),
@@ -271,8 +348,8 @@ export async function getUnifiedFeed(forceRefresh = false) {
       };
     });
 
-    // Combined headlines (ForexLive + NewsData.io + GNews API + GNews RSS)
-    const allNewsHeadlines = [...forexLiveItems, ...newsDataIoItems, ...gnewsApiItems, ...gnewsRssItems];
+    // Combined headlines (Forex Factory News + ForexLive + NewsData.io + GNews API + GNews RSS)
+    const allNewsHeadlines = [...ffNewsItems, ...forexLiveItems, ...newsDataIoItems, ...gnewsApiItems, ...gnewsRssItems];
 
     // Combine all (Forex Factory Calendar + News Headlines)
     const allCombined = [...formattedCalendarItems, ...allNewsHeadlines];
@@ -293,20 +370,20 @@ export async function getUnifiedFeed(forceRefresh = false) {
     // Urutkan berdasarkan timestamp terbaru di atas
     deduplicated.sort((a, b) => b.timestamp - a.timestamp);
 
-    // Enrich 10 headline berita terbaru menggunakan Groq AI
-    const headlineItemsToAnalyze = deduplicated.filter(item => item.itemType === 'investing').slice(0, 10);
-    await Promise.all(
-      headlineItemsToAnalyze.map(async item => {
-        const aiAnalysis = await analyzeHeadlineAsync(item.title, item.source);
-        item.analysis = aiAnalysis;
-        item.signal = aiAnalysis;
-      })
-    );
+    // Enrich headline berita terbaru menggunakan Groq AI (Sekuensial + Cache untuk cegah rate limit 429)
+    const headlineItemsToAnalyze = deduplicated.filter(item => item.itemType === 'investing').slice(0, 8);
+    for (const item of headlineItemsToAnalyze) {
+      const aiAnalysis = await analyzeHeadlineAsync(item.title, item.source);
+      item.analysis = aiAnalysis;
+      item.signal = aiAnalysis;
+      await new Promise(r => setTimeout(r, 150));
+    }
 
     log.info(`✅ Feed Realtime Berhasil: Total ${deduplicated.length} items (Forex Factory: ${formattedCalendarItems.length}, News Headlines: ${allNewsHeadlines.length})`);
 
     unifiedCache.data = deduplicated;
     unifiedCache.timestamp = now;
+    saveUnifiedDiskCache(deduplicated);
     return deduplicated;
   } catch (err) {
     log.error('Gagal membuat Unified Feed:', err.message);

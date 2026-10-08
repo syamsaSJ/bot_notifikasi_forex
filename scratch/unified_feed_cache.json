@@ -1,0 +1,3818 @@
+[
+  {
+    "id": "cal_2026-10-08_Natural Gas Storage",
+    "itemType": "calendar",
+    "source": "Forex Factory",
+    "event": "Natural Gas Storage",
+    "title": "Natural Gas Storage",
+    "date": "2026-10-08",
+    "time": "21:30 WIB",
+    "timeWIB": "Kam, 8 Okt • 21:30 WIB",
+    "timestamp": 1791469800000,
+    "currency": "USD",
+    "impact": "low",
+    "actual": "-",
+    "forecast": "79B",
+    "previous": "64B",
+    "signal": {
+      "signal": "SELL",
+      "isPreRelease": true,
+      "direction": "USD diperkirakan menguat",
+      "xauDirection": "XAU/USD diperkirakan melemah",
+      "emoji": "🔴",
+      "reason": "Forecast (79B) vs Previous (64B) → USD Menguat",
+      "predictionText": "USD diperkirakan menguat (data lebih baik). Hubungan terbalik emas & USD memproyeksikan XAU/USD melemah. Rekomendasi SELL.",
+      "analysis": "Perkiraan sebelum rilis: Forecast (79B) lebih baik dibanding Previous (64B).",
+      "strength": "Sedang"
+    },
+    "analysis": {
+      "signal": "SELL",
+      "direction": "USD diperkirakan menguat",
+      "impactText": "USD diperkirakan menguat (data lebih baik). Hubungan terbalik emas & USD memproyeksikan XAU/USD melemah. Rekomendasi SELL."
+    }
+  },
+  {
+    "id": "cal_2026-10-08_Final Wholesale Inventories m/m",
+    "itemType": "calendar",
+    "source": "Forex Factory",
+    "event": "Final Wholesale Inventories m/m",
+    "title": "Final Wholesale Inventories m/m",
+    "date": "2026-10-08",
+    "time": "21:00 WIB",
+    "timeWIB": "Kam, 8 Okt • 21:00 WIB",
+    "timestamp": 1791468000000,
+    "currency": "USD",
+    "impact": "low",
+    "actual": "-",
+    "forecast": "0.7%",
+    "previous": "0.7%",
+    "signal": {
+      "signal": "HOLD",
+      "isPreRelease": true,
+      "direction": "USD Stabil (Forecast = Previous)",
+      "xauDirection": "XAU/USD Sideways",
+      "emoji": "⚪",
+      "reason": "Forecast (0.7%) = Previous (0.7%)",
+      "predictionText": "USD diperkirakan stabil (forecast sama dengan data sebelumnya). Hubungan terbalik emas & USD memproyeksikan XAU/USD konsolidasi.",
+      "analysis": "Forecast sama dengan data periode sebelumnya.",
+      "strength": "Netral"
+    },
+    "analysis": {
+      "signal": "HOLD",
+      "direction": "USD Stabil (Forecast = Previous)",
+      "impactText": "USD diperkirakan stabil (forecast sama dengan data sebelumnya). Hubungan terbalik emas & USD memproyeksikan XAU/USD konsolidasi."
+    }
+  },
+  {
+    "id": "cal_2026-10-08_Unemployment Claims",
+    "itemType": "calendar",
+    "source": "Forex Factory",
+    "event": "Unemployment Claims",
+    "title": "Unemployment Claims",
+    "date": "2026-10-08",
+    "time": "19:30 WIB",
+    "timeWIB": "Kam, 8 Okt • 19:30 WIB",
+    "timestamp": 1791462600000,
+    "currency": "USD",
+    "impact": "medium",
+    "actual": "-",
+    "forecast": "200K",
+    "previous": "197K",
+    "signal": {
+      "signal": "BUY",
+      "isPreRelease": true,
+      "direction": "USD diperkirakan melemah",
+      "xauDirection": "XAU/USD diperkirakan menguat",
+      "emoji": "🟢",
+      "reason": "Forecast (200K) vs Previous (197K) → USD Melemah",
+      "predictionText": "USD diperkirakan melemah (data lebih buruk). Hubungan terbalik emas & USD memproyeksikan XAU/USD menguat. Rekomendasi BUY.",
+      "analysis": "Perkiraan sebelum rilis: Forecast (200K) lebih buruk dibanding Previous (197K).",
+      "strength": "Sedang"
+    },
+    "analysis": {
+      "signal": "BUY",
+      "direction": "USD diperkirakan melemah",
+      "impactText": "USD diperkirakan melemah (data lebih buruk). Hubungan terbalik emas & USD memproyeksikan XAU/USD menguat. Rekomendasi BUY."
+    }
+  },
+  {
+    "id": "gnews_rss_1791451921000_Sterling today:",
+    "itemType": "investing",
+    "source": "Yahoo Finance",
+    "title": "Sterling today: Pound slips as hawkish Fed minutes lift dollar - Yahoo Finance",
+    "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQYkE5Q09nTmc1NVFfZXJ4WERuMXBVM3ZJTV9UaGw4YWpqZHJ1UXZyZklCcHNERkZXMW9hWG5IazZTZkVhQVJyeURHYk5PZXl1TVRsLTJSWkxRQVp3UEw3MU1mVkp6dW9jbm02eHFaNjBDbVJaMzFoekc0V3YyYWJ3b0M5OWoyVFdjRUVWTEVBSmdUZ2prclJDN1RDdHhpXy1qQm1XMURn?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 09:32:01 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 16:32 WIB",
+    "timestamp": 1791451921000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791451184000_Treasury yields",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "Treasury yields rise as Fed's Waller says more hikes needed, investors await 30-year auction - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPNF9IY0FlbFM0NmU5dU1WSVlJMUQtSTd1UEwwTGNfUFI3SVhfU3RWczRMWU5SSnNjOUhRbm15Q3EyVkw0Q1NBdm16UEF4ZktEVUl5MDVuTEs3emhON09xa2c5MDZDX3paNUZCcWl4QTNkc3ZYX0M1a3ctSlJKUDBfNEdB0gGHAUFVX3lxTFBPQ2Y1aEJEU2JUYVlGMW8wTm9mVGFtT1liT2pLZ0J4RVR0ZDN3aG9KTHJrdGEtS2FjRzdzMUhNNXE0bWhYOWhKUnVsLWt6UkVkc01WV2FXOVdUbGlmSE9NcWVocVRoQnRZWEFPTE56WTVXQ1BLRHA3RnZRaGJvN0FXTEZxY3pRNA?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 09:19:44 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 16:19 WIB",
+    "timestamp": 1791451184000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "MEDIUM",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Kenaikan yield obligasi dan sinyal Fed untuk kenaikan suku bunga lebih lanjut menguatkan USD serta menurunkan daya tarik emas sebagai safe haven.",
+      "recommendation": "SELL XAU/USD",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "MEDIUM",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Kenaikan yield obligasi dan sinyal Fed untuk kenaikan suku bunga lebih lanjut menguatkan USD serta menurunkan daya tarik emas sebagai safe haven.",
+      "recommendation": "SELL XAU/USD",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    }
+  },
+  {
+    "id": "gnews_rss_1791450039000_These NHL stars",
+    "itemType": "investing",
+    "source": "The New York Times",
+    "title": "These NHL stars left millions on the table before the 2026 gold rush. Any regrets? - The New York Times",
+    "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPNjJHMWJtZWVZbnpSc3g3c09xSktuNmtKTklsSjhnUi1IcnlqUDlQZ3h2VkZDX3BpVzA2ckpvNEE3MV9nbzN6VXl2RFJ1TFJKVzVzUGNXR1FxMFZhNW40ZXUyZ3VFOUFlLW9uVTQ3c1VKRkZjc21IR2pVUE1ONU94TmRGZFNrM3BUSFlwUDJFVmhMOUE?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 09:00:39 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 16:00 WIB",
+    "timestamp": 1791450039000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "LOW",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita tentang pemain NHL dan potensi gold rush tidak memberikan sinyal makroekonomi yang jelas, sehingga dampaknya pada XAU/USD diperkirakan minimal.",
+      "recommendation": "HOLD / WAIT",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "LOW",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita tentang pemain NHL dan potensi gold rush tidak memberikan sinyal makroekonomi yang jelas, sehingga dampaknya pada XAU/USD diperkirakan minimal.",
+      "recommendation": "HOLD / WAIT",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    }
+  },
+  {
+    "id": "gnews_rss_1791450000000_Uncovering You ",
+    "itemType": "investing",
+    "source": "TheUnion.com",
+    "title": "Uncovering You Bet: Gold rush tales with Terry McAteer, mine camp tour and a community yard sale - TheUnion.com",
+    "link": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxOS3Zob2FjWGNhU3BRZkdKOF9nSHZQVkJUYmotZ2VLSlhGVjJyOHd1UXFCYTBmd3ZiWFhmQ1lXWGJxLTR3ajEyY1RnODAxS3pjVTZyUnR5OEMzTGFYV2Jtcmc0T29RdGFRdklaRnE4MWJJSVphbU5oWjlkLXVjMkF2U0FNSXlXWDA1emJjdkRoLU9MNElob3VxYl9PS1ZfVHlRYTIzN0ttdktUVFFFU3psTzVJSk9KUHlObk5YbXl6R3pmY2g5elpkMjJiM1ctXzJFejZZY0g3OG1ocUc1VUIzbTVWUHVhUmpmQzI2a0U1ZWlRenk2SkE0?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 09:00:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 16:00 WIB",
+    "timestamp": 1791450000000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "LOW",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita bersifat cerita lokal tentang penambangan emas dan tidak mengubah sentimen pasar, sehingga dampaknya kecil pada XAU/USD.",
+      "recommendation": "HOLD / WAIT",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "LOW",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita bersifat cerita lokal tentang penambangan emas dan tidak mengubah sentimen pasar, sehingga dampaknya kecil pada XAU/USD.",
+      "recommendation": "HOLD / WAIT",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    }
+  },
+  {
+    "id": "gnews_rss_1791449128000_Fed Sees Higher",
+    "itemType": "investing",
+    "source": "Bloomberg.com",
+    "title": "Fed Sees Higher Rates Ahead Even as Borrowing Costs Climb - Bloomberg.com",
+    "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPeGo1a2o1VVZrbTBpd2Z3aWZkT1NhWUl5M0hueEdfbG5OUmpFQnhFQkcwbTNxM0VVRVhzWVFoby1tNllFT3I2cFVVOXk3VnlDcEEydUZVS2pvXzZBMXZPMk15T0lNUnRVbThkX09CRVlkRHNYZmRNdWluTnhhUGwtRzdKcXhOeU5CbkpxVWFfT2JCQlBjUUEyRzJ6NENMUl80cmdHWFlHaXJyTk0xNnNhag?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:45:28 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:45 WIB",
+    "timestamp": 1791449128000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "MEDIUM",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Ekspektasi kenaikan suku bunga Fed menguatkan dolar AS dan menurunkan daya tarik emas sebagai safe haven, sehingga tekanan turun pada XAU/USD.",
+      "recommendation": "SELL XAU/USD",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "MEDIUM",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Ekspektasi kenaikan suku bunga Fed menguatkan dolar AS dan menurunkan daya tarik emas sebagai safe haven, sehingga tekanan turun pada XAU/USD.",
+      "recommendation": "SELL XAU/USD",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    }
+  },
+  {
+    "id": "gnews_rss_1791448740000_Fed's Waller: M",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Fed's Waller: More hikes needed, but there is 'flexibility' about the pace - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNVlJjTS1oeE1aRmVEcC05dTZkd25ONVRidzJkTlozaEE3Q0tvQ2hPd0dYemMxNWUzTUZORnFfb0FWZUdDOVp3QUVwelQ5cjJzcV9oMl9mZmpCTnJOaGh6XzZXLXlxOWJBUVhTX05oOVhwS2hhZG1WbmppWlRRRGNDOGZneGNneTRiLXBhVHd1Z3FGc1JaZC14Qm14SVRlYi1Cd3MxSjVR?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:39:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:39 WIB",
+    "timestamp": 1791448740000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791448736000_A Top Fed Offic",
+    "itemType": "investing",
+    "source": "The New York Times",
+    "title": "A Top Fed Official Casts Further Doubt on a Rate Rise This Month - The New York Times",
+    "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNckNMd0xCc1RMemJpSlNXQVBEeVFKUktQWmFwTlBZWTFrM19DWTA1d1dtN3djS0tSbTY3VzhWYlp2NEdpQ1RIdUthT2xGMVhPNmxqRXFyUEloVVNRQWZ6S3VQeHlZaklEbGh2SWRmckNONnZXaV81TjItOTAwZlBPakZsTzRoVHpMUDVEYlFpbTJraXM?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:38:56 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:38 WIB",
+    "timestamp": 1791448736000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "BUY",
+      "impact": "MEDIUM",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Pernyataan pejabat Fed yang meragukan kenaikan suku bunga menurunkan ekspektasi kenaikan suku bunga, melemahkan USD dan meningkatkan permintaan safe‑haven pada emas.",
+      "recommendation": "BUY XAU/USD",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    },
+    "signal": {
+      "signal": "BUY",
+      "impact": "MEDIUM",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Pernyataan pejabat Fed yang meragukan kenaikan suku bunga menurunkan ekspektasi kenaikan suku bunga, melemahkan USD dan meningkatkan permintaan safe‑haven pada emas.",
+      "recommendation": "BUY XAU/USD",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    }
+  },
+  {
+    "id": "forexlive_1791448683000_Fed's Waller sa",
+    "itemType": "investing",
+    "source": "ForexLive",
+    "title": "Fed's Waller says more hikes are needed but can be flexible about the pace, downplays September NFP weakness",
+    "link": "https://investinglive.com/central-banks/fed-s-waller-says-more-hikes-are-needed-but-can-be-flexible-about-the-pace-downplays-september-nfp-weakness/",
+    "pubDate": "Thu, 08 Oct 2026 08:38:03 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:38 WIB",
+    "timestamp": 1791448683000,
+    "category": "ForexLive",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "MEDIUM",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Pernyataan Waller yang menekankan perlunya kenaikan suku bunga lebih lanjut menambah tekanan bullish pada USD dan menurunkan daya tarik emas sebagai safe haven.",
+      "recommendation": "SELL XAU/USD",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "MEDIUM",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Pernyataan Waller yang menekankan perlunya kenaikan suku bunga lebih lanjut menambah tekanan bullish pada USD dan menurunkan daya tarik emas sebagai safe haven.",
+      "recommendation": "SELL XAU/USD",
+      "aiAnalyzed": true,
+      "aiModel": "openai/gpt-oss-120b"
+    }
+  },
+  {
+    "id": "gnews_rss_1791448472000_Gold Struggles ",
+    "itemType": "investing",
+    "source": "TradingPedia",
+    "title": "Gold Struggles as Strong Dollar, Fed Outlook Weigh - TradingPedia",
+    "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPNFVfampqMWlnaTJqck1qRTVYRVZoLXZOMzdnVHc1ZWs4MzBYcVFEb3dEakFCQXVVcGYtdGNad3lTdC1qc01qRWY5X3NMLVhDZUhYbE9ISXhlOHVFaFVHbDN4VUpyOTcwQ3hHalZyU01ocjhYWjNYajI2cjE3azRuTHdQa1ZZS01pZFEtNFlHZVNBa0gt?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:34:32 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:34 WIB",
+    "timestamp": 1791448472000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "cal_2026-10-08_FOMC Member Waller Speaks",
+    "itemType": "calendar",
+    "source": "Forex Factory",
+    "event": "FOMC Member Waller Speaks",
+    "title": "FOMC Member Waller Speaks",
+    "date": "2026-10-08",
+    "time": "15:30 WIB",
+    "timeWIB": "Kam, 8 Okt • 15:30 WIB",
+    "timestamp": 1791448200000,
+    "currency": "USD",
+    "impact": "medium",
+    "actual": "-",
+    "forecast": "-",
+    "previous": "-",
+    "signal": {
+      "signal": "PENDING",
+      "isPreRelease": true,
+      "direction": "Menunggu Data",
+      "xauDirection": "Belum Diketahui",
+      "emoji": "⏳",
+      "reason": "Data belum dirilis dan perbandingan Forecast vs Previous tidak lengkap",
+      "predictionText": "Menunggu rilis data resmi penggerak XAU/USD.",
+      "analysis": "Forecast dan Previous tidak lengkap, menunggu rilis data.",
+      "strength": "N/A"
+    },
+    "analysis": {
+      "signal": "PENDING",
+      "direction": "Menunggu Data",
+      "impactText": "Menunggu rilis data resmi penggerak XAU/USD."
+    }
+  },
+  {
+    "id": "gnews_rss_1791448200000_Fed’s Waller se",
+    "itemType": "investing",
+    "source": "Yahoo Finance",
+    "title": "Fed’s Waller sees additional rate hikes to get inflation down faster - Yahoo Finance",
+    "link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxORFJRSVp4V2RMRUhqekx3aF9nSHhTLWJVSzcxZ0FQc1pkOElBY0Q5Qk9UbGc2UXV6OUdIMngxOHRKMjhJUXBsLTNTZW5qU2kxakk5b1JVY2M4U3ZGczVuWnBacUxiZDhua2RyZzFKSlE0UXdOMElRMjJPQlYxSXJYdjQyZEk5Y0xWR2xzaTU3RmphOUJRVWw1bW10M2dLTFdTWkFHNFFOWFlyU0szQlBnVk5lc0NfbURjMWtsVW14OFQxSXc3d2E1OFlXbw?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:30:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:30 WIB",
+    "timestamp": 1791448200000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791448200000_Fed’s Waller Se",
+    "itemType": "investing",
+    "source": "Barron's",
+    "title": "Fed’s Waller Sees Multiple Rate Increases Ahead to Cool Inflation - Barron's",
+    "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQOG9VNFdUSjJ1R2s4SXVFY0tkS01DVVNIMnVsV3Y3R254UnhNQzEtRXJRdDBCdkNVNDN0MDdNQ3hrYmVTd3Q2Z3Q1YU9fSkJESXZ1LVNQMGJDS2hQTFdhTk1XNTF5TXhRQ2ViaFBuN29wallIS25GSExHLUhMQ0tVc19n?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:30:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:30 WIB",
+    "timestamp": 1791448200000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791448200000_Fed's Waller sa",
+    "itemType": "investing",
+    "source": "American Banker",
+    "title": "Fed's Waller says more interest rate hikes likely on the way - American Banker",
+    "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPSUcxMENaTUxSUmdsMTAxeHdEZXJHZDhkZGlmbFJqaloyNHVjb1NzajRZVDhZV25zU2E4bnBvLVdhXzBQMXpIZmpaekg0cDA3eGhXY3BBNVBMYVZoSmRRYWg0TjZXYkNfZUlZR3FrQjl5M3UzMFFxMkp2bzBtbmNwU0ZHRHFKcWM1b0hVSVhVSnUxZDJfcXNsb2Fncw?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:30:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:30 WIB",
+    "timestamp": 1791448200000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791448200000_Fed’s Waller Sa",
+    "itemType": "investing",
+    "source": "Bloomberg.com",
+    "title": "Fed’s Waller Says There Is Some Flexibility on Rate-Hike Timing - Bloomberg.com",
+    "link": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxORGo4S25aOTRIaTc0bTdKMTA1SVBSSGdEd2ZPb3JaQ0E1OWNRMlFOSklfaE9UamxmM3BVN1V4TTJPTFB1NFN1MVFCTjFNVXA0VDR6MXZWTm9JR2wwM0l1b0FXYkY4d3lvV1VWblQ5OWVhSXZPQkFWTWJSUVVoZmFGRnpVUWZhbnNPQTZtVEJTZ2dZZ0VuVnZrRTJFcTMtVktFMldpdnVia1VFejJabFRueW1rY01TV3BROWQtdVJKS1NMd0dVNTAxcg?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:30:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:30 WIB",
+    "timestamp": 1791448200000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791447961000_Fed Chair Kevin",
+    "itemType": "investing",
+    "source": "Yahoo Finance",
+    "title": "Fed Chair Kevin Warsh Fired Back at President Donald Trump's Interest Rate Critiques With a Blunt 9-Word Statement - Yahoo Finance",
+    "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNelNlSV93QUlrUTJWYUJMYjhmb09xYl96Qy1IeThkcGhKQWljYksybkFJT2MyZ3pSdkg2dnZLUTFkRFVkUzh3V0xGY2NxeVJXLVBUYWI3QzNDRHljTllfS2lrS095Wk11Q1FtNnYtUlJpTkxBemVwaU51VmwtQ0QyRW9uT1ViSEJaX0FocWtMc0lrTDJtbWVB?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:26:01 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:26 WIB",
+    "timestamp": 1791447961000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    },
+    "signal": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    }
+  },
+  {
+    "id": "forexlive_1791446703000_Market playbook",
+    "itemType": "investing",
+    "source": "ForexLive",
+    "title": "Market playbook: Why central banks can't just print money to stop rising bond yields",
+    "link": "https://investinglive.com/education/market-playbook-why-central-banks-can-t-just-print-money-to-stop-rising-bond-yields/",
+    "pubDate": "Thu, 08 Oct 2026 08:05:03 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:05 WIB",
+    "timestamp": 1791446703000,
+    "category": "ForexLive",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791446400000_10-year-old Plu",
+    "itemType": "investing",
+    "source": "Pittsburgh Post-Gazette",
+    "title": "10-year-old Plum girl leads U.S. to gold in an international futsal tournament in Brazil - Pittsburgh Post-Gazette",
+    "link": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQQ09LamFQSWdtTm1GemhTTnhqMlBhVVltY2RGbF9JRnlLZ1F5WlA4YWtRaXdYUmZ0Ni1LWW91Rl9TZ0dlNnZlZ0I0eFhkRlpNdUtrNnptblg2QmhYeU53QU9UcnRXWHBwRlU0em5vUHZFYW1RSFpSTkw5NVNUUElKcnBMQlBfQmxxZVhSeTZrNVFGMDlaVDhwbHl6S0l0WG9BVDhZbkZhY2dJNEJsMVB2QVlDTDlYbFlnQ1d2NjlWd0VhazdUeTF2MA?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 08:00:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 15:00 WIB",
+    "timestamp": 1791446400000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "forexlive_1791444023000_Gold 'hunts' st",
+    "itemType": "investing",
+    "source": "ForexLive",
+    "title": "Gold 'hunts' stops under $4,110 support and rebounds: The bias remains neutral/bearish as oil rises",
+    "link": "https://investinglive.com/commodities/gold-hunts-stops-under-4-110-support-and-rebounds-the-bias-remains-neutral-bearish-as-oil-rises/",
+    "pubDate": "Thu, 08 Oct 2026 07:20:23 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 14:20 WIB",
+    "timestamp": 1791444023000,
+    "category": "ForexLive",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "forexlive_1791443990000_European stock ",
+    "itemType": "investing",
+    "source": "ForexLive",
+    "title": "European stock market open: Stocks tumble as bond yield pressures deepen market selloff",
+    "link": "https://investinglive.com/stocks/european-stock-market-open-stocks-tumble-as-bond-yield-pressures-deepen-market-selloff/",
+    "pubDate": "Thu, 08 Oct 2026 07:19:50 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 14:19 WIB",
+    "timestamp": 1791443990000,
+    "category": "ForexLive",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791443340000_Gold in the Cra",
+    "itemType": "investing",
+    "source": "North Coast Journal",
+    "title": "Gold in the Cracks - North Coast Journal",
+    "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9nandxVklQaHplNGxoTzlLeXgtSFhJdTlNaTJSYk1qRTViYWtqZEV1ZU0ydXlMSGY4VVdDRkJoN3c0MnJaVmIxdG1EOFpmc0oyeFRwUDhZdFRhUGV6RVVnM09UTXc2eGpVNlUwNHp2RTd5bWs?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 07:09:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 14:09 WIB",
+    "timestamp": 1791443340000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791442684000_EUR/USD to 1.10",
+    "itemType": "investing",
+    "source": "FXStreet",
+    "title": "EUR/USD to 1.1065? Gold threatens $4,100 as Bitcoin tests support [Video] - FXStreet",
+    "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPWUJuV3Blb21wUmZYLXhVemhBbGxsTlMtOGg4dWUzd1JLbmRIREVzX1BPS3JqRjd5akgtdmhUQ0JnUDAxeXFyZVNJLUxkbDQxc0VRMTVHbkx6S1U0WUxHMEsxMVFrNXBKc1RHSzhaSHhoRUdPaW1uRmVJSFFya3BqY1dLdmhnSUowS0ZLNnVDSFF2WVFuV3g1SVJGbFF4akRXTmxnNXJMblhtVFZrRmVwMDRVV1VaZw?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 06:58:04 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 13:58 WIB",
+    "timestamp": 1791442684000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "forexlive_1791441033000_Macro pulse: A ",
+    "itemType": "investing",
+    "source": "ForexLive",
+    "title": "Macro pulse: A stronger dollar risks setting off a vicious cycle in emerging markets",
+    "link": "https://investinglive.com/education/macro-pulse-a-stronger-dollar-risks-setting-off-a-vicious-cycle-in-emerging-markets/",
+    "pubDate": "Thu, 08 Oct 2026 06:30:33 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 13:30 WIB",
+    "timestamp": 1791441033000,
+    "category": "ForexLive",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791439318000_Congressman Que",
+    "itemType": "investing",
+    "source": "https://dominotheory.com/",
+    "title": "Congressman Questions Fed’s Hong Kong Liquidity Arrangement - https://dominotheory.com/",
+    "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPdzFYeHlYWlhyYW4zSm5lV3lONG9PWUNVRlBjczlENDk4OF9RMEZLT1h4QnRSYWRRNlVDU1FSZFVhM0ZERVo3cmFFU3VuNTdzRTNnWjVGd0d6UGZCXzRDbDI1WWV6by1TQXlraHpsZmY4a3BMWXA3cnA5TWNET0p5RE5JTDNWdjJRa2V6dA?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 06:01:58 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 13:01 WIB",
+    "timestamp": 1791439318000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791434960000_Gold with No Dr",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Gold with No Drama | Page 4497",
+    "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5CTGVuTU83T0NWazlBSTgzMkdvaWhnTFVRYXpocHFEMXFpTG11OXNUTEpCLVMwa3p2TWRIS1dLRS1fVVNDYzBzZFRuNjFfZm9fcDZMeGNMT000anRKbGdMMGg4Q1dyWjJBNFkxWF8zcFN3V3E0OUtMS3JmU1I?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 04:49:20 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 11:49 WIB",
+    "timestamp": 1791434960000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791434474000_Phoenix histori",
+    "itemType": "investing",
+    "source": "FOX 10 Phoenix",
+    "title": "Phoenix historic district residents fed up with property's decade of violations - FOX 10 Phoenix",
+    "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE50UXd6VUtlc210VUdJTWFiUEgySHo5aVdjeW85bnk3Nm8xQVVyOFMwa01NV3VaT1o5QjFobU5PWmV2bndQeFg0bjlyamdxOXE3V2x2bHo1enVlQkxRQjhqU3F1MjhEQdIBa0FVX3lxTE53SDN2M3F4dzlyTlhMQnlpSVRzSkwwcjFZUEU3UDdINFhIVWkxY3JJaW5TZk1Zc2lfcWRBUVN1eGVtMGpZd2lETDFQY2tLVEhRRHYtUURhQTg4eVNsLU9VZUZEdE91cjIza2h3?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 04:41:14 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 11:41 WIB",
+    "timestamp": 1791434474000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791433762000_Eardley, Stiffl",
+    "itemType": "investing",
+    "source": "Altoona Mirror",
+    "title": "Eardley, Stiffler help Lady Tigers bring home team tennis gold - Altoona Mirror",
+    "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNNFBlaEx6MmNmSTRKUmR0TjNOejlIM095a1NKS3JkUmhjQWw1N3ZPLU9SOTRuaTBkRW91SmVmeWZQXzlZWmhDX2dnY1J3a2ozWnpzMXJ0NmdNcmZHZDYzOGFZczN5UVRFM19HSWZqaGN6R2hnN1Q2QWY1UG9iT01ka04tUWM2bVliNTZ6MzRadzdVcHlpTGVOWVFwVzFiQTRSVEt1cExEbkNhb0o4Y0d4QVNQakN2TDJPTkJUQw?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 04:29:22 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 11:29 WIB",
+    "timestamp": 1791433762000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791432093000_Data center boo",
+    "itemType": "investing",
+    "source": "The Washington Post",
+    "title": "Data center boom is pushing prices higher, according to Fed officials - The Washington Post",
+    "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOY1FrWkF5TURpdC1qQ3NITm9zVDhQVXJaaXM5aVVYZ0doMEhWaTNid1Q3b1Bfdzg5c01lVGVSOVhjZHhBQTZEUlhHR3diMG96NnBZR25RQWp5U1JuWGJYOHNIT0FJNEd6TVlubGNwQzRGRXA0bUZsTno3YjFmUVpJNVl0NFozV1F4T0Z2QUhkRVdNQW8xR1Nab1NIRWl0VlZaMVRic0F3ak50TzlYSW8wRA?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 04:01:33 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 11:01 WIB",
+    "timestamp": 1791432093000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "forexlive_1791430895000_investingLive A",
+    "itemType": "investing",
+    "source": "ForexLive",
+    "title": "investingLive Asia-Pacific market news: Oil climbs on three Middle East risks",
+    "link": "https://investinglive.com/news/investinglive-asia-pacific-market-news-oil-climbs-on-three-middle-east-risks/",
+    "pubDate": "Thu, 08 Oct 2026 03:41:35 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 10:41 WIB",
+    "timestamp": 1791430895000,
+    "category": "ForexLive",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791430884000_Silver Cycle Ju",
+    "itemType": "investing",
+    "source": "Investing News Network",
+    "title": "Silver Cycle Just Starting, in Growth Mode Now | Americas Gold and Silver's Paul Huet - Investing News Network",
+    "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE16a0ZjTjdlOThoWVRDeWRKNU45WWRBdW5FZXRjMW9tYXNsZG5BZ0I3ckVlOHl1a1cxRXVDOEdPVG9hTTJ5ajQ5QlFqZjNldW1uMXhYT0cydjZTczJDcVJINTl3cVBoSnlO?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 03:41:24 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 10:41 WIB",
+    "timestamp": 1791430884000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791429540000_Fed Minutes Sug",
+    "itemType": "investing",
+    "source": "Yahoo Finance",
+    "title": "Fed Minutes Suggest That More Interest Rate Hikes Could Be Necessary to Calm Persistent Inflation - Yahoo Finance",
+    "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQRDJSVWZQU0NvUEFHbjFYLWdNbjVmOHFRZThRTUI2ZVV3SmJZNlI4SENmTlh3a1NMOTBIT1JCZVdVMm11eWlvYk8tQUpRdzJBY3R1R005Z1owTk5BLWhrX25VMVBibUMzN3RqNWh4LWgxYmpiZmpieDhCdGhnSTBUSFR5Smw4Q0YzNFJjaHVMRTVVNW5RWUswckQzWTB4Tkk?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 03:19:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 10:19 WIB",
+    "timestamp": 1791429540000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791429240000_Gold prices rec",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "Gold prices recover from two-month low as dollar rally stalls - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOZERPbHV4UkxnSVhHbmd6SUx4SEtFSGU3bVN0cjBVdmxnelNSS1RpVzc3akVzVGxwblpBZFNfdVM0dENpWW9uWnNyMFJRa2NvOFZEcS1wT3VkNk1ISHhYaTRTMW15UkFYLTFEdHhvRHpIdEdlUFZPakxDUnRxc2pDUzJELV9MZk5qQ0Q0NEY2S2pnRFk0LThWdjBSVkg2SXPSAaQBQVVfeXFMTjhneXF3VlNWMWgtRDhFcy1VT0tFR3pKdlhwS1Rtal9YQ2x4VDUtNkNvNUxXQUFsNnFwTno5V3VEY2xEbml6R254NGhQQjZlSWJ6Q0hnVHkySFpqTFJCZ0M2ZUhuUzBsVEl4WG1KRnc1amZjeHVPVzI5bkJUSEJKeVFzQ2dVYW8tdnpSYnFFVGFlNWxPR0FYYmNNUDJvLWY1eHhMVjU?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 03:14:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 10:14 WIB",
+    "timestamp": 1791429240000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791428723000_Donna Hall hono",
+    "itemType": "investing",
+    "source": "WGXA",
+    "title": "Donna Hall honored with RIAA gold record at Comp luncheon in Macon - WGXA",
+    "link": "https://news.google.com/rss/articles/CBMikwNBVV95cUxQMVJBcGpZX1d4U0U4SWticVBaZENSWFVmN2VCOWtIWWpRUHhoZFBzQk5iMFM0UWtaeE4xSEkxUVdvSUpKYzhxZmVWVWxZanhKSDdTbUo0UjdIUGlObmQ2X2dEUjYtUnZXbWdYdTVCbHFoWXdMQVZ1U2FOX0FlenliY01YOVZyNVBMemhLRUo2U0RJLTdMUU5EZ3FmT2pxdnNIWVNqeFg1OXJMQUh3NjlmeWFBNndsOGhoZFVmNG9OamdBdDNwZUpvVklodURYVnQtajBHakRTU0twZ0hKaVR5cS1TbldkZF9QT2tPaHRib3NHUHBETENfaVZZZ2pnUjMtR3RjOTF5WXh4MHd0UmJ2LVpxQXVXemotN2tWUk01MWtIakhnRG1VbEE2NVNRWVhzQjMzZ0pDVDFiY2lnbElEUVRyX2J4WE14dVczbU1pUlpRMlpWeWNobkxrNHVWbExPNlZqakxJck1pMVZMU1pxcDZqZjhZZ0lxVUtkdHBmMTlKZVo3d0RvQ2FrMDhUOUZTSVE4?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 03:05:23 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 10:05 WIB",
+    "timestamp": 1791428723000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "forexlive_1791426184000_Gold rebounds f",
+    "itemType": "investing",
+    "source": "ForexLive",
+    "title": "Gold rebounds from two-month low, but Pepperstone says $4,275 break needed",
+    "link": "https://investinglive.com/commodities/gold-rebounds-from-two-month-low-but-pepperstone-says-4-275-break-needed/",
+    "pubDate": "Thu, 08 Oct 2026 02:23:04 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 09:23 WIB",
+    "timestamp": 1791426184000,
+    "category": "ForexLive",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791425745000_Fed officials f",
+    "itemType": "investing",
+    "source": "Axios",
+    "title": "Fed officials feared inflation pressures could spread, minutes show - Axios",
+    "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1YMlA2bG5CYS1MbGxWZE5Ja1EyRllGTFU4aVlscndFU09MSEhJNGRPVVZONllkb3ZSa29vMHNkaERCYjgzZjVieHMyMVVyQVZjRHhWTlJ2Q2NjeV9DM3F4cVdtc0xMR3c?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 02:15:45 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 09:15 WIB",
+    "timestamp": 1791425745000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791424671000_Men’s Tennis to",
+    "itemType": "investing",
+    "source": "Naval Academy Athletics",
+    "title": "Men’s Tennis to Play at Regional Championship, Play Host to Gold Invite - Naval Academy Athletics",
+    "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQLXZ2M0laNGowY2lOZ21tV2lITElpUmw5eU5La0l0YVljbXdSeS0zRXNDT0pKTU5DTlJrcEhpbkVuRHZLLWYxbk9FVmtReGNEdmgwYklDaWg4RHkxX29LTUc5anYxZGg0bFpOX2JlamQ3LUp2UmNXSWNaRHFVQVd3cXlXajhNZHNuc0Q2VXdJUkM4TnVPN3NfZE1Wc2hzOGYzek9WS2Z1NC1tbFF5Q2d5NWpldHNCT2EtOHBNTjJhWkphdw?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 01:57:51 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 08:57 WIB",
+    "timestamp": 1791424671000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791424219000_Gold steadies a",
+    "itemType": "investing",
+    "source": "Investing.com",
+    "title": "Gold steadies after nine-week low as Hormuz tensions lift Fed hike bets - Investing.com",
+    "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPaG1BMGk5T0gtaklpRnJDWVZCWmw2N1d6VlRjcF8xaTFoYW5kYVhMWkMtclAtNm0xd0QtVTF5a2RhMWZkdUUzMm1NbjBzV1pyQUNqY2h4dkxqZ2lXTHpPY0Z3T3pJa2htSVlOWmdidzZmZVdFWFRuMXE0elBoQzg4cGdRZU9waG94djU1Q014bEgwWkJMT0lIZ19HYjV5YnNTRFE4SzBsZW5uWjd0LWppWExJWFEzOE9MeldJMGhqZHdNUQ?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 01:50:19 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 08:50 WIB",
+    "timestamp": 1791424219000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791422460000_Gold pauses dec",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Gold pauses decline after two-month low as traders weigh US Fed move - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQaTl2VDRiV2EtanRNTGxRVGc4OEhQUUhZOEV1MXduVGNBOW1wa2V6N2lqaXJaX2hiVnpPdU5kSC05VGNVUV9ydExDbnVral9vVW1qTFlvYTZSMGY2cTFraXRJeEthaEZmMFRuVmtVYzc2azRkYlM5MVBvWG9nUGY0LUFBX2VmZHNWTkxHTVZGdUtvTWd2NGlJbg?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 01:21:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 08:21 WIB",
+    "timestamp": 1791422460000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "forexlive_1791422310000_PBOC sets USD/ ",
+    "itemType": "investing",
+    "source": "ForexLive",
+    "title": "PBOC sets USD/ CNY reference rate for today at 6.7367 (vs. estimate at 6.7254)",
+    "link": "https://investinglive.com/central-banks/pboc-sets-usd-cny-reference-rate-for-today-at-6-7367-vs-estimate-at-6-7254/",
+    "pubDate": "Thu, 08 Oct 2026 01:18:30 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 08:18 WIB",
+    "timestamp": 1791422310000,
+    "category": "ForexLive",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791421860000_CNBC Daily Open",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "CNBC Daily Open: Another Fed hike is on the horizon — but when? - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNZm5HYTdHemdhX3cydXdqckdYWHkxbW9wQUdianZyY19ValBBYjRoWDd2OEFqa2Y3T0VRaDZlanh0X3RRSUZmWnlJMkt2SjJMYURKQm1ZV3l5R09qenZ1MTBIRVZjaFRfUTJOYjVaY3NhbFdQSGFtQWZCODY5c01VNm5aNHBJZmxS0gGOAUFVX3lxTE4yMDBIbWVHeXNZZXFtWEtpd0I3NkZkQkxKRkFZWjVmeWdEeW5uLXZ2R1JJX19lWHZQWWVzZGhhQlVxaTlnNHNqUzdvdFV4TE5JVG1tNTlqQ25uVmZPWW5lU2hJM2ZZbnRJWkRFX243OXBGVm8xQzVfT2c3SHRQUkRCVFQ1eDVnNmVORmZ2MkE?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 01:11:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 08:11 WIB",
+    "timestamp": 1791421860000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791421222000_Gold surged to ",
+    "itemType": "investing",
+    "source": "Pittsburgh Post-Gazette",
+    "title": "Gold surged to a record, then fell hard. What happened? - Pittsburgh Post-Gazette",
+    "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQU0FWX1NWRkx0M1UweWRqY1FlcmNtYnZIYnBfVDdBbUV1bnlYUnhicVg3VmJ6WGZYM3dfWURTOEUzVXdwX1JGWDcxOGlCX2ZqU2ptd0VadmxqSnhHTVE1VUNoSFpuVkFuNEZaQ0Jfd3g2WWJUbW8zOW9QSGJtc3lpMkU3QVZaV1NSVXNPdFdPVWl5WDJWazk5aFNuQUlZcXprRzh6cVZ5SWN3TEJz?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 01:00:22 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 08:00 WIB",
+    "timestamp": 1791421222000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    },
+    "signal": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791421198000_Dollar steady n",
+    "itemType": "investing",
+    "source": "WTVB",
+    "title": "Dollar steady near 18-month high after Fed minutes flag inflation risks - WTVB",
+    "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQNTBaazEtZTdrN2R4b0oxZVVSS254OUtyQzY2bWNmcXpUQWl1MWdXU1lYZ0NBMU5KNWM1Y0ZqQUlaZkp5NGRvUnk4UXh0NmFwWXFpM21hb0lRTkVNZEFZMXJNRGg1dU5NcnBaM2QxSTdLMEh4Y3VSMHF1Z1JmdVNscV9VQk9NMEluM09LZUtrOA?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 00:59:58 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 07:59 WIB",
+    "timestamp": 1791421198000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791420335000_Fed Minutes Und",
+    "itemType": "investing",
+    "source": "Forbes",
+    "title": "Fed Minutes Underscore Hawkish Policy Outlook - Forbes",
+    "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxQOFdDNVhPQ2NBXzJSZkRRWWMwUjMtYzNSc001VUd0ZmJpLVVvb1Q0QkJvT3ZyZ05kSk1XX3hKdmhPQVNLUV9JRUV0bURiWmw4eTgwcVpEbDFIdE1SU25HS2NuZ2NRSGJfZUFidXA1RmJTNVFmanRFLUdWU05Qam1TVlQydGg3aHdCd0stYUdKYnNXcS1TX3ZRUXVWemUtUQ?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 00:45:35 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 07:45 WIB",
+    "timestamp": 1791420335000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791420180000_Dollar holds ne",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Dollar holds near 18-month high, euro lags as bond yields rise - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNZEthRFNTdnR3aGRScTNFSW1KYVdtdVRBRU9EQjBqSVpTWDhaaDdiMGRSZGtKT3ZHU1VuOFRmSDgxOVFkeGRqazdPbWd4SXJ5RFZLenpVWEhCQ3FoU2JvaEtEbDE0VVQySXNqckF3ckE5cHpZVDNaYlptMXdyX1UwTVdvVU1PLTZJUFM2SXZXdzE2TWl5elctQmtMU1NtZFBC?oc=5",
+    "pubDate": "Thu, 08 Oct 2026 00:43:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 07:43 WIB",
+    "timestamp": 1791420180000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "forexlive_1791419180000_PBOC is expecte",
+    "itemType": "investing",
+    "source": "ForexLive",
+    "title": "PBOC is expected to set the USD/CNY reference rate at 6.7254 – Reuters estimate",
+    "link": "https://investinglive.com/central-banks/pboc-is-expected-to-set-the-usd-cny-reference-rate-at-6-7254-reuters-estimate/",
+    "pubDate": "Thu, 08 Oct 2026 00:26:20 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 07:26 WIB",
+    "timestamp": 1791419180000,
+    "category": "ForexLive",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791417480000_Hawkish Fed tri",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Hawkish Fed triggers emerging market outflows in September",
+    "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOcjJ2Q3U5TTBHTkNWUVRPZUp2ZlQ1WWl4MmRUbmtBY2ZwanVNUEY4enZqS0xlcVBJeW9mX0puVXNyU0s2QjM1Q2RYeUZPcktiSkpqUWlURnAxX3FTbEhsQ0FyZXdpUHBfTzE3Y3RlNWo1M0tBZnhEMjhEdkJvRExRVlZhY0pxcklVUWZkOWdVMEpJUTJmNk1INGRNcTdNaTNEc2fSAacBQVVfeXFMTlpRRk5RdjRjaUFybXFqanVpV2RwQXlZYi1FclYxS29VVUJydUUzbjZ0ajM5NGdUQ1Q0N0dTcUl1enNFTDZ5WTUybkRTUEZCWTRPU3VXZ01nWm5LUWx3RmRTaEZ1Z28wbUppdDY1MGkyNlBvOWFGMzVsM3FZMmJvRUU2NTZHYzZ0SWxWaC1yUWozTHNsMnl3ckdGVHY5MzRSNGNBczJ0dFk?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 23:58:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 06:58 WIB",
+    "timestamp": 1791417480000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791416240000_Gold with No Dr",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Gold with No Drama | Page 4493",
+    "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5ydnc5Zk54dE80bnhTMzhhemhzOGxJTjIzSTJaZjZLMTZ2cHVUbjRGOTBRdENGSDQtbGNFcmZVenJZRHJFVVYtR3JRYUdNZjRubmp6ZUtHVHRGbHlTd2YxMnBUUW9CRmhTNER5VE1fb3pwZ2ZhRXFqNlYyNnk?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 23:37:20 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 06:37 WIB",
+    "timestamp": 1791416240000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791414900000_1964 Olympic go",
+    "itemType": "investing",
+    "source": "Upper Michigan's Source",
+    "title": "1964 Olympic gold medalist Billy Mills visits with Baraga County students - Upper Michigan's Source",
+    "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPSTJ5QXZ5YWJWNE5ZQmRYb2Y0dTIyMDVQMWtCT1EyakRCdXAyWGJXXzRuMHhWLWRQcm94QjF4VVlBcHRPQTNoODFFM3hWdXFNYU90UGF5MEtpUWRQYXhWY1VDZEt3NFEwUVlmS2txQmtoV3picEJLcjJ4MlZVZmxiSU0zSlhaS0hkM2hmTGxhd3dXb1hUNHh0WmluVnp5RHZhSmRVeUlMdkVMVkFNUFFZSHFMTFMtS21ZeEJ0ZzVrSdIB0wFBVV95cUxPVTlzYUh2MDUyUWYxNDVxMXpJQTlNTmdLRVlzLUF3UUtZOS1xaTJPb29SSXdtMmpjSzFxNUtLcE13X29qR3NQM2VURGk1RllBMkp3QmhnWl9PRWhMeUVBa0NpWFZyUHlaRmN5bmNWcUUtX19TVnBZNTVZTXE4NHlJdC03dFloV0ZWOU9rZW1QOV82X2JXVG95QnNnVWpjQ2hiQ0pXMHZ3SG9iNkZraVBTam9tRlVtdG5wZlN6clhTSjVUa2w2Q2VSbHFac1hkalhGd3pv?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 23:15:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 06:15 WIB",
+    "timestamp": 1791414900000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791414857000_Wall Street end",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Wall Street ends lower, off record highs, as Treasury yields climb - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOYlBxMHUzb2ZDaHpMY3JBZUl2Rk9XSE94bjQ2aFVndHhYeU4zS1Rwb2I1SlFJWjVpaE9sS0V4c2ZiQ2JsMzd0R0lydzlFejhJVkNYbU5ZTGVjeW9tWUJtTmUzX2VwY0N1SnpLVmdvQWRvM20xS25hRmhXRDdHVUppRk9hS2JhVExxdVUtX0hfQlNqWnd0OUhHWEpaa2w1Z3hXNVRkaw?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 23:14:17 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 06:14 WIB",
+    "timestamp": 1791414857000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791414149000_Richmond Fed pr",
+    "itemType": "investing",
+    "source": "Salisbury Post",
+    "title": "Richmond Fed president speak at Rowan Chamber breakfast - Salisbury Post",
+    "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxPVHZhMER1b0YxbXF6Nmd4MW96MjZjUXg4bHI1M0lVcnNmQWEyZnpXcEhNdGdVbWZDa3habEM5TmZDX21FNnpNeHYtbHFnOTVmaldhelVYZHA3dFV5M19EMVNSaG5tdW5DajNrVURueEZRZjY0Q0tqRlEtS2Z6QTZEMFRuVERrTnA0a0dPOW1hS3RQYTJHR3J4ZFlvRWJ6dw?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 23:02:29 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 06:02 WIB",
+    "timestamp": 1791414149000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791411480000_Fed officials v",
+    "itemType": "investing",
+    "source": "The Hill",
+    "title": "Fed officials view another rate hike as ‘likely,’ meeting minutes show - The Hill",
+    "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPcmJlVl95MWJQSzkzZUNnTEhfeUVBa28wOGNnOVFISUp2Ni12V2VaZTFLaTZmRlRVX0pEOVJvYXdvSm1LaElhYVFNdS0tWlVtbVZzSkplcm1aNGNNMlNrT3drem4yLTJ6RVVkc19zVEdOWnY1VzZYaXZPdlNfY3RPUTJ30gGHAUFVX3lxTE9qUktEcm8zYVU3VUhNVU5neGNlOWdzYUNpNjdEdmZRVTRlX0tPUHVXeE1ZdHB4ZFpvOTlxVDYyZk1Denh5TnY1SVFXVjY3Z3dqSHdkT2lfejV3cHMzM2Y3ZnZpanRjQ241TXdjdndSNHY0b0RZbFNuUl9kMzZOdzQ1eXFNdzVEUQ?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 22:18:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 05:18 WIB",
+    "timestamp": 1791411480000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791410392000_Gold, silver sl",
+    "itemType": "investing",
+    "source": "Kitco",
+    "title": "Gold, silver slump as Fed minutes keep December hike risk alive - Kitco PM Report - Kitco",
+    "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQVzh6RF9GRFJ1SjJ0V19DWjBpY0J1eV9ZbFJ4dmFoRXdyeWNRSXNJa3pGV1daWjZrT2MwUFdpT2p1SnBiT1lfREl2cExkdDBiakNyYlpqd3JTdnBoMjhFX1N2WlhwSS1PVDhSV2tQZ0tHbm1hcVNnWm14dUJLaUIzX1lKeFZyWTdTV09uRFhnLTNtZmhDSzJCRkFhVmtGb1l2VXc5dW0wSTZ0ZTRjMElVTkYtd0RGUzhGdUhwbWJ3?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:59:52 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:59 WIB",
+    "timestamp": 1791410392000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791409500000_'Fast Money' tr",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "'Fast Money' traders react to latest Fed minutes - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNQTlRSk1BbENJMThuNEFLaWY5ZnVtQjU2cWhiQmU0SmxmQkFqMWkxMUNYejZjTG0xVWJVUXdfcmJlWjVGT1FESDVjNC1xUUZGV01jZllGaW5aSUVReTVnakRVRG1jUEUwQnFVcVprX3dMbk5pb1g1dmdmYmVtUUlJQjVHMmNFMjF1U2FGWWZra3FqZk0?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:45:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:45 WIB",
+    "timestamp": 1791409500000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791408867000_Fed minutes sho",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Fed minutes show some officials want to prepare for market stress - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQOWFKZEFfR182VlUzeWdFaHJOYlVxQ3FxYVVnS3Z4VXdnUlRZaGtIZkxocjFlejVyY2lKbHA5UEw0bUFUbEhRaExnTUMzZWlPWmFMQkdlVU94ejB3bjBGdGFfYXlwX0c5M3RMRDJ2NGNmU0pNSWo5X200MTZGdzJuREtOekJpRGEtZHV1ODZUTEZ5empUOFU2ajFxdF9TaDNQMndvTnFn?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:34:27 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:34 WIB",
+    "timestamp": 1791408867000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791408810000_Fed policymaker",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Fed policymakers divided over rate-hike logic in September, minutes show - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQOVl1b0t4RWF0WnFRODUzeHAydHMzOFl1U0lKbEhOa3ZSbG1GdDdubllBRG9raTZ0VllPeWJsUEFmOUlLaGZKYkd1QXo0dEFyUzZCUjdKM0NQeHdCeUZWU1hBcTBNaGJIaVJwVkluZ3Y0elloSXRyRHJkek1VdUxJdkV0NV8xSXJxUFdOVjBJVmFRcm5Na3M2ZGlodGdtcEk2NFlnWnZXVUNQSlJBUUFUSmJiOA?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:33:30 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:33 WIB",
+    "timestamp": 1791408810000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791408292000_Gold, silver sl",
+    "itemType": "investing",
+    "source": "Kitco",
+    "title": "Gold, silver slide as yields rise before Fed minutes, 10-year auction - Kitco AM Report - Kitco",
+    "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNUkZaU0hSZ1RZSTBYajJOeDNCeTB6czRHY1dCMmx0a1d5NjNVblRsNFV0TlB6Qm1Xd3VMTnV0a29jbS1wMzdFVGYxLUxLelExUDBlVW40b1NfSE9DUHdfUUN2NUhKaEc5NGRRQVpKWXNjQjhzdWN4cVExZmpYbFFmN3kwYnJCb0lTa0ExQVJmQW1uT0hvUENMdzFrV2Y5N3BvWndUSV9URVVNNmxsRGpGU1FhUVk2TWs5X2pR?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:24:52 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:24 WIB",
+    "timestamp": 1791408292000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791407243000_Ticker: Fed min",
+    "itemType": "investing",
+    "source": "Boston Herald",
+    "title": "Ticker: Fed minutes: Another rate hike likely - Boston Herald",
+    "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPa3Nnc0E5cmNBcTlRajVQdVpZaTdEWElXZDBnODZqX2F1bjQxRHN2UWYtU0w3RFBNcDh6LXVXUlEzTkg2Q0dDS3pEZHRmRm00QzJ1QnVIdnd0ZVZHNTNWVVJqSjlKckM3TmVSa0I3dHpOTlNUaFhBdHp0bGtpbUlmU0dVYW1TbEdTVDZ3cQ?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:07:23 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:07 WIB",
+    "timestamp": 1791407243000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791407088000_Watch Fed Minut",
+    "itemType": "investing",
+    "source": "Bloomberg.com",
+    "title": "Watch Fed Minutes Show Hawkish Unity Behind September Hike - Bloomberg.com",
+    "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQYndBaDRsVWREMGJGZ0hjbi1yeVhaTHRuT1JETzEwR1MtbGwzYmZ2VERTVnY1U0NqUlU0MnZ2UTZQTkozazVVYXl0SDJTMTZCRWtlUXJkenAtVmFLZTE3d0tCakd2S2hOZEJFdXlKRXdKX2YyemM5bjhHdDhYU1k2RnZ2U1J3UzJVUWtKTWplZzNxTXpQb2o1aA?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:04:48 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:04 WIB",
+    "timestamp": 1791407088000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791406956000_Sacral Neuromod",
+    "itemType": "investing",
+    "source": "AJMC",
+    "title": "Sacral Neuromodulation Still Seen as OAB Gold Standard in Review - AJMC",
+    "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNZzFfeDlCTGtBTzBsUjByTmUwN1RlSC1DVnNnZDFXb1hDWmwwN2RpYlNGNGRlRDFpS09nV0FpcW91bUtnUW5xTmNuZFhUVHVTYllrXy1ySXlWNWpSUXFvdGZMckszYzl0a3BsSDR5T2FjYTJFVTNwQVp0dHNLejZMREMwTVpTaHkyM3g5VkNDbjBGTXk4?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:02:36 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:02 WIB",
+    "timestamp": 1791406956000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791406921000_Fed Telegraphs ",
+    "itemType": "investing",
+    "source": "U.S. News & World Report",
+    "title": "Fed Telegraphs Another Interest Rate Hike This Year | Economy | U.S. News - U.S. News & World Report",
+    "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOOEhjMDU4NFJob2h1bXdWZUlrRE52N190X0FXTnpUQ3JYZU16dWNYYVhyOWdHTF9TZE50VXR0X0otWHlBdklleVJlNmh4aWdYWXBLYXF0QkM2MHZtSFpLTmM1Zl9KS1FkRF9uQms1SlF5Y19ScmZSbnFJbHhxZEx0NlVRSDlOYkpFblhCMkZHVUNzWGZtdkJuNGhuZjhPV0JYUGVWeXNmdjV6WlU?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:02:01 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:02 WIB",
+    "timestamp": 1791406921000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791406920000_The Fed raised ",
+    "itemType": "investing",
+    "source": "The Independent Florida Alligator",
+    "title": "The Fed raised interest rates for the first time in three years. Here's what it changes for UF students with loans - The Independent Florida Alligator",
+    "link": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxQb0tzSnhoR2RCSjJpRDU3MEZONWl6NmZLRHp3OXhqdWdhREhjbG5sY0NSMUsxeHZ4VEVLUlR5TDRsdExzYUVfNWRSdXBIeW9mdjNMME9TS2RqaENJUXNCM012RTlLQnZCTWZZUGJqUVczSDZLcW0wbUUtVGViRk9VaDNMUzd3Y1dtTGdFUkx3d1kyb2xhTGhZZk9lX1FOclUxZy02N2VvV2tZeGZ6al9jM0pQYWJBYXo3b3FsLTJWUndRbFphQ0JFdUJUeDY2Ty0wRTlySTd0cFhFU2RKSXl6V1dBbl9ab2QxcWc?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:02:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:02 WIB",
+    "timestamp": 1791406920000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791406886000_Do photos show ",
+    "itemType": "investing",
+    "source": "Snopes.com",
+    "title": "Do photos show gold statue of naked Trump at European Parliament? - Snopes.com",
+    "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE12NFZTN1Nvanp6UFNmS2l4cHB3ZEpiZjNKRnluSy1DYUxDbWZrRkJlejBFMmZGMlRMc1ZRUVMydGNyeWRUcjFrTGdkXzcySVZVZUJUMGFzSC1kY194eVdadEwwYThMRElqVGc?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 21:01:26 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 04:01 WIB",
+    "timestamp": 1791406886000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791406732000_Tariffs can kee",
+    "itemType": "investing",
+    "source": "Axios",
+    "title": "Tariffs can keep pushing up goods prices for a year, NY Fed finds - Axios",
+    "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTFBXNl9vYlpMb3YyWmZ3SnF6REI1ZWNYaXJJVWRONWhCZDFuMTNrR0NPYzkyVWowbUhBZV95V3haZEYweUY0VU0xYkpjWXVBazVzMVVfZmQwZ3FKVU5HTVozSzlzOExoN2I5SXRrSnVRT3JZVWpUX3c?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 20:58:52 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 03:58 WIB",
+    "timestamp": 1791406732000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    },
+    "signal": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791406302000_All Fed officia",
+    "itemType": "investing",
+    "source": "CFO Dive",
+    "title": "All Fed officials backed vote to hike benchmark rate: FOMC minutes - CFO Dive",
+    "link": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNUVJMRjNDd1BzNDdRUDNOemw4NkZKNlRNLXdaRWdRNWoxczhDMzJBR3BKckp2NXJyTWhfYXRiR0xzOVFqSzU2aTAtTjg4WkZFMlBkcDdYbWdxTlRHRnJnbFhWRlNtMENwem9CVXBOVlJBRTFnTkxLTDJMbTVJZDczZGZtdzRYc3JoRzBvN28xT3BYdm8tQ3dMMkJlUERiMFFJREZWMVdUOFl4ZmRYS3BRbWJRMDlYQ3U3SUdnYmFSOUFMX213ZURlbUxHTXgzWGs?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 20:51:42 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 03:51 WIB",
+    "timestamp": 1791406302000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791404983000_Fed minutes sho",
+    "itemType": "investing",
+    "source": "Investing.com",
+    "title": "Fed minutes show most policymakers see another rate hike by year end - Investing.com",
+    "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPcWhpWk5uY3NST1ZOaDNiM0NnUTBHUkdYaEJWa1daUjdjQXU0bmhNN3AyR0R4UXlydXZXdXZRVlEtTWNsNUlTZWtTRUdyNXNQc3hMQi1wc2t4TEVtcEdRazE1dkhUa0hCUWZxcnBTZXp6cU8wRl9vUDhCazVEbFR4RTVrWjZ4MGdSNmNZczRldFBTOHFxRzFKTVFoTnZkVTE2S1BBTGN3RHFBSUstSjQybmJWWFkxT1EyU1RsQg?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 20:29:43 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 03:29 WIB",
+    "timestamp": 1791404983000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791402720000_Opinion | The F",
+    "itemType": "investing",
+    "source": "WSJ",
+    "title": "Opinion | The Fed Has a History of Wasteful Spending - WSJ",
+    "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPcFlNSTZPQ0V0S2FyeTdNSkpmRlJqNlc4M21PVDZ5ZDhBSDFSLXo5Z05FOTk2aXVPTV8wVHBJRlItTHhDYVhyc2pubjVjOUprZXpsVXJaaUxSUVBSeDgycFV3YWlETG0wdnJyMlg4QVkzX3VRQ1VsTGR5c3M0UlZsQlRHeWdGdw?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 19:52:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 02:52 WIB",
+    "timestamp": 1791402720000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791402232000_US FOMC Meeting",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US FOMC Meeting Minutes",
+    "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBJUzN4M2FodXAyM2M5MmVpR1diaDhobzU1dktmS1BBeVJiNUxhNGl6d2Ffd0NJLUpsVnl6TkE1N08tRS1FZHJNbW92TENuREMwb2FuTjVUOE5qcjhzYUs2OHdlSTE3SGRIam5FRGItb0lXbnM?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 19:43:52 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 02:43 WIB",
+    "timestamp": 1791402232000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791401700000_Fed’s minutes s",
+    "itemType": "investing",
+    "source": "MarketWatch",
+    "title": "Fed’s minutes show no appetite for a series of interest-rate hikes - MarketWatch",
+    "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNaF9QQWc3MVFwTXJjNGdBRjd0NUZ6aExkdFpqRkxBSThxMUZteXNiSWJDak1qdTdwRXBkNkdQdDRfekQzN243ODFqNUhBQllGV0pQS3pWY090WThXMTVzZmFnc3pBbENCMGJLaVRXSF9zRUZtZ2dzZE0zelF5dzBadldsZm51dVNVaVpHQTNvVHA3Q2wzQWFmemJIOEs1RzZmQUp5N1hKZzJ1Umc?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 19:35:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 02:35 WIB",
+    "timestamp": 1791401700000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791401134000_Fed Minutes Sig",
+    "itemType": "investing",
+    "source": "WSJ",
+    "title": "Fed Minutes Signal Further Rate Increase This Year, but No Urgency for October Hike - WSJ",
+    "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxOR2tScE5NcWVPRHZQczVlWmRZalNkYW5pT0VLYWxPT2JJZS0yTHN0NWZhM2dmSlIxRVBNbjZyRnJRcXJXYk9ycFlZX0EwQWF2OWFzNG5TQ0FvblZRQ0djbFE2QWJVT0RzUExlZGx6VTF3YTZsdDBuVGFDRDZrVzZuMnZkZ25RZnhLb2JsVnFEZHRjRGp6YVhQVE9xXzZjWXZDbTNfNlpPV19nWkxLY09NanZQM2hlNXdpR0w4OXZCNi03Z0I2bmdnenk3WDNpY2lM?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 19:25:34 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 02:25 WIB",
+    "timestamp": 1791401134000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791399800000_Fed Used Treasu",
+    "itemType": "investing",
+    "source": "Bloomberg.com",
+    "title": "Fed Used Treasury Funds to Support Yen in Joint Intervention - Bloomberg.com",
+    "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQVTJZdUNqaGpmYlEyNWtVNDR3cFc5ano2UHpFMWtlYkd1UEVZNGhLZGx6TUxvZHVEeDdaV2ZQc3J6LXU1aU5pTnhPRDlJZzJKdzBVZEM3aThUWjVTZ0prNVFUSnR6M1lxQ0tFanJzMmc5dDRxUDFld0MtMmpoRG1MX3hnZHM1X1JSczM2VTBFd1MtNHNwM2pYMmk4Y2dTWExoMHNpUzAwaGVodDBiRTVKRA?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 19:03:20 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 02:03 WIB",
+    "timestamp": 1791399800000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "cal_2026-10-08_Consumer Credit m/m",
+    "itemType": "calendar",
+    "source": "Forex Factory",
+    "event": "Consumer Credit m/m",
+    "title": "Consumer Credit m/m",
+    "date": "2026-10-08",
+    "time": "02:00 WIB",
+    "timeWIB": "Kam, 8 Okt • 02:00 WIB",
+    "timestamp": 1791399600000,
+    "currency": "USD",
+    "impact": "low",
+    "actual": "8.3B",
+    "forecast": "14.5B",
+    "previous": "18.1B",
+    "signal": {
+      "signal": "BUY",
+      "isPreRelease": false,
+      "direction": "USD Melemah ↓",
+      "xauDirection": "XAU/USD Menguat ↑",
+      "emoji": "🟢",
+      "reason": "Actual (8.3B) < Forecast (14.5B) → USD Melemah",
+      "predictionText": "USD melemah (data lebih buruk). Hubungan terbalik emas & USD memproyeksikan XAU/USD menguat. Rekomendasi BUY.",
+      "analysis": "Hasil Rilis: Actual (8.3B) vs Forecast (14.5B). Hubungan terbalik emas & USD memproyeksikan XAU/USD menguat.",
+      "strength": "Sangat Kuat"
+    },
+    "analysis": {
+      "signal": "BUY",
+      "direction": "USD Melemah ↓",
+      "impactText": "USD melemah (data lebih buruk). Hubungan terbalik emas & USD memproyeksikan XAU/USD menguat. Rekomendasi BUY."
+    }
+  },
+  {
+    "id": "gnews_rss_1791399327000_Tanzania gold m",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Tanzania gold mine deaths at centre of case against London accreditor of refiners - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOTE0zSHhrazZ5V1poUXRsMms5UmxZeUhZa25GNTdhRjRWVmo2Rk1KRlkza0o5clVrVkRTRHZKMEhLdkFYd1o5OGp2V2w0amdoUmVzTHhjajdaQ3N3SUhlal9WM0VhMDM1OFNlZmJrTTk3MnBGdmstTy14aE1jZVhoc0MzZGFrMkctdklSQkY5SFdMeURIU190NnNZTDZkcjhKTUt1dW9ZaXg1UG1hTnhxZUhtaGp1VkxjeUd2Rmxn?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 18:55:27 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 01:55 WIB",
+    "timestamp": 1791399327000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791398919000_The Fed was una",
+    "itemType": "investing",
+    "source": "Yahoo Finance",
+    "title": "The Fed was unanimous about raising rates in September. Economic signals have since changed. - Yahoo Finance",
+    "link": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxPQTlWVlVDb2E1VWpneHhHanhPR1l4MS1DWndsWXhiNGtNQlhmSkppSFhqMy1kZkItaFFTSGpyMXBlT3ZDMUpiQ0xqaVBEZUpIajhtSW02UE03cGJGQWNreFNVaU5UekVvWGtiOGZyYmg3SFJjUEVRakhQV1U2WklZOVFTQXNaSHFpRlFfWVBfeWZPLUVQcGdCNmEtbFpNc29heUE2VTdzclNQdjlqZWRBeVVYQzJ6TDRGVU1jMXo1azFwcjl1eGRZcHRQVVBIbmpzdGpVQllGZjFaTTB4b0NBM1o4YlVJZGlfY3c?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 18:48:39 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 01:48 WIB",
+    "timestamp": 1791398919000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791398760000_Opinion | The R",
+    "itemType": "investing",
+    "source": "The Washington Post",
+    "title": "Opinion | The Republican senator who’s fed up with presidential family sleaze - The Washington Post",
+    "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQSFR2Rzd4ZzVUSl9vR0I2R19icXdqQzgtMWViTjdUWjdicW43YXJjZkF1SkxDYS1rdGZmX0l2Y0ZGdUNzZmluOFdudlRjc01sb010V0NmUjNtckExcEV3bXdEZUZvc25jQ3ZRQkI1NDJ6WGtmblo2RmczRVVxSThoQ20tcGQwOUNtbnFOWlcxeUpBNVVRX1hkQnh2ajhhOVU4NmJ0SDczMmZ3TEMtQUpDYg?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 18:46:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 01:46 WIB",
+    "timestamp": 1791398760000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791397965000_Fed Policymaker",
+    "itemType": "investing",
+    "source": "Realtor.com",
+    "title": "Fed Policymakers Think Another Interest Rate Hike Is Likely This Year, Minutes Show - Realtor.com",
+    "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNUlA2cHo4ZDhTYXM5dk45M1Fqbmp3WUFjOGdFeXFjV1JpNkg2TU1VWS1xR1RvM01ZSG53UWdzMFFaWlJENmNpQzQ5c3RHdllSOERTaHNUbnhEdlE0R1dRbW9wSkNkekxCM083cUt3aTIySDFFTlJ6U2p3Y21mZ3VqTlNwYlhEMU1KclVOcV85d1JjbFRpdTZ6NnRyVQ?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 18:32:45 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 01:32 WIB",
+    "timestamp": 1791397965000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791397557000_Fed Minutes Sho",
+    "itemType": "investing",
+    "source": "The New York Times",
+    "title": "Fed Minutes Show Officials Saw More Work to Do to Quell Inflation - The New York Times",
+    "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPM2M3ZjBmVDVpR1M3eE9qYWtmRHRKNWsxT0FnNGtOdHFzVXZYS0Q0N1ZYeWo3MTl2SkVSMllDSFhZTzJVS0ZvU2FDTmlUTVVfQzJXTHRPb2lUcElLc3JWUGZCZjBfQ3Rxa3M5c0Nnc28yX25NR1BybUFtTWdEUTB3NlBpS0FjdnBvaDgtZGdxaDJHVUZrakNncUJmeVNWSlZSMW9kV3dzQnJOWHE1TG5HdmQ2T04?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 18:25:57 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 01:25 WIB",
+    "timestamp": 1791397557000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791397452000_Americans grow ",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "Americans grow more pessimistic about their finances, New York Fed finds — expert warns of ‘tough choices’ ahead - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxObTBLc0VPWmM4ZjFDem56RUV6YnBvYkZhWXpMeDY4eTZaU0k0TjdDSVFJZEV6MEthdmRjNVpxR3lnOFdnd2U0QWpMM2w5bW92OEUyZkt4cnNrQmJPcVl2UjBreEN4ck9PTmJfWnY3RlM1WTRDWFk1OERvOWNmbjBxUTlPRdIBiAFBVV95cUxOOWtlTkF5RmhEejh2UU9zRTYwZnd0TnBQc2psZzJQUEFyaEt3MjM0N3ZJVmlwck82YVgwUlZ0djlBWllsWENaVG1hRDR0QTJpZlgzNWJkZlZQT09HQi1xdVhpSzNBSy1RNVEzSGpTS0dKSUp6T0NvSVlGX0VzZzR6QjRZQXVRalJS?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 18:24:12 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 01:24 WIB",
+    "timestamp": 1791397452000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    },
+    "signal": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791396075000_🏆 4 in a Row: ",
+    "itemType": "investing",
+    "source": "City of Tampa (.gov)",
+    "title": "🏆 4 in a Row: Tampa Convention Center Wins Gold for 4th Consecutive Year - City of Tampa (.gov)",
+    "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPdlNuZGFwdHhsNldrdW1CUzRuRHlxazdSdkJTam9yb3BqTmRRN2dfOV9SRTlZMEI5VFRWYmtOSWI3eXRFdGJTTXp1alk2VnFuc2E0UE91Z1QydW9UWGI5dklrbk95M1I2dkl1UzZUTXBieTZrUlZ4cTlDTVI4QlRvc0dPemtBSVlzLUt4TUNmQ3V3N1lmbU5DNnFaUjVZcGN4ck4yLQ?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 18:01:15 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 01:01 WIB",
+    "timestamp": 1791396075000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791396037000_Fed officials s",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "Fed officials see another hike coming, but no sign as to when, minutes show - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQUkc3RnFQUWZoam1MOFQ4MG85elpQcFIzb0VlajVQSlZXQXhFUHJlaHI3RGlXd1hOODRxRDNfV1YzZFNJakxNMzRiRzRNZkZqdWUxVG1WWWRVSUhMdUFZQ3BhUV9OR2cwdXFTVzhGc19XOGdBSWwxaUF3MEthSkxzRDlFTlRoVTBnLUQ3SlZVSEhYNWFEOE55TGN2djlkRG1JcWN5V3hNOV82eEVkaEJR0gG0AUFVX3lxTE9hS2JuRWZra2ZHZWc2YU9kMU9zYUN3a0FwcmtDbm9pclJiS2puN1I0Zkh6WVdQUmNEbFNDVmxPQ1ZFRURoZlRsVTh6aEl6bE5lUEc1ejNSM2hxdXdhVVNHVjU5eXhsTGx0UkI4Q3VGdXFLRVF5bXQzd1pUdmNBX09acGxwZDJEYk40X3ZzeEdvV3ViMlU1WmtaNHhvZzI2NDNpSmctZmNfdmtfcVVsdlIydnNXdA?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 18:00:37 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 01:00 WIB",
+    "timestamp": 1791396037000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791396001000_Fed Minutes Sho",
+    "itemType": "investing",
+    "source": "Bloomberg.com",
+    "title": "Fed Minutes Show Hawkish Unity Behind September Rate Hike - Bloomberg.com",
+    "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNc2dJM2Q2bTVvQVNpNUNzSTgzNHJCbWc3Ync3aXEyYmdSVHo1b1JZNHB1UXdGYVY5YWpPTHpDdWtQYjdtbnZOa1k0SzVIeV9SS0ljelRxbUdIWXB5NHBtdk5lUDM1ZWQyUHlNSjFlbVh6Q1lHbm9jdUJCRllMZXdnVWluOHRwV2x4WUdZdHBkU2NuY3BJNWtYS1puYWVtTTQySDR1QXJEaGJrTng2?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 18:00:01 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 01:00 WIB",
+    "timestamp": 1791396001000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "cal_2026-10-08_FOMC Meeting Minutes",
+    "itemType": "calendar",
+    "source": "Forex Factory",
+    "event": "FOMC Meeting Minutes",
+    "title": "FOMC Meeting Minutes",
+    "date": "2026-10-08",
+    "time": "01:00 WIB",
+    "timeWIB": "Kam, 8 Okt • 01:00 WIB",
+    "timestamp": 1791396000000,
+    "currency": "USD",
+    "impact": "high",
+    "actual": "-",
+    "forecast": "-",
+    "previous": "-",
+    "signal": {
+      "signal": "PENDING",
+      "isPreRelease": true,
+      "direction": "Menunggu Data",
+      "xauDirection": "Belum Diketahui",
+      "emoji": "⏳",
+      "reason": "Data belum dirilis dan perbandingan Forecast vs Previous tidak lengkap",
+      "predictionText": "Menunggu rilis data resmi penggerak XAU/USD.",
+      "analysis": "Forecast dan Previous tidak lengkap, menunggu rilis data.",
+      "strength": "N/A"
+    },
+    "analysis": {
+      "signal": "PENDING",
+      "direction": "Menunggu Data",
+      "impactText": "Menunggu rilis data resmi penggerak XAU/USD."
+    }
+  },
+  {
+    "id": "gnews_rss_1791395357000_Albion earns Go",
+    "itemType": "investing",
+    "source": "Albion College",
+    "title": "Albion earns Gold status as 2026-27 Michigan Veteran-friendly school - Albion College",
+    "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOalY4SlpsakNsZnBsZUlVRnpZTEE2X19hcC1oT0ZHNk03UjU5d2VKTW41RThFRzZlZGg4TC0zSmFENUlpS0diSUJTdHExVVU5RXJWTzh2a0lzXzIxeWdwaFdEQkJ4bVhGbHBFQVdwWXRhSlNuR1VUM0p1ZjFJVlNCTE95VzZWR0h6cGczUE94ZktoSjZicTVHYmN1SnotMFJhQkNXc3FNLTk?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 17:49:17 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 00:49 WIB",
+    "timestamp": 1791395357000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791394980000_The Fed Is Emba",
+    "itemType": "investing",
+    "source": "Yahoo Finance",
+    "title": "The Fed Is Embarking on a Rate-Hike Cycle. History Says This Is How the Market Will React. - Yahoo Finance",
+    "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNb2thRmVERVNEMUVmVnEweFJwZjRGUlNUVWRJQ3RwZkppd1RLdE1mZjBsdE5TRlc4S3RNN0xuckF2OVFMMTczRWFuZUIyZjFsUXprQkpvcUJ1eTNhRm1xRl9ZSXo1R1V4WThtNVNjN3pOdDZxa1dtUTFsZWZ3SHZrZ0Q0Nk9idE9jM3NMWGI4dkZsZVpzRnFLZ3Bn?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 17:43:00 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 00:43 WIB",
+    "timestamp": 1791394980000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791394568000_Update: Equitie",
+    "itemType": "investing",
+    "source": "Yahoo Finance",
+    "title": "Update: Equities Fall Intraday Ahead of Fed Minutes - Yahoo Finance",
+    "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxOdFNQd2lCOEhYWGtVcHktQ1VnOElJYkZNbHpjX180UExvcU0yMWFtaExnWHV5V0d5Y3JnX2lCSDlYV1hkX1lzc2VwVGtSSUdSMXh3U25oQUZEUWNmYVdjbHVLaHNra20zaG44d3VUVVowX2xGY2RYNWtqVTQ1UUFqOHV1VFdTMDJlb3dENzdRRkRaR3Fmc0hFeGRzOHVqUQ?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 17:36:08 GMT",
+    "date": "2026-10-08",
+    "timeWIB": "Kam, 8 Okt • 00:36 WIB",
+    "timestamp": 1791394568000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "cal_2026-10-08_10-y Bond Auction",
+    "itemType": "calendar",
+    "source": "Forex Factory",
+    "event": "10-y Bond Auction",
+    "title": "10-y Bond Auction",
+    "date": "2026-10-08",
+    "time": "00:01 WIB",
+    "timeWIB": "Kam, 8 Okt • 00:01 WIB",
+    "timestamp": 1791392460000,
+    "currency": "USD",
+    "impact": "low",
+    "actual": "5.30 | 2.8",
+    "forecast": "-",
+    "previous": "4.83 | 2.7",
+    "signal": {
+      "signal": "SELL",
+      "isPreRelease": false,
+      "direction": "USD Menguat ↑",
+      "xauDirection": "XAU/USD Melemah ↓",
+      "emoji": "🔴",
+      "reason": "Actual (5.30 | 2.8) vs Previous (4.83 | 2.7) → USD Menguat",
+      "predictionText": "USD menguat dibanding periode lalu (data lebih baik). Hubungan terbalik emas & USD memproyeksikan XAU/USD melemah. Rekomendasi SELL.",
+      "analysis": "Dibandingkan dengan Previous.",
+      "strength": "Sedang"
+    },
+    "analysis": {
+      "signal": "SELL",
+      "direction": "USD Menguat ↑",
+      "impactText": "USD menguat dibanding periode lalu (data lebih baik). Hubungan terbalik emas & USD memproyeksikan XAU/USD melemah. Rekomendasi SELL."
+    }
+  },
+  {
+    "id": "cal_2026-10-08_President Trump Speaks",
+    "itemType": "calendar",
+    "source": "Forex Factory",
+    "event": "President Trump Speaks",
+    "title": "President Trump Speaks",
+    "date": "2026-10-08",
+    "time": "00:00 WIB",
+    "timeWIB": "Kam, 8 Okt • 00:00 WIB",
+    "timestamp": 1791392400000,
+    "currency": "USD",
+    "impact": "medium",
+    "actual": "-",
+    "forecast": "-",
+    "previous": "-",
+    "signal": {
+      "signal": "PENDING",
+      "isPreRelease": true,
+      "direction": "Menunggu Data",
+      "xauDirection": "Belum Diketahui",
+      "emoji": "⏳",
+      "reason": "Data belum dirilis dan perbandingan Forecast vs Previous tidak lengkap",
+      "predictionText": "Menunggu rilis data resmi penggerak XAU/USD.",
+      "analysis": "Forecast dan Previous tidak lengkap, menunggu rilis data.",
+      "strength": "N/A"
+    },
+    "analysis": {
+      "signal": "PENDING",
+      "direction": "Menunggu Data",
+      "impactText": "Menunggu rilis data resmi penggerak XAU/USD."
+    }
+  },
+  {
+    "id": "gnews_rss_1791392008000_Dow Jones Forec",
+    "itemType": "investing",
+    "source": "StoneX",
+    "title": "Dow Jones Forecast: Caution Persists Ahead of the Fed Minutes - StoneX",
+    "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQZzJQdkttN1BuRjBMdXJ4T1l1dHZWVWFxUVJwRUhKTU5PT3NoYVBFZWlnSDg1cmVoMTlzdllhNnAyWkxDaHBYSWNzLUg4WU5VMmJzazBTRGM0RUVOTkJGcFdKVzlBT1Q3cEJKeUt0bUxLTEZyNlNXS1pyVE0tdVlibjVXMTR1UXhhbkx0aUkyeklfS1p0NFpHUVBnODlEODdsQVFyOEdQMVc0bG96cDNpQWxveVBveWk2M1J3?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 16:53:28 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 23:53 WIB",
+    "timestamp": 1791392008000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791391627000_Fed consolidate",
+    "itemType": "investing",
+    "source": "Banking Dive",
+    "title": "Fed consolidates bank supervision structure - Banking Dive",
+    "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQQ1RwME02U2hyRWNKWTcyNHJkY1lHclI5ZzJtZDNpUUlYa2ItVkQ3V0VnWWZWZms3QkJhMUdVbGF2ZFNKWWgzTVpUaXY0dllZOGFmSHQ2bzZvTTJLSkJWU0M3Uy0zUFJBYWtfOHBsNjlXb1hJYXFQMjZlbWRHY0dSLTBwRmE0RGRnLWR4MlF1WjNwVW1lZ3poWDJwcVJmMjlz?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 16:47:07 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 23:47 WIB",
+    "timestamp": 1791391627000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791387684000_Graphic design ",
+    "itemType": "investing",
+    "source": "Campbell University News",
+    "title": "Graphic design students earn gold, silver Graphis Awards - Campbell University News",
+    "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPa3J5NWdET1hUbXE5TGFCemJNY2FxM1lqQWdBLWtQaFd4WWN6a1VTSkg0R2I0M1dVMTEzRnNFWmZPZS04SWhTV3U2eHRpVUNuRHN2cUY3UndZcE9xZ3lxaUpBM0gtLWNEOGJJb1V5NGYxbzFRSkZSLS01MG9sZ3J1MV9JZmxMVVBjLVdidDBJTHdoTWY5RVE?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 15:41:24 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 22:41 WIB",
+    "timestamp": 1791387684000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    },
+    "signal": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791386019000_Hawkish Fed tri",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Hawkish Fed triggers emerging market outflows in September - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOZ0J5MWhUZURxcWw2ZzNtU3VWZlgyeF9lVjc1MHFlbDBmcm5LQmlnMm4wOTNaOHhabmJZSkxMdDRQT3F5X1B4NWk0YTNERFlRMFFIM2dybVpNdFJfQ0t3WGNpbzctaGtsM1NQTWNXcUxrdU5ndmI3aWNjNkMwNVlCMjBlMXVUXzl3YkJHRGZMRDhmVnlQY1RiajNOSnZwSGhicmxJOHU3RURkNV91?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 15:13:39 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 22:13 WIB",
+    "timestamp": 1791386019000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791385336000_Blue & Gold Tip",
+    "itemType": "investing",
+    "source": "Morehead State University Athletics",
+    "title": "Blue & Gold Tip-off Celebration Set for November 16 - Morehead State University Athletics",
+    "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE4tWDdsVDUzbXhtblc2ME9qTzhZNzdBRXVfd2hTNmg0YUo2YVV5QmttSGlhOFJBcm95VEZhdGN6ZnNVUjlQd1lqUkNydUNEWWhnNDNPT3RHaUtaeU93bGpSNXVZeXVkMnVyeXBkVVQ1R2h0Y3lZOVlMQlpfdw?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 15:02:16 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 22:02 WIB",
+    "timestamp": 1791385336000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791385306000_NY Fed Septembe",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "NY Fed September survey finds public expecting more near-term inflation - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNT3dFeTJ5dk9yY1FFem14WTdYcjFxdmtEZVpiYkJwVTNCZG8zY0Z5ejhBdGViYVN2akYxVERhNlh5UnpMMG9nZGZ4RTZqRHA1VEhWSTB1Q3hpbGRMSjROVzJFY09FUnNhZzM0OE5sa0JsQ1huMlJjZURYZTNzS0tpM2JpZWJnRjZqbms1eVp2MDNoQzZFalJib2dVMmg2RWVmTE1nazgtUjJUcWl3R1NOOEJIWW1QaUU?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 15:01:46 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 22:01 WIB",
+    "timestamp": 1791385306000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791385234000_US: Short- and ",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US: Short- and Medium-Term Inflation Expectations Increase; Labor Market Expectations Improve",
+    "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQZlJfLVJMLXdRdGtiRHNlbzJoSW8xT1hMRjVJR0laWk1kWEhpLTA3aUxveTZTQlVQZFlyX2E1UEhGUERTZWtkLVJaLU9lbFZ1OTdpUHRNeWxkalNqT3c3WlRBVnZTUWNSV1ZjSVlUODc1S1gzczViM2x3M3ZPRTNtdmNXVFZzOVRya0RPOW5GM2ZuWEQ2V1p5SWdzZUYwdDV5UW85YmlOMNIBrAFBVV95cUxOSzhqZkpzQk1sRkdyNUF0UnFNOU5SRC1hUUxmYnBYb0ZHX1RsTmphdkltaFY0blY0dlRkdzBRRVM2RXh3c3lQc3VQNW9fck1MX3ozZ0dyZWktRU5MVU9zU0JOZzVfR0c0TDR0YUFqOGFXN1Z4NmUzWk84ZDNabWw0QXZTNmtZWGlZekd5Q0tzS2xuMmtBaWlmNm9qeDFQVEpWeWtlUlpWMUJCUGt5?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 15:00:34 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 22:00 WIB",
+    "timestamp": 1791385234000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791385226000_Inflation fears",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "Inflation fears on the rise as one-year outlook in Fed survey hits highest level since May 2023 - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOb1Z5T01iV2c3OWN3SXJwZm41X1loWEMwZ2lJZ0wzWkNBU3lFeFVBT24zWDBhakowTzZvZmdwMDNZR2pPcmxSZFQyc1EtTF8xaWdWb29YTGRJNkZvUWlxRTBPZXZQSnR1bW9uSGFhVnVEbTNfT3dVVmlYVnFaMEQ5MXNGTkZaZHFxenZLd1U3X0pPX19fb2U4a01Ibk1kR3dHRzlKWm5QdkdDNldaNHFBUzJ5cldlMml2Si01bnNiLXZEa0xr0gHKAUFVX3lxTFB2dFR6c2hualM5by1uNzdseDV1UHZjeG51c3ZteE9sQ2swUWxBcTd5VWczRVdDN2ViamtXZjVYT0R4QXNWU0haeVcxRVRVV3NVTEw2U0U4MlRqRG9IMGlwV01ha1I4OGhhZ1d4Wmt3TTJ1MGIxN2Z5Sjk1VmZUNzQ5alpEZzZVQkhmRkVFZGhKeEc0cmgzYTdLUF9zVlVKZWFkRDNiVk1UeHdkc0dacjN6X2UwVGZINVpiaENWRzJlYnVCbmpNbHFTdFE?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 15:00:26 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 22:00 WIB",
+    "timestamp": 1791385226000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791378180000_Current price o",
+    "itemType": "investing",
+    "source": "Fortune",
+    "title": "Current price of gold as of October 7, 2026 - Fortune",
+    "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5raWdTbzROaWlKXzk5N05wYjRVOWxaR0NIM0VqZ05GV2RnQWl5LTJramgzOV9EQk9rUkNRNW5TeUx5VmJkWXlRZDdubHBRTGZUaTRIc2tvSnVhbnVMdnVtTjg2eDlIUmtwaGVsSUN3?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 13:03:00 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 20:03 WIB",
+    "timestamp": 1791378180000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791376118000_Man accused of ",
+    "itemType": "investing",
+    "source": "WTNH.com",
+    "title": "Man accused of driving nearly 100 mph in construction zone on Gold Star Memorial Bridge - WTNH.com",
+    "link": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPS3hveDJLdzJ1Q05aWmRvRS1zU2JxbjIzZ2Z3eV9NV2taWkdTcGJDa3BvT08zZzdnVDJGOG1GaWFCTlAtWlJCdDlkSEJuS1dfaDl6VU5xZ09ZQXNDTmV2Z2hZT0toX0VwaHozYk1TSHlpME1vekVnS3l3dW9rMG9HeW5JZnhxbkVDSkNaeWFmZWRILUVEd0NLVmhEeDRoOU5sQmhYOGFpY0c2aTVJcUlqekhrSEcxNmFZWEpOWktQVEtYT0tJYzJjYl95SU9LZ3p4WVo00gHYAUFVX3lxTFBtVFl3NDNFV1ZOM0FnUTdNdGFUYS1VaHVpbVZzWldaU1pxc2Z5VmdRRFBnQktIUDFJTzlRS29lUnd1R29YYVV0Z29MWjduVG5hOE1qdFN3Qm1FUGRvSC1Zc1ZGY2J5YXh4NzBxMmdjSmk1QldFQkJoaUFTNXExTTFjWmRJNkJ6R3ItZ3hXeXdBd0xNemhKY3JkUHVhbEdkVHRpdG1zTmNtR1RPUWtTMjRxeGNEemZJZ0tlaTR5bV9RSkJZc1JEaHF4cE0wZ2tGWDVMT2pOUmpzRQ?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 12:28:38 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 19:28 WIB",
+    "timestamp": 1791376118000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791375060000_10-year Treasur",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "10-year Treasury note yield hits highest level since 2002 as traders brace for key bond sale",
+    "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPSXAxMW5TX2VET3ZLNjVQenozTjZ5Nl9QcDFCM3dOdXQ3Wl9lMmU0djhaRWpuZHhKaWFaV2szLU9UT2JYa3BYRDFZMzVxRGhNMmNoam5RbHFwekVzN1ZOZWZMTmR3bGdzNjhYTjlJS0hHQ09jRUdaTjBwMTExd0RhOWJ5MVJfRzlHd3NpN2o1aUVTQXlLQUp3bVZR0gGfAUFVX3lxTE8yYUl4VTd4bm5jbjE0NlVCUDNiSVRwQ3cxaDRkcy1rUnJublZLTXRKR2JzQ3didTBfeTZ6em1lUWpKWGdEU0lvZjBwZ0hJX1J3MzJVQ1ZnWHFremdRM0FsWmNJZzcwV0R2ZVA1dTJ6Z0VCWmdieW9FWVkyQ29kNTYtZlhaUHQzUkpoX0gxVGxWc1J2Zndzak11U2V3NDBUcw?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 12:11:00 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 19:11 WIB",
+    "timestamp": 1791375060000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791371671000_Fed minutes cou",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Fed minutes could detail rate-hike decision, policy path - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPaFdleVVLSGdCQUlSODJ0bVFmdlh3cl9WZFFrUG5oUHhxdGNTMUlKUW1QaDBfVXAwd2FLaE0yYk9nb1lNcGY2Z0twTXNweEtEV203X09TTUR3ai1fellVelpWUHlEWWRUYW9oVTByX0ttLXl5b1I0ZjRyQm9ZVFBldFVLR0Z3UVRScGI2b2NuVC1pblU3dzJtd1JnNHY0M1Y0SlE?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 11:14:31 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 18:14 WIB",
+    "timestamp": 1791371671000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791362205000_Gold with No Dr",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Gold with No Drama | Page 4468",
+    "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9yNW5TbDJYS1FxZ2lOb1RQTndTWWhlN21ZV1I3Z3lYTU10U0thcU9lalAyaURQSUhpT1U1cHo0RTdJYkJZZFJTV1Z4TWFyTW1aZFVEay1GUWd2WU1YMFo5VXcwYVVNRThlZFZNaDRYVTdrakc5UWk5WHFOSTc?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 08:36:45 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 15:36 WIB",
+    "timestamp": 1791362205000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791355938000_Former CIA offi",
+    "itemType": "investing",
+    "source": "NPR",
+    "title": "Former CIA official accused of stealing $40M in gold bars pleads guilty - NPR",
+    "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNWDNUaHNkUkhjbElXamZ2cWdQekN1VUFXZ19uLUlvWXAwdmVLNC0tM1lON293QjBMMWg2c3BTMmlSdFVJblE1WTltRkVHUWpsc1l3TWhGUzhVU3BEc2hGazNVNFVjQUhBeXpiUmVlU3VnbjZkc2ZVZjg5emNzbS1qSndSYlJYcmszNkl2YlNKQU1EODEz?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 06:52:18 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 13:52 WIB",
+    "timestamp": 1791355938000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791352680000_Gold with No Dr",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Gold with No Drama | Page 4466",
+    "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE0tYUExRDFWdHd6b2M2Wi1yMTdWbVBtbUVWSndwTF9GTTNjYVMxRzA0ODhEQ3c2X2NWbmlSeGZPVUJnSHY4WXFtNmVnZ09seGtfbjhna2dxeVZQa2NVeTFadE9TbnlzX3hpSXJ4UHNFZjhvbjFnczRaRHczaE4?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 05:58:00 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 12:58 WIB",
+    "timestamp": 1791352680000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791348449000_Ex-CIA official",
+    "itemType": "investing",
+    "source": "The Washington Post",
+    "title": "Ex-CIA official pleads guilty to $195 million fraud involving gold bars - The Washington Post",
+    "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQdmUydlJBcXFEOWZYdTR2NTlObklpYzYwTHRqNVcxc1R3clpvVkRaS0tLSGNfcXZNTGtWaHhsVGV4SVFhZ3lBYjdOVk9Oa05XbGhyM2p6ZFQwcEVRQ2ltQzNXZEMtWWlKTWZ1MXBRS3c0U2wtaFZWMTZWWV9wYnkzYTcwZDdCRnB4dElQcDZrQ3lpUnJFbWJHcXo3QUJodHhyVTU1QW5wYWhUNWR2T0JNODJXa2l2c0I1NlFoR2ZuNUg?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 04:47:29 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 11:47 WIB",
+    "timestamp": 1791348449000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791344580000_Japan PM Takaic",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Japan PM Takaichi: Will consider reviewing policies, government revenue and spending if interest rate shifts differ from expectations",
+    "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQd1JvQlE2dHEzaWJOTE5zWGN5Ykw5Y21MX290eTRCOHBTLWVueFNlcDJVVXF6NG9xS3RIVV9RTVVHQzUySG5EQ3ktRXFuQzIzanFEYUFOTjhvWUpTeVhIY0V3aF9ieFZZb2I1Y0lKY1BtRFZtUm5qaVEyN1drbzRiTXYyTG5vMjIzNUFqdzVSUjVCY1dfOURvdmgtUVluTThOb2JmX1B30gGrAUFVX3lxTE9wckxNTzhJZkF3Rm4zV1U4a3pNek5WOXFBc0ZyODFOSFd0WkQ5M19lMGtROC1vcnA5Nkl6TVowcE1YZGdPV3ZWYkdfc1JMM25sZEtabWo2X0hZbTR1MVJvTFdUS3MzYWZpamRhT04wMmM5cm03OVNrVFJoNEdNdDhhTjRnMUNZYnFmLVRFLXF1TzJxU1B5QzdkQXI1aGhrQWNyQU44VV9ZdGEyQQ?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 03:43:00 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 10:43 WIB",
+    "timestamp": 1791344580000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791339480000_Gold slides to ",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Gold slides to two-month low as robust dollar, yields add pressure - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOMU10STF5SHNISk9FdXk3NTA2YjZhbnhWRTJlYlpBRGVhanFxWVQxVzhVek11UEp1OUJOU1Y1WjNQTDlBWmg3aEhvVWkzMUpXd3dBbm5Qa3pEcFdEeERZUDNwUHdFYVp0YmZPQVd3dDIwalp0LU1YWi1WTFZNVm5FTWxrSkR0dTJnNk9aM1BBc29MWXk5S3lOLXIxVW1Fd0xvbmhxNEpn?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 02:18:00 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 09:18 WIB",
+    "timestamp": 1791339480000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791335640000_Euro drops towa",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Euro drops toward 17-month lows, dollar holds gains after Fed minutes - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQVnY5bzdPR0xZNUZ6VEJzWUhMVmJQZEI0bzY0cHpWV21LdHRFeDlIWkxnMURDYVFDVU9nZEVPYU9TNWNNV3NvWUE5MlJPaUVXT2VqaGJQQVFwNmtHWE5nNUF2SU5Ob3dmYVlSOENZVmRBc3lVUjFMM1NYYlBfLUJ6ZzJaU0FQQlQwMkh0cXlrZEItc0ZKeC1YLXdOd2wzRWxHeUlSUDg4STVVQTVGdmc?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 01:14:00 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 08:14 WIB",
+    "timestamp": 1791335640000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    },
+    "signal": {
+      "signal": "BUY",
+      "impact": "HIGH",
+      "direction": "USD Melemah / Gold Safe Haven ↑",
+      "impactText": "Sentimen berita memicu kenaikan permintaan Emas (XAU/USD) atau melemahkan USD.",
+      "recommendation": "BUY XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791331200000_Mexico’s Sheinb",
+    "itemType": "investing",
+    "source": "WSJ",
+    "title": "Mexico’s Sheinbaum Is Getting Fed Up With Playing Nice With the U.S. - WSJ",
+    "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQOFpVQUFQbVYxQ0swSHJQQU0zUjNpYVEtdkxFZjdQQ1lQTGVjYWVQam5DLThDc29zNDE4aVJxbld6cjlXV3ZMUlhsck13YW8xYms1NDBBOE5BQ2xPRUVhbFUzTUsybXJXQkRSNnVXQWFseVlobDUwR3VPYi12VnFXLVVJdmZKN2RzQTYzdk1ZSmtiY1FVN1VaZjFqTWZXa0U?oc=5",
+    "pubDate": "Wed, 07 Oct 2026 00:00:00 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 07:00 WIB",
+    "timestamp": 1791331200000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791322889000_Former CIA offi",
+    "itemType": "investing",
+    "source": "ABC News - Breaking News, Latest News and Videos",
+    "title": "Former CIA officer pleads guilty in gold bars case, admits to defrauding government of nearly $200M - ABC News - Breaking News, Latest News and Videos",
+    "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNeU5ockhEYTd6cGNVVVQ5V1hjRDZ3MjFmaFJxbEhnMkdJVTVfUXdEeEpvMEM1cE8zZE15YVVhVlZqdlZ5dHRlal9jRlFsWVBxVmFmTU9lR0pLa1lIWkZsdFFoMDNzbi1NajYydGZXa0ZUNml3T2xUZ0d0U2Q0YjQ4WkttNTZuZTdZVGtFWnF5UHlmalZOU0VnblY1QlY2ZnfSAaQBQVVfeXFMTWRHa1RtTnh0RVdSRklXeXE4Mmk2bDk5M2ZPS1E2cTNPQ0YwNm8yd0FfV3RfYXJQZURpSzhoZXNqdi13cDhKVmZpcnpyQnRyTFk4bDQ0UmlHc01lWmRjV3VDVTJJUzd0MjhuLXFvRVhCNXFkdWNHdmRweDR5NXUwbFVxYkNkTE41VnJFRzFTQ3N2UXVsU29OYmVRRzZ4bFplR0ZzUFo?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 21:41:29 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 04:41 WIB",
+    "timestamp": 1791322889000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791317024000_CIA officer arr",
+    "itemType": "investing",
+    "source": "NBC News",
+    "title": "CIA officer arrested with gold bars admits he exposed secret intelligence source to a foreign official - NBC News",
+    "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQZ0RiQk1vTmZFUGxIWlVxYXJ0dGFuajQzMXRTNlA5Z3BWMV85V3ZTaEJhMDh3ZWdtN3FLNzVkS24yR3B3RUFHcF9RaVU0Rm9URzI3Si1wV0o3MnIyVHNvb3ItbVlYZ0o1c1NqVV9NaWxTMFlCcHJLVllscDl5d1VDaEtoMWZmWEdNZWdKbFoxdUdYbDBsb1Nab01iLTdvV25ZUU8tZGJUWFowVmxJYnN5eGx5SnVBRVFC?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 20:03:44 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 03:03 WIB",
+    "timestamp": 1791317024000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791316425000_Ex-US spy found",
+    "itemType": "investing",
+    "source": "BBC",
+    "title": "Ex-US spy found with $40m in gold bars pleads guilty to wire fraud - BBC",
+    "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1qenpHUjhaRlpWYUZDQVAwLWc2TmJPd29oM0RsU0ZvVmlSQ2MyM1RIcW1kaC1NeUlSdWxxTGZJd1ZHZDAtaE5Mdm40ZzhEd2o2Q2JWSnpKWkludzA?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 19:53:45 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 02:53 WIB",
+    "timestamp": 1791316425000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791314580000_Ex-CIA official",
+    "itemType": "investing",
+    "source": "CBS News",
+    "title": "Ex-CIA official found with gold bars admits to sprawling scheme, agrees to forfeit $194 million - CBS News",
+    "link": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9Bc3NfZk9QMl84SnBvbGNZMVhUR3FSbkxNcUhiZW5sWGswMmF5bFhuU3pOZ1E0UWVvNTRiSnhtc1g3YnNSUUxRaUstOHlZYk4xd2FKSlpLVHlyZWtDdGJjdWVUTTdheW50YW9RcG5jeWhKc0Rz?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 19:23:00 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 02:23 WIB",
+    "timestamp": 1791314580000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791313774000_Ex-C.I.A. Offic",
+    "itemType": "investing",
+    "source": "The New York Times",
+    "title": "Ex-C.I.A. Officer Who Stashed Gold Bars Admits to Far Larger $145 Million Scam - The New York Times",
+    "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxOckFzYjlPV2RDaHRTS1d2dHdFVm11R3ZJMzRRcWQzNzZxdHFDdTRBbEtWWERHdGlyOUlaMDA2UUR3RGFjOHJoYjdZNExJVWJBNTFJSHRhUXZXUFhvdi1nUVBpZTlTOHBUTzVKUmRrWUxIRl9FWGI3UHZVdE9sRjNxRmdFZC1udW1UeGRNcDFR?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 19:09:34 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 02:09 WIB",
+    "timestamp": 1791313774000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791310537000_Fed plans to ov",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Fed plans to overhaul bank supervision responsibilities, Bowman says - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQeXUxU2F5X1UwSTZreDdOc3FaTDdsWVBreUNYY3U1WVlpZXVUNGM1UE8tLU50eUU1UTlzVHRPVlhOTlBmemF5ZTJGY3lNa2Njc1NwaFNkWG04OVdTbkUxVGd4d1E1WkFkVkpXdmFoVkEyUHFkX24tSUlMTkZaS3FUYy1pQzJfQ1Nldy10bDhwdEhoOHg5eHFpVDFMWDJ6bkcyT1F3R0tDaWhFSU4tb0RHeUVYNFVSUHJT?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 18:15:37 GMT",
+    "date": "2026-10-07",
+    "timeWIB": "Rab, 7 Okt • 01:15 WIB",
+    "timestamp": 1791310537000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791305162000_A surprising in",
+    "itemType": "investing",
+    "source": "Fox News",
+    "title": "A surprising industry is fueling a new rush for gold — and it’s not slowing down - Fox News",
+    "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQTG9hREEtd3BNbTBYbms3b3N5SDEwU1BRcFRKQVFCckExMWZTTmNlZWd3THJ1VlJFNG1HWnhObWJqbkFlUFZKNEE5NVdQeHB1M0hzMHNiZ0xVWVRCbUNGRmpnNjI4TEdzcm1ZeXZ3TFBnWUVWTmlDV1NkQ3FQNEVyQmxsZzZEZ1RLa1Y5VHZreFkydzF6MmfSAZsBQVVfeXFMTUdka0Q2VE5WNXBsbXcxenBENnFsdEVpZHFHaG9HSi1wQkYzT2ZiekNZNGNPSGg0b1RVMC1hMFlOS3BxWGlpOUljdXlaQ205VEpfRGNRU1JtNFN6OE04UTNxODFONGxJUmVyN1RsZEtsRDIyeU52R3RVcGFOSW1MUkdwMTdBM1dLSnNyWkxlVWhmN0E1SXduUVJ0b0E?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 16:46:02 GMT",
+    "date": "2026-10-06",
+    "timeWIB": "Sel, 6 Okt • 23:46 WIB",
+    "timestamp": 1791305162000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791291600000_Why Weaning Mar",
+    "itemType": "investing",
+    "source": "WSJ",
+    "title": "Why Weaning Markets Off Fed Speak Is Harder Than It Sounds - WSJ",
+    "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPOHpmUGJnaVRkaVR2aFRMdjRXY01yaFkteGVrY0tlRlZxcFFPNlF2eVFubDY4YjBVOE9Ob0dxY1ByQURDN01XVlR4UjFuZWhYTHIxTXVoYjNLODluc2tGNlVEN3cyOEp1OWpGVnlfQmNlV0Utam45akk4RHVlaVdEMDVIaVVFQ3duemVjeGhWWHI0ZlprNHpic1BZcDdVQmZpSWI3bHJVbzRGRzdpa3FQTA?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 13:00:00 GMT",
+    "date": "2026-10-06",
+    "timeWIB": "Sel, 6 Okt • 20:00 WIB",
+    "timestamp": 1791291600000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791273678000_Central Bank Go",
+    "itemType": "investing",
+    "source": "World Gold Council",
+    "title": "Central Bank Gold Statistics: Central banks continue summer spree in August | Post by Marissa Salim | Insights - World Gold Council",
+    "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNQ2FISHMxN1ZCSUQwdE9kQVhva1hiRzludFBBOU03aHd0MjdlcldFZDhwUWNjcWl1d25wNUdBa1VpMkpKMjI3YnROUndkT1FjTUxWQnhpUFhULWZjN01IdE8zT2JFUmVTWGJfdTMyc1VaVWRiSWQ1MldyMGRVcmhQTzh5Z0pPT3FDeVMtdTJYbko3WVV0cWJKT3NSV2ZlT29BVUNhSnNvejlDSFhFSjRFeWpsN3BjVzBUeFBj?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 08:01:18 GMT",
+    "date": "2026-10-06",
+    "timeWIB": "Sel, 6 Okt • 15:01 WIB",
+    "timestamp": 1791273678000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791253481000_Gold steady as ",
+    "itemType": "investing",
+    "source": "Reuters",
+    "title": "Gold steady as stronger dollar and high yields offset waning Fed hike expectations - Reuters",
+    "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQV0dGUTlhay1BaS1nWk41NWd0UFdwbV9QSzNuNGZnTjVYRlpYNXo5NFF6TkZDWV9QNGpDMEhzd3QwUG41clBBTVVGalVyQy1nZkw5SHNRbGktSTJrbjJoMmZNR3NWNTY2WVpIeXA4YUVBOUlkb2dyMExSTXlpaDBvLU93bXpIZWtpbzNTMFAxMmJ5ODhMMmJIWUhVbw?oc=5",
+    "pubDate": "Tue, 06 Oct 2026 02:24:41 GMT",
+    "date": "2026-10-06",
+    "timeWIB": "Sel, 6 Okt • 09:24 WIB",
+    "timestamp": 1791253481000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791242079000_Russian gold fl",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "Russian gold floods Hong Kong as Western sanctions redraw bullion trade - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxQeXJ0WnczN2dvVE5MM3VKekI3RmZOUlZEWW9LS0lwVm4zWjZRSV9ZT3hJWmtHWGpVQVpCdEUwbEFWT0Z2SVVCamE3ZWRYX2QzQWdhVDBSY0o5bDIweXdsd1NKeUVncE41eDhYQjBBZjJBa3RxbjFiM2tUbTRPbExyQk5FNzk0QnU2QnfSAY8BQVVfeXFMTmw1MDJwRFN2TXlnQm4zVHFXaFl4Rnp5djJsZW83eUhNUFhXejg5NHNLbVFIa29fVmd6ZS1sRDduYzdRQ3Z6V1JaVHVzamh4NGRQRHZORmdoWTh5aF9NQTFHRFozTFNwOHN4V293M1BmRDZCZXg4RXJveVlYN2FOejZpOEJ4cVdwQWY4bzB2QjA?oc=5",
+    "pubDate": "Mon, 05 Oct 2026 23:14:39 GMT",
+    "date": "2026-10-06",
+    "timeWIB": "Sel, 6 Okt • 06:14 WIB",
+    "timestamp": 1791242079000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791213164000_US Services PMI",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US Services PMI at 54.9%; September 2026 ISM Services PMI Report",
+    "link": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOYzRZOUc5a0lndXVsbGtvaUhUZ3VMNkhuRkZqR2tQam1WYXlIZUo4QTlmLUU2LXZGeHZNaWE4b2FVVXBMUlk3OHFxN1BBN1diakpXdk1ISkdVMHQ2QkVYQzd6TF9IM01hNHJrME1Md0Fhd2VUNHNOQy1kVWZpNlNJUTBoUkJNUHJqOEZR0gGQAUFVX3lxTE9fSFlOVThEVzByaVZZb2Rha0Q5SFpERThQM2hydVNjZXNLRHBGaXJsXzBaWWRDZUZlRWJrZGJGVl9nZVJROUlpM0RGSkk3MlVKVmFwZ3lMdzhoT0JhZWpxMmFKNU5obVdmX0VCdzF2RjhDbVR5OHIwMGhYZjRRa1NFQzM5ZXZzRkRseVFFbzVlVw?oc=5",
+    "pubDate": "Mon, 05 Oct 2026 15:12:44 GMT",
+    "date": "2026-10-05",
+    "timeWIB": "Sen, 5 Okt • 22:12 WIB",
+    "timestamp": 1791213164000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791206700000_What will Washi",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "What will Washington do next if US bond yields keep rising?",
+    "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNaFN2QWdrOV9JQmxMRGlkRndWYUNfN3pEQkdSWDl0UlJXZzNhTldlcjFlR1h5cUExZVFfcDl4Tk8wY0JVSF9obEo0R1lsamZqUWp5WDEtcjliT3AwTFBzUGRqalJIbXAwemh2YnpKSlNRM05aT3g4SnZrdk0xNlNublJTMTBEYkY40gGOAUFVX3lxTE5WTjJaWFRjYlFvdlA3T0FaY00xN3o0WHFiNWhKTGp2eTNHc1Y5dTV5U1lQUHUzS0dZbWVJd3d5cUQtQk1UQ0o2b2p6TkVacVI4NDJEX3JtTmQ0NkNRYmRnLUgxQU9CWDloRjN4Q21OeExOMkEtaWhabkQ3UnM3VmdHYTBjMW1NcVctNDIyWGc?oc=5",
+    "pubDate": "Mon, 05 Oct 2026 13:25:00 GMT",
+    "date": "2026-10-05",
+    "timeWIB": "Sen, 5 Okt • 20:25 WIB",
+    "timestamp": 1791206700000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791205200000_US ISM Services",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US ISM Services PMI",
+    "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1GcjA4dVhWbzZZT3Z2UmVhOUp2NjQ4UGdnd0ZoSWFfeTBjSjZfaHlfNDRaMENBckxBRnR6UExWYzN4b05jM2ZlbGItQjBnS2o3aTUxSU9NVkd5bmYzRmZGbzE0Sm9zeW1BMTFGZ2VR?oc=5",
+    "pubDate": "Mon, 05 Oct 2026 13:00:00 GMT",
+    "date": "2026-10-05",
+    "timeWIB": "Sen, 5 Okt • 20:00 WIB",
+    "timestamp": 1791205200000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791204060000_France's Financ",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "France's Finances are Failing - EUR/USD Pays the Price",
+    "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPX0hoUFFUV1dReWpfbGQ1RkhScFdIeHA5UXozdjBjMjdfX1dlNDhSb1IxTWc3UnlxNnlqczRrSVQ3cFBldGh6NmduWmt4a2tVME8zUjhuYkk1bk5ha29KcFNiTHk3QlBacFhIQWZuSERUUEJDUVVabDZEcm1jV3hJR21IMFFodGRadWxFZUZsWdIBlAFBVV95cUxPUFZWNXNubTlXX2lhWUxqd1R4YTlXX1p2UkpvMHRyZDRZc1AwQU9yb0VlNFpUb3F4LUwtYVFReGthbWhmSnFkOVVtZE1XdGpBNmVtS3BUcDdyOEdVQ1d2Z0R3Mi1zWmRPVHcyZUF1cHB4T05YeVNtcFlHMmtuZ3Q0YTRwT3NzampzQS1wUThrS3RJRFJ4?oc=5",
+    "pubDate": "Mon, 05 Oct 2026 12:41:00 GMT",
+    "date": "2026-10-05",
+    "timeWIB": "Sen, 5 Okt • 19:41 WIB",
+    "timestamp": 1791204060000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "gnews_rss_1791187201000_10-year Treasur",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "10-year Treasury yield rises to fresh 2002 high to start the week - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9IaFZaeFFMQnFxZVQ0dXBXRmExY1pmcHNKUVM1ejBOSWtSQ3huNTlpV2pnTDVvQlJtbV8xV3pyaWFQT1FTWVF2VWgxZDNuR0ZxT2w0YXFCWGs4My1mNFJtcW5ERU1BeUczVHJPdzNoeFZQVTRMaVE40gF8QVVfeXFMUG5tZW9UYkJTZW05R3NiNGdUb3ZZd2puOFo4S2h0UmZudkJ4R2hRU0d5aDM1WmFXY1BBdy1ZWjQ4aGtjVFBQSHEwSnlFYkNLSlhFeFhzVGFzc050QzZqRTVkczVFdjliZ0RtRDlqdWZXNFV3amY4ZDRlQ25RSw?oc=5",
+    "pubDate": "Mon, 05 Oct 2026 08:00:01 GMT",
+    "date": "2026-10-05",
+    "timeWIB": "Sen, 5 Okt • 15:00 WIB",
+    "timestamp": 1791187201000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    },
+    "signal": {
+      "signal": "SELL",
+      "impact": "HIGH",
+      "direction": "USD Menguat / Yield Surge ↓",
+      "impactText": "Sentimen berita mendorong penguatan USD atau imbal hasil obligasi, memberikan tekanan jual pada Emas.",
+      "recommendation": "SELL XAU/USD"
+    }
+  },
+  {
+    "id": "gnews_rss_1791172891000_Gold steady as ",
+    "itemType": "investing",
+    "source": "CNBC",
+    "title": "Gold steady as stronger dollar and high yields offset waning Fed hike expectations - CNBC",
+    "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxORDdCTF9VZm5XckJkSVpCX3I0Y0t0NE9mSVlmRkJtQ2o0bU9oTWxwVGNrZ3Fna25hTjdia3NqcU02Sk96ek90MldRZlpjQnoxTTk3RlhqS2dQME5pVGkxM2tYenpNMTJOOXEtZTlyeVpobGZZVXEtbTg1U1ZseFluOW1kRWdNQ2dfck1Cb0lQSHrSAZYBQVVfeXFMUDE3d2ZoRmtfeE9ZOTFjUjdIakxEUWxPT1Z2ajVDQWxOcGVLbkNPWVpyeWVvVUthdFEzSW55dy1McExtcUJrYzh1LWZyVHVaU3ZkLTNwdFh6UEpBS1JLU0VMcENBU2p6a0lYc2FLMjRsMF9VTUs1b0licHRmMG1EY3BzdlpLVkc5MWgtMktzVFRfQXJ1NlpB?oc=5",
+    "pubDate": "Mon, 05 Oct 2026 04:01:31 GMT",
+    "date": "2026-10-05",
+    "timeWIB": "Sen, 5 Okt • 11:01 WIB",
+    "timestamp": 1791172891000,
+    "category": "GNews RSS",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791144900000_BOJ Interest Ra",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "BOJ Interest Rate Forecast: Tokyo Inflation Builds Case for Next Hike",
+    "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOZm1EenpNYVV3RkVadUhORThST3J2SGxtUTgtZHhHN3I0WnBNRUlYZG5MYW9ldUZZUUxOdWRWUGpJTFBZOEVJelhub3VfMnlLdUZUWUZ4QUtUV01oYVRMQ2JnQXMwa1hfY0sxaTZyUWRJLXdaS0VfOXRyRnh1TTNXbXlqemF1dThTRW9tXzJULVMyX0o2ejZGS2JVazbSAaIBQVVfeXFMT0xiMkpULXkxRzdFaG9jQmVTRXlVdVh5OVpkejZVNFhhT2JfYzYyc1BKNS1lVWlXUjhWVGl4YlZYUzdkTEgwaWdWTWhvOVJRYWhDTi1kV242bTl1V21tWXBLa1pTd2tGQU43Nkxxd1lQOFZQYzF6dUdmZ2pKODFYam9YdTByQnBEVmhYRW1fb04zeEZidHJYMGtfSGpqemV1N0JB?oc=5",
+    "pubDate": "Sun, 04 Oct 2026 20:15:00 GMT",
+    "date": "2026-10-05",
+    "timeWIB": "Sen, 5 Okt • 03:15 WIB",
+    "timestamp": 1791144900000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791144162000_Week Ahead: Can",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Week Ahead: Canadian Jobs, FOMC Minutes, ISM Services, and More | Oct 4 - 10",
+    "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPTlg3Y0ZoTjNtOHQtRnl5WktPWWFFbGlUelA1cVgyN1RQZ2k1RDdBdGVyNXBSdGxFZEpDeGdpRUxkdWo4d1p4MkxrYTVCZkd2QkthaG1Da2VCSW9IM1VfNGptNE9sdnFrQUVNNVFORDBYa2lNNlV3UUFrSWVySzJrWjFQbU9tVUp2NkpzT3NFdXVhSWpadTh30gGcAUFVX3lxTE9NLTlEU2pwblY4Q01JSG5mN2poVWNOZzBlMnJtXy1BUWd2NEZuUjljMmdISmpKVlY2TzRiTVlrbWY1LWJpNGk4UEJPZ1FpaTZkTVNvZC1DbjIyVC0tekJNZXh1X2RSQ2hHaVlqY29pTEdkZlNVRkNTbF9vYUt6dU1lSFFKQmg1VDBjanE3LXJocS1jN1pVTEdNdFBEeQ?oc=5",
+    "pubDate": "Sun, 04 Oct 2026 20:02:42 GMT",
+    "date": "2026-10-05",
+    "timeWIB": "Sen, 5 Okt • 03:02 WIB",
+    "timestamp": 1791144162000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1791129000000_More tankers st",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "More tankers struck in the Middle East as Iran reiterates conditions for reopening the Strait of Hormuz",
+    "link": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQVEtFdzZvbmxOUEZOOVk5ZHBuVUdjUWpWSDB1RUM5UWNMWnViajV6SzhCZS13SExZanYydGJzT2dXRHc1ZVNySUhXck1ZeXdaQWxaVDVmdF9uVHdMcXl2b3k4Ym85X2EyUkNUaDQ5cm1ZZnptR2t6OExvenlyUXJCbXlZWE1FOGs3T3Vj0gGQAUFVX3lxTE9SR1FDUVh3RHhmbFNkN1drS1p0UTFnR200T0JkajVVclBwc1ZWS2pwRWFOV2owTWR5MHV0TTNCN2pRZ1JyQ0tzQlVBVFR1MWh4WnFFamVkT3E0RVY5em5mNFdiLWlJb1dWN0d0SlhHdVlfRTZBV0h2VzdycWdHclU4QlltYkxoUXpfeVRKdzUwYg?oc=5",
+    "pubDate": "Sun, 04 Oct 2026 15:50:00 GMT",
+    "date": "2026-10-04",
+    "timeWIB": "Min, 4 Okt • 22:50 WIB",
+    "timestamp": 1791129000000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1790975700000_DOJ says it wil",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "DOJ says it will not reopen criminal probe into former Fed Chair Powell",
+    "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPR3J5U2t4dk9FY2xnMEpTQ05WZUVyX2xXYVRvVnE2QkwyT0JGeHJXSXczc08ycHk3WTRKOXNhbDhabVRodUdXZW0zdWVOYV9GVVgtbVFtVmg0THEwaGhzUmNHLTRCNTI1YXFvc2tvcV9RVEVpWTJlVU1ZV2pDcWZDVHhubG5PcDZJWE9YQ9IBkgFBVV95cUxPdEZneEtrVmVWOTlPWGs5MjRJYjBVRVF6dkdNVmQ2ay1vYmZnMjdZUG5JSHlmZFZkSnNBMU5DVE9udVItWGtFN0ZVUXY3R1ZsWmcxdzBjcTU1UTIwVXRIYmU2WnpmV2x4R0lxMHFaV0ctYzZzMmFrQ2h5NDdlV3lGLTY0c2RmRUZJWk5YWUU4TGg5Zw?oc=5",
+    "pubDate": "Fri, 02 Oct 2026 21:15:00 GMT",
+    "date": "2026-10-03",
+    "timeWIB": "Sab, 3 Okt • 04:15 WIB",
+    "timestamp": 1790975700000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1790940600000_US Non-Farm Emp",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US Non-Farm Employment Change",
+    "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5PT29lamhYUmRRaVpSY2tDam1zREtkMDJZbmxCcDdGMzByV3ctaGVadXU4bUVaVC14OXF1ZXJrNVBwSS1Zdi1YS2dfVmdCQ1pyazRtUjd0RUt4Q1hSNGdIbEdUS1o4ZHByYklWYXdmRm9tS0pIZHlVQmpn?oc=5",
+    "pubDate": "Fri, 02 Oct 2026 11:30:00 GMT",
+    "date": "2026-10-02",
+    "timeWIB": "Jum, 2 Okt • 18:30 WIB",
+    "timestamp": 1790940600000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1790918520000_Japan does not ",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Japan does not need excessively loose monetary policy, economy minister says",
+    "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQems2TUt2Y1ZwQ3hfRGJDRklVQUNWLTNzdUg0REtYcXFOUDJObnBhNDh2TTFRQVVjYmR0LVlFOEtxamhEU1ZheE1VVndKdWc0R2FyVTVrYlB3eHRVanF5WTZ3VDV0a1FodTlSUTBEcThRTnZTTEFUM0RxZUVmWFhmTmRleXBtT1FiR2dodnplQzhOS1hZcHJDalJJVdIBoAFBVV95cUxOZF9Oc1YwQzU5Z1I5WVhiQWlGRFNRS1ZFQUxqVGZELUVCNDNtS3llZnlIRWJ2V3dZMFpDaFVBNFc3T2VsSGRwa2VYbHpFXzA0elV0cmY2QktVbHFWSU1NUjA5VmhrQkVzeHlzaExTSi0wOXY2YTBodzdNZWFTdGg1SkFPOXJ5WUtVckhUS0UtcWlzZWlzcjZFS1EtOGxTR1c4?oc=5",
+    "pubDate": "Fri, 02 Oct 2026 05:22:00 GMT",
+    "date": "2026-10-02",
+    "timeWIB": "Jum, 2 Okt • 12:22 WIB",
+    "timestamp": 1790918520000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1790914380000_USD/CAD shootin",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "USD/CAD shooting star puts September surge on notice",
+    "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPNFJ2elhJamN2SlRoWS14b054akNEcXVhWUF4YlM4NFhWZ0R6dmQ5OVdsZEl0SjdVSEdORnczOGVLUDlramtmY2dINm5FZ1Z6T0lzX3hfQ1Z5ZjllUW1EUHppTmZQTkF2OWY1aFRVODhNRGxvUElnLTJYWHpyVkZZWmNNS28wYUZNTzRtUWJsTm1EcnBYSi1GU9IBngFBVV95cUxQMW9VLW1McWU0NVYxaVl1WlRHeXVja3I4MnFiejI0MVlHRlV6TGRkQWJMLUw2V0pCWFpKT004ekdWcEtFejlyajJkSGpJeFNOaHlsZk9aYnM3NHFqOVNjUHRqbmdMV0lWUjVUM2ZjUWhfRHZZWXltYnU3T09udHNQQmNsMzU3anpjU3djMGxpaDBXMFU3aDdPdExienVZdw?oc=5",
+    "pubDate": "Fri, 02 Oct 2026 04:13:00 GMT",
+    "date": "2026-10-02",
+    "timeWIB": "Jum, 2 Okt • 11:13 WIB",
+    "timestamp": 1790914380000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1790859600000_US ISM Manufact",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US ISM Manufacturing PMI",
+    "link": "https://news.google.com/rss/articles/CBMidEFVX3lxTE51RGQ1b1V0ZGJBMl8ySkxGbmRBQUFOczZwSXB2YmhPR0txT2NDTXhJYmhLWlJNN3AxUHVBS2lBUHN6bVc3aHFvMWl1bUVNWS1WaGc1Mm52RTNLX1Y3Y2lpM2NPcUk5THIzaVRkSThYS2x5VWpF?oc=5",
+    "pubDate": "Thu, 01 Oct 2026 13:00:00 GMT",
+    "date": "2026-10-01",
+    "timeWIB": "Kam, 1 Okt • 20:00 WIB",
+    "timestamp": 1790859600000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1790780481000_US Treasury: Wi",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US Treasury: Will buy up to $6 bln of 10-20 Year debt in October 1st liquidity buyback",
+    "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5jRlhKYTRISXpJS3NnN1kzSHNHZGhqeUdIdEstQW5sbGtfcFFkTmRtYl9sbHNtd1VWQzdONk10Z2Y0SDhxbmM2cU9TTERSMkNOUmxubmpIWlhUdnhBVDNOaF8wdlQyRVBGYUp0TnZudGtheTg4aGhGVk5YQkhmMzjSAYQBQVVfeXFMTnczcG1VbnVsMzQxdjVfdlNmSEl6S2xRc2FwVHBEWkUzMm9iOEtwR1E0LWZ5WEhRS2RFYkZ2UXk0S0RxQWd6bzlNa3pmMEI1T0ZqX3JSaXh1X3BnYXlYbEZtNlRWWDlnOGF2MW5SbzB2V01KMGZVelhxRVpna3ExQ3BJUTNk?oc=5",
+    "pubDate": "Wed, 30 Sep 2026 15:01:21 GMT",
+    "date": "2026-09-30",
+    "timeWIB": "Rab, 30 Sep • 22:01 WIB",
+    "timestamp": 1790780481000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1790767800000_US Final GDP q/",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US Final GDP q/q",
+    "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1UeER4N09GVDBUbTBBSU1ubzhMck9KTkZtS2tkT3RJaHBPblZaRThkc1VfRDF2RlJJMFpHZGZkcl9OMC0tcnRpam1QUU1IdEpGSnhuT0NUYjhGMEYwVk5jalFyRFZNd28?oc=5",
+    "pubDate": "Wed, 30 Sep 2026 11:30:00 GMT",
+    "date": "2026-09-30",
+    "timeWIB": "Rab, 30 Sep • 18:30 WIB",
+    "timestamp": 1790767800000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1757660400000_Gold (XAUUSD)",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Gold (XAUUSD)",
+    "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1nVkpGTU1ELTh4SlRUdDEzdWRleGw4TTd2V21keHg0eFFGY0dITzNlNjRlLUZlLTRESGdYcjdTcVpxUmpuRFIzUWU1dkhqbTBTTU5DcElOanNNWE1EVVJ2SzFtVGhxZw?oc=5",
+    "pubDate": "Fri, 12 Sep 2025 07:00:00 GMT",
+    "date": "2025-09-12",
+    "timeWIB": "Jum, 12 Sep • 14:00 WIB",
+    "timestamp": 1757660400000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1721071852000_US CPI y/y",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US CPI y/y",
+    "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBGeDR6YmpoRVpaM3p5WTlfZzJqcFAwLUFqcjZGT2RmSTk3dmFicXFSWnlUR0FOdXlYNjFGTUVVaWw0UGhuRTBVemZwRW1mMmFqZmlaay1PU0xaQlBhZXFMTA?oc=5",
+    "pubDate": "Mon, 15 Jul 2024 19:30:52 GMT",
+    "date": "2024-07-16",
+    "timeWIB": "Sel, 16 Jul • 02:30 WIB",
+    "timestamp": 1721071852000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1721071852000_US PPI m/m",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US PPI m/m",
+    "link": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFBoT290dHR5YnM4c0l5bkZ5YWhnMzgyZWxka0VFMmdseDJzVFhkQUN2a1lQVkNDTFJKMVE3ekFYTnpRWlIwR0tvU1lHWllsOV9tVnJMM21ZbUd0czRGbnRV?oc=5",
+    "pubDate": "Mon, 15 Jul 2024 19:30:52 GMT",
+    "date": "2024-07-16",
+    "timeWIB": "Sel, 16 Jul • 02:30 WIB",
+    "timestamp": 1721071852000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1721071822000_US CPI m/m",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US CPI m/m",
+    "link": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE4zT010MTR3LWR3SUo4clUzRF83bjN6RUhyWU8wcTd4VFVKakRNb3dJZV9ubmg0dDFheXRBb3RjV29rVTdIeVRNOWFCVVVLZmVWaVBsUXB1UE5nZFlRN240?oc=5",
+    "pubDate": "Mon, 15 Jul 2024 19:30:22 GMT",
+    "date": "2024-07-16",
+    "timeWIB": "Sel, 16 Jul • 02:30 WIB",
+    "timestamp": 1721071822000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1721071689000_US Core PPI m/m",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "US Core PPI m/m",
+    "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBPVDRYT2ZzalRrRW9WbUgyUl9RdGNwTGliZ2pOX3M2cHl4Rl84R2E1UTRvNzluQzB6Y2V1X0xTZjJQUUFyR2tQbWRJTHFQQ0N3V2JaaERlX2RHNTItczBDVnB1enFRdw?oc=5",
+    "pubDate": "Mon, 15 Jul 2024 19:28:09 GMT",
+    "date": "2024-07-16",
+    "timeWIB": "Sel, 16 Jul • 02:28 WIB",
+    "timestamp": 1721071689000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1663602915000_USD/JPY",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "USD/JPY",
+    "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFBNejUwZXd2V3VHTFRWdnZsWnFmemV2MVpWSS1tQzFQanJkRm9yN0JYMDAycGx1LTFpSExvYmxWaU9nSjFWSElxVEZTNGkwSXB2SUFsVw?oc=5",
+    "pubDate": "Mon, 19 Sep 2022 15:55:15 GMT",
+    "date": "2022-09-19",
+    "timeWIB": "Sen, 19 Sep • 22:55 WIB",
+    "timestamp": 1663602915000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1663602587000_Gold/USD",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "Gold/USD",
+    "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE94WVp1NUNacTRuWlhtSy1scGxUUkJTQnI2WGdJeXJuUHAyTEZxcWE3Y2puNmF1YkhrMU9ITmhCRHA0U0tKMDIta1ZsMWZhUDBuS2xLRi1R?oc=5",
+    "pubDate": "Mon, 19 Sep 2022 15:49:47 GMT",
+    "date": "2022-09-19",
+    "timeWIB": "Sen, 19 Sep • 22:49 WIB",
+    "timestamp": 1663602587000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1537460201000_EUR/USD",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "EUR/USD",
+    "link": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE14d1VfRElZOWl0bzFDeV8xTXEwVk9LN0hqNjZBUmk2R2tpX0xDRXI4OGQzdVhEUW12VFFZeU9KV0YwajBkLVBsUmwyMA?oc=5",
+    "pubDate": "Thu, 20 Sep 2018 16:16:41 GMT",
+    "date": "2018-09-20",
+    "timeWIB": "Kam, 20 Sep • 23:16 WIB",
+    "timestamp": 1537460201000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  },
+  {
+    "id": "ff_news_1148454000000_USD/JPY Discuss",
+    "itemType": "investing",
+    "source": "Forex Factory News",
+    "title": "USD/JPY Discussion",
+    "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE91TjZROHpYWlBUeGJMOGk2SWExMGFCYW5BUmgwcXpjdU93bVNkejNZeTdMX1lIaW9EV2JaVUlPMGJCNGx1a1ZjZHUwR1Q5QTAzNkxXNlA2V1FSNjBOTlNCX1o4OVVMeU5XcXc?oc=5",
+    "pubDate": "Wed, 24 May 2006 07:00:00 GMT",
+    "date": "2006-05-24",
+    "timeWIB": "Rab, 24 Mei • 14:00 WIB",
+    "timestamp": 1148454000000,
+    "category": "Forex Factory",
+    "analysis": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    },
+    "signal": {
+      "signal": "NEUTRAL",
+      "impact": "MEDIUM",
+      "direction": "Pasar Konsolidasi ↔",
+      "impactText": "Berita memberikan sentimen campuran atau netral terhadap pergerakan XAU/USD.",
+      "recommendation": "HOLD / WAIT"
+    }
+  }
+]

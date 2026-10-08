@@ -913,3 +913,156 @@ body {
 .log-time { color: var(--text-secondary); }
 .log-source { font-weight: bold; color: var(--accent-gold); }
 
+/* Zero-Delay Fast Release Alert Banner Overlay */
+.fast-release-banner {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  right: 20px;
+  z-index: 100;
+  background: rgba(21, 22, 28, 0.95);
+  backdrop-filter: blur(12px);
+  border: 2px solid var(--accent-gold);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(245, 158, 11, 0.3);
+  animation: slideDownFade 0.4s ease-out;
+}
+
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fast-release-banner.hidden {
+  display: none !important;
+}
+
+.banner-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.flash-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.15);
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  letter-spacing: 0.5px;
+}
+
+.banner-time {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.banner-body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.banner-signal-badge {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  text-align: center;
+  min-width: 80px;
+}
+
+.banner-signal-badge.BUY {
+  background: var(--accent-buy);
+  color: #FFFFFF;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+}
+
+.banner-signal-badge.SELL {
+  background: var(--accent-sell);
+  color: #FFFFFF;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+}
+
+.banner-signal-badge.NEUTRAL, .banner-signal-badge.HOLD {
+  background: var(--accent-gold);
+  color: #000000;
+}
+
+.banner-details {
+  flex: 1;
+}
+
+.banner-details h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  color: var(--text-main);
+}
+
+.banner-details p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.banner-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.banner-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFF;
+}
+
+/* Flashing chart border on live 0-delay release */
+.chart-card.flash-buy {
+  animation: flashBuyGlow 1.5s infinite alternate;
+}
+
+.chart-card.flash-sell {
+  animation: flashSellGlow 1.5s infinite alternate;
+}
+
+@keyframes flashBuyGlow {
+  from { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+  to { border-color: rgba(16, 185, 129, 1); box-shadow: 0 0 30px rgba(16, 185, 129, 0.7); }
+}
+
+@keyframes flashSellGlow {
+  from { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+  to { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); }
+}
+
+.pulse-dot-active {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  display: inline-block;
+  margin-right: 6px;
+  box-shadow: 0 0 8px #10B981;
+  animation: pulseDotGlow 1.2s infinite;
+}
+
+@keyframes pulseDotGlow {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+

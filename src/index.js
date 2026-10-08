@@ -12,17 +12,48 @@ import { formatMessage, formatDailySummary, formatHeadlineDigest, formatLogsTele
 import { generateSignalCardImage } from './formatter/imageGenerator.js';
 import { startScheduler, getNextRun } from './scheduler/cronJob.js';
 import { getScrapeLogs, getSourceHealth } from './utils/scrapeLogger.js';
+import { initBrowser, closeBrowser } from './scraper/puppeteerScraper.js';
 
 const log = createLogger('Main');
 
 const sentNotifications = new Set();
 let latestNewsCache = [];
 
+// SSE (Server-Sent Events) clients untuk 0-delay real-time push ke Web Dashboard
+const sseClients = new Set();
+
+function broadcastSSE(eventType, data) {
+  const payload = `event: ${eventType}\ndata: ${JSON.stringify(data)}\n\n`;
+  sseClients.forEach(client => {
+    try {
+      client.write(payload);
+    } catch (e) {
+      sseClients.delete(client);
+    }
+  });
+}
+
 function startWebServer() {
   const app = express();
   const PORT = process.env.PORT || 3000;
 
   app.use(express.static('public'));
+
+  // SSE Stream Endpoint (Zero Delay Broadcast)
+  app.get('/api/stream', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    sseClients.add(res);
+    log.info(`⚡ Client terhubung ke Realtime SSE Stream (Total: ${sseClients.size} aktif)`);
+
+    req.on('close', () => {
+      sseClients.delete(res);
+      log.info(`Client terputus dari Realtime SSE Stream (Sisa: ${sseClients.size} aktif)`);
+    });
+  });
 
   // Unified Feed Endpoint (Gabungan ForexFactory & Investing.com)
   app.get('/api/news', async (req, res) => {
@@ -61,7 +92,7 @@ function startWebServer() {
 
 /**
  * Main Task: Polling realtime 1-menit.
- * Mengambil unified feed -> mendeteksi event/headline baru -> kirim notifikasi Telegram.
+ * Mengambil unified feed -> mendeteksi event/headline baru -> broadcast 0-delay SSE -> kirim notifikasi Telegram.
  */
 async function mainTask() {
   log.debug('=== Pengecekan realtime berita terpadu ===');
@@ -81,10 +112,13 @@ async function mainTask() {
         continue;
       }
 
+      // Broadcast Instan KE Dashboard Web (0 Delay SSE)
+      broadcastSSE('NEWS_RELEASE', { item, timestamp: Date.now() });
+
       // 1. Jika item berupa Kalender Ekonomi (Forex Factory)
       if (item.itemType === 'calendar') {
         const signal = item.signal || analyzeSignal(item);
-        log.info(`[NOTIF CALENDAR] ${item.event}: ${signal.signal} (${signal.reason})`);
+        log.info(`⚡ [ZERO DELAY BROADCAST] ${item.event}: ${signal.signal} (${signal.reason})`);
 
         try {
           const imageBuffer = await generateSignalCardImage(item, signal);
@@ -104,7 +138,7 @@ async function mainTask() {
         const sig = item.analysis || {};
         // Auto-kirim hanya jika berita punya sinyal tegas BUY / SELL (High Relevance)
         if (sig.signal === 'BUY' || sig.signal === 'SELL') {
-          log.info(`[NOTIF NEWS] ${item.title}: Sinyal ${sig.signal}`);
+          log.info(`⚡ [ZERO DELAY BROADCAST NEWS] ${item.title}: Sinyal ${sig.signal}`);
           const digestText = formatHeadlineDigest([item]);
           if (digestText) {
             await sendMessage(digestText);
@@ -262,6 +296,7 @@ async function main() {
   log.info('  Bot XAU/USD Signal Unified Realtime Start  ');
   log.info('=============================================');
 
+  await initBrowser(); // Inisialisasi Puppeteer di awal agar selalu siap sedia
   startWebServer();
 
   const isPlaceholderToken = !config.TELEGRAM_BOT_TOKEN || config.TELEGRAM_BOT_TOKEN.includes('your_') || config.TELEGRAM_BOT_TOKEN.includes('here');
@@ -272,7 +307,7 @@ async function main() {
     try {
       initBot();
       setupBotCommands();
-      
+
       mainTask().catch(err => log.error('Main task initial run error:', err.message));
       startScheduler(mainTask);
     } catch (err) {
@@ -283,8 +318,8 @@ async function main() {
   log.info('🌐 Web Dashboard siap diakses di: http://localhost:3000');
 }
 
-process.on('SIGINT', () => { log.info('Shutting down...'); process.exit(0); });
-process.on('SIGTERM', () => { log.info('Shutting down...'); process.exit(0); });
+process.on('SIGINT', async () => { log.info('Shutting down...'); await closeBrowser(); process.exit(0); });
+process.on('SIGTERM', async () => { log.info('Shutting down...'); await closeBrowser(); process.exit(0); });
 process.on('uncaughtException', (err) => { log.error('Uncaught exception:', err.message); });
 process.on('unhandledRejection', (reason) => { log.error('Unhandled rejection:', reason); });
 
