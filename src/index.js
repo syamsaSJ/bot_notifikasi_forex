@@ -137,7 +137,8 @@ async function mainTask() {
     const dayOfWeekWib = new Date(nowWibStr).getDay(); // 1 = Monday
     const range = dayOfWeekWib === 1 ? 'weekly' : 'realtime';
 
-    const items = await getUnifiedFeed(false, range);
+    // Jalankan live fetch realtime pada polling 1-menit
+    const items = await getUnifiedFeed(true, range);
 
     if (!items || items.length === 0) {
       return;

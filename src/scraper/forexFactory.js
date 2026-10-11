@@ -165,8 +165,8 @@ function parseJsonEvents(jsonInput) {
 export async function fetchLiveRealtimeNews() {
   const now = Date.now();
 
-  // Cache 10 menit untuk menghindari 429 Rate Limit dari FairEconomy / Cloudflare
-  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < (10 * 60 * 1000)) {
+  // Cache 1 menit untuk mendukung polling realtime 1-menit tanpa 429 Rate Limit
+  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < (60 * 1000)) {
     return cache.data;
   }
 
