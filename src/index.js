@@ -137,8 +137,8 @@ async function mainTask() {
     const dayOfWeekWib = new Date(nowWibStr).getDay(); // 1 = Monday
     const range = dayOfWeekWib === 1 ? 'weekly' : 'realtime';
 
-    // Jalankan live fetch realtime pada polling 1-menit
-    const items = await getUnifiedFeed(true, range);
+    // Polling 1-menit otomatis (FairEconomy live 1-min feed + Apify last-run dataset)
+    const items = await getUnifiedFeed(false, range);
 
     if (!items || items.length === 0) {
       return;
