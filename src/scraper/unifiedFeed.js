@@ -4,46 +4,20 @@ import axios from 'axios';
 import xml2js from 'xml2js';
 import config from '../utils/config.js';
 import { createLogger } from '../utils/logger.js';
-import { formatWIBTime, parseToDateObj } from './parser.js';
+import { formatWIBTime, parseToDateObj, normalizeCalendarTitleKey } from './parser.js';
+
 import { logScrapeResult } from '../utils/scrapeLogger.js';
 import { getHighImpactNews } from './forexFactory.js';
 import { analyzeSignal, analyzeInvestingHeadline, analyzeHeadlineAsync } from '../engine/signalEngine.js';
 import { isRelevantToXAUUSD } from '../utils/newsFilter.js';
+import { saveUnifiedFeedToSupabase, getFeedFromSupabase } from '../services/supabaseService.js';
 
 const log = createLogger('UnifiedFeed');
-const UNIFIED_CACHE_FILE = path.resolve('scratch', 'unified_feed_cache.json');
 
 let unifiedCache = {
   data: null,
   timestamp: 0,
 };
-
-// Load persistent disk cache jika ada
-try {
-  if (fs.existsSync(UNIFIED_CACHE_FILE)) {
-    const raw = fs.readFileSync(UNIFIED_CACHE_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      unifiedCache.data = parsed;
-      unifiedCache.timestamp = Date.now();
-      log.info(`💾 Memuat ${parsed.length} items feed terpadu dari cache disk.`);
-    }
-  }
-} catch (e) {
-  log.warn(`Gagal membaca disk cache feed terpadu: ${e.message}`);
-}
-
-function saveUnifiedDiskCache(data) {
-  try {
-    const dir = path.dirname(UNIFIED_CACHE_FILE);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(UNIFIED_CACHE_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (e) {
-    log.warn(`Gagal menyimpan disk cache feed terpadu: ${e.message}`);
-  }
-}
 
 function getHeaders() {
   return {
@@ -295,37 +269,134 @@ async function fetchGNewsRss() {
 }
 
 /**
+ * Fetch headline berita & analisis langsung dari TradingView API & Google News RSS fallback.
+ */
+async function fetchTradingViewNews() {
+  const newsList = [];
+  const seenTitles = new Set();
+
+  // Primary: TradingView Symbol News API (OANDA:XAUUSD)
+  try {
+    const tvUrl = 'https://news-headlines.tradingview.com/v2/headlines?client=web&symbol=OANDA:XAUUSD&lang=en';
+    const res = await axios.get(tvUrl, { headers: getHeaders(), timeout: 8000 });
+    const items = res.data?.items || (Array.isArray(res.data) ? res.data : []);
+
+    if (items.length > 0) {
+      items.forEach(item => {
+        const title = item.title || 'TradingView News';
+        if (!title || seenTitles.has(title.toLowerCase())) return;
+        seenTitles.add(title.toLowerCase());
+
+        const pubSec = item.published ? Number(item.published) : Math.floor(Date.now() / 1000);
+        const dateObj = new Date(pubSec * 1000);
+        const wibInfo = formatWIBTime(dateObj);
+        
+        const sourceName = item.source ? `TradingView (${item.source})` : 'TradingView';
+        const storyLink = item.storyPath ? `https://www.tradingview.com${item.storyPath}` : 'https://www.tradingview.com/news/';
+        const analysis = analyzeInvestingHeadline(title, 'TradingView');
+
+        newsList.push({
+          id: `tv_${item.id || pubSec}_${title.slice(0, 15)}`,
+          itemType: 'investing',
+          source: sourceName,
+          title,
+          link: storyLink,
+          pubDate: dateObj.toISOString(),
+          date: wibInfo.dateStr,
+          timeWIB: wibInfo.displayWIB,
+          timestamp: wibInfo.timestamp,
+          category: 'TradingView',
+          analysis,
+          signal: analysis,
+        });
+      });
+    }
+  } catch (err) {
+    log.warn(`Gagal fetch TradingView Headlines API: ${err.message}`);
+  }
+
+  // Fallback / Secondary: Google News RSS for TradingView site
+  try {
+    const rssUrl = 'https://news.google.com/rss/search?q=site:tradingview.com+(gold+OR+XAUUSD+OR+Fed+OR+USD)&hl=en-US&gl=US&ceid=US:en';
+    const res = await axios.get(rssUrl, { headers: getHeaders(), timeout: 8000, responseType: 'text' });
+    const parsed = await xml2js.parseStringPromise(res.data);
+    const items = parsed?.rss?.channel?.[0]?.item || [];
+
+    items.forEach(item => {
+      let title = item.title?.[0] || 'TradingView News';
+      title = title.replace(/\s*-\s*TradingView\s*$/i, '');
+      if (!title || seenTitles.has(title.toLowerCase())) return;
+      seenTitles.add(title.toLowerCase());
+
+      const rawDate = item.pubDate?.[0] || '';
+      const dateObj = parseToDateObj(rawDate);
+      const wibInfo = formatWIBTime(dateObj);
+      const link = item.link?.[0] || 'https://www.tradingview.com';
+      const analysis = analyzeInvestingHeadline(title, 'TradingView RSS');
+
+      newsList.push({
+        id: `tv_rss_${dateObj.getTime()}_${title.slice(0, 15)}`,
+        itemType: 'investing',
+        source: 'TradingView News',
+        title,
+        link,
+        pubDate: rawDate,
+        date: wibInfo.dateStr,
+        timeWIB: wibInfo.displayWIB,
+        timestamp: wibInfo.timestamp,
+        category: 'TradingView',
+        analysis,
+        signal: analysis,
+      });
+    });
+  } catch (err) {
+    log.warn(`Gagal fetch TradingView GNews RSS: ${err.message}`);
+  }
+
+  const filtered = newsList.filter(item => isRelevantToXAUUSD(item.title));
+  logScrapeResult('TradingViewNews', true, filtered.length);
+  return filtered;
+}
+
+/**
  * Ambil Feed Terpadu Realtime:
  * 1. Kalender Ekonomi: RapidAPI Forex Factory Scraper (fallback: Puppeteer -> Forex Factory RSS XML)
- * 2. News Headlines: ForexLive.com + NewsData.io API + GNews API + GNews RSS
+ * 2. News Headlines: ForexLive.com + NewsData.io API + GNews API + GNews RSS + TradingView News
  */
-export async function getUnifiedFeed(forceRefresh = false) {
+export async function getUnifiedFeed(forceRefresh = false, range = 'realtime') {
   const now = Date.now();
 
   if (!forceRefresh && unifiedCache.data && (now - unifiedCache.timestamp) < 30000) {
     return unifiedCache.data;
   }
 
-  log.info('🌐 Mengambil & Memproses Feed Realtime (Forex Factory + ForexLive + News API)...');
+  log.info(`🌐 Mengambil & Memproses Feed Realtime (Forex Factory + TradingView + ForexLive + News API) [Range: ${range}]...`);
 
   try {
-    const [calendarEvents, ffNewsItems, forexLiveItems, newsDataIoItems, gnewsApiItems, gnewsRssItems] = await Promise.all([
-      getHighImpactNews().catch(err => {
+    const [calendarEvents, ffNewsItems, forexLiveItems, newsDataIoItems, gnewsApiItems, gnewsRssItems, tradingViewNewsItems] = await Promise.all([
+      getHighImpactNews(forceRefresh, range).catch(err => {
         log.error('Error in getHighImpactNews:', err.message);
         return [];
       }),
+
       fetchForexFactoryNews().catch(() => []),
       fetchForexLiveRss().catch(() => []),
       fetchNewsDataIo().catch(() => []),
       fetchGNewsApi().catch(() => []),
       fetchGNewsRss().catch(() => []),
+      fetchTradingViewNews().catch(() => []),
     ]);
 
     // Format Forex Factory calendar events
-    const formattedCalendarItems = calendarEvents.map(evt => {
+    const formattedCalendarItems = calendarEvents.map((evt, idx) => {
       const signal = analyzeSignal(evt);
+      const currency = (evt.currency || 'USD').toUpperCase();
+      const titleKey = normalizeCalendarTitleKey(evt.event || evt.title || '');
+      const cleanTitle = titleKey || (evt.event || evt.title || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const uniqueId = evt.id || `cal_${evt.date}_${currency}_${cleanTitle}`;
+
       return {
-        id: `cal_${evt.date}_${evt.event}`,
+        id: uniqueId,
         itemType: 'calendar',
         source: 'Forex Factory',
         event: evt.event,
@@ -334,7 +405,7 @@ export async function getUnifiedFeed(forceRefresh = false) {
         time: evt.time,
         timeWIB: evt.timeWIB,
         timestamp: evt.timestamp || Date.now(),
-        currency: 'USD',
+        currency: currency,
         impact: evt.impact,
         actual: evt.actual,
         forecast: evt.forecast,
@@ -348,24 +419,72 @@ export async function getUnifiedFeed(forceRefresh = false) {
       };
     });
 
-    // Combined headlines (Forex Factory News + ForexLive + NewsData.io + GNews API + GNews RSS)
-    const allNewsHeadlines = [...ffNewsItems, ...forexLiveItems, ...newsDataIoItems, ...gnewsApiItems, ...gnewsRssItems];
+    // Combined headlines (Forex Factory News + ForexLive + NewsData.io + GNews API + GNews RSS + TradingView News)
+    const allNewsHeadlines = [...ffNewsItems, ...forexLiveItems, ...newsDataIoItems, ...gnewsApiItems, ...gnewsRssItems, ...tradingViewNewsItems];
 
     // Combine all (Forex Factory Calendar + News Headlines)
     const allCombined = [...formattedCalendarItems, ...allNewsHeadlines];
 
-    // Deduplikasi berdasarkan title/event
-    const seenTitles = new Set();
-    const deduplicated = [];
+    // Deduplikasi & Merging (Saling Mengisi data Actual tanpa kartu duplikat)
+    const calendarMap = new Map();
+    const newsMap = new Map();
 
-    allCombined.forEach(item => {
-      const cleanTitle = (item.title || item.event || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-      const key = `${item.date}_${cleanTitle.slice(0, 35)}`;
-      if (!seenTitles.has(key)) {
-        seenTitles.add(key);
-        deduplicated.push(item);
+    allCombined.forEach((item) => {
+      if (item.itemType === 'calendar') {
+        const titleKey = normalizeCalendarTitleKey(item.event || item.title);
+        const key = `${item.date}_${item.currency || 'USD'}_${titleKey}`;
+
+        if (!calendarMap.has(key)) {
+          calendarMap.set(key, item);
+        } else {
+          // SALING MENGISI: Update existing record jika data rilis baru/lengkap tersedia
+          const existing = calendarMap.get(key);
+
+          // 1. Update Actual jika baru terisi
+          if (item.actual && item.actual !== '-' && item.actual.trim() !== '') {
+            existing.actual = item.actual;
+            if (item.actualValue !== undefined) existing.actualValue = item.actualValue;
+          }
+
+          // 2. Update Forecast jika sebelumnya '-'
+          if ((!existing.forecast || existing.forecast === '-') && item.forecast && item.forecast !== '-') {
+            existing.forecast = item.forecast;
+            if (item.forecastValue !== undefined) existing.forecastValue = item.forecastValue;
+          }
+
+          // 3. Update Previous jika sebelumnya '-'
+          if ((!existing.previous || existing.previous === '-') && item.previous && item.previous !== '-') {
+            existing.previous = item.previous;
+            if (item.previousValue !== undefined) existing.previousValue = item.previousValue;
+          }
+
+          // 4. Update jam rilis WIB presisi jika tersedia
+          if (item.timeWIB && item.timeWIB.includes('WIB') && (!existing.timeWIB || !existing.timeWIB.includes('WIB'))) {
+            existing.timeWIB = item.timeWIB;
+            existing.time = item.time;
+            existing.timestamp = item.timestamp;
+          }
+
+          // 5. Hitung ulang Sinyal fundamental jika actual telah terisi
+          const updatedSignal = analyzeSignal(existing);
+          existing.signal = updatedSignal;
+          existing.analysis = {
+            signal: updatedSignal.signal,
+            direction: updatedSignal.direction,
+            impactText: updatedSignal.predictionText,
+          };
+        }
+      } else {
+        const cleanTitle = (item.title || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const key = `news_${item.date || ''}_${cleanTitle.slice(0, 35)}`;
+        if (!newsMap.has(key)) {
+          newsMap.set(key, item);
+        }
       }
     });
+
+    const deduplicated = [...Array.from(calendarMap.values()), ...Array.from(newsMap.values())];
+
 
     // Urutkan berdasarkan timestamp terbaru di atas
     deduplicated.sort((a, b) => b.timestamp - a.timestamp);
@@ -379,15 +498,34 @@ export async function getUnifiedFeed(forceRefresh = false) {
       await new Promise(r => setTimeout(r, 150));
     }
 
-    log.info(`✅ Feed Realtime Berhasil: Total ${deduplicated.length} items (Forex Factory: ${formattedCalendarItems.length}, News Headlines: ${allNewsHeadlines.length})`);
+    log.info(`✅ Sync Data Feed Berhasil: Total ${deduplicated.length} items (Forex Factory: ${formattedCalendarItems.length}, News Headlines: ${allNewsHeadlines.length})`);
+
+    // 1. Simpan/upsert seluruh data terbaru ke Supabase Database
+    await saveUnifiedFeedToSupabase(deduplicated).catch(e => log.warn(`Gagal async save ke Supabase: ${e.message}`));
+
+    // 2. Ambil tampilan data terpadu LANGSUNG dari Database Supabase!
+    const dbFeed = await getFeedFromSupabase().catch(() => null);
+    if (dbFeed && dbFeed.length > 0) {
+      log.info(`⚡ Menyajikan ${dbFeed.length} data kalender & berita LANGSUNG dari Database Supabase!`);
+      unifiedCache.data = dbFeed;
+      unifiedCache.timestamp = now;
+      return dbFeed;
+    }
 
     unifiedCache.data = deduplicated;
     unifiedCache.timestamp = now;
-    saveUnifiedDiskCache(deduplicated);
     return deduplicated;
   } catch (err) {
     log.error('Gagal membuat Unified Feed:', err.message);
     logScrapeResult('UnifiedFeed', false, 0, err.message);
+
+    // Fallback ke Supabase Database jika live fetch bermasalah
+    const dbFallback = await getFeedFromSupabase().catch(() => null);
+    if (dbFallback && dbFallback.length > 0) {
+      log.info('📦 Menggunakan data fallback dari Database Supabase.');
+      return dbFallback;
+    }
+
     return unifiedCache.data || [];
   }
 }

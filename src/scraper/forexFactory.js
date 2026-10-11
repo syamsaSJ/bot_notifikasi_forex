@@ -4,43 +4,16 @@ import axios from 'axios';
 import xml2js from 'xml2js';
 import config from '../utils/config.js';
 import { createLogger } from '../utils/logger.js';
-import { parseEconomicValue, formatWIBTime } from './parser.js';
+import { parseEconomicValue, formatWIBTime, normalizeCalendarTitleKey } from './parser.js';
+
 import { logScrapeResult } from '../utils/scrapeLogger.js';
 
 const log = createLogger('ForexFactoryScraper');
-const CACHE_FILE_PATH = path.resolve('scratch', 'calendar_cache.json');
 
 let cache = {
   data: null,
   timestamp: 0,
 };
-
-// Load disk cache jika ada
-try {
-  if (fs.existsSync(CACHE_FILE_PATH)) {
-    const fileContent = fs.readFileSync(CACHE_FILE_PATH, 'utf-8');
-    const parsedFile = JSON.parse(fileContent);
-    if (Array.isArray(parsedFile) && parsedFile.length > 0) {
-      cache.data = parsedFile;
-      cache.timestamp = Date.now();
-      log.info(`💾 Memuat ${parsedFile.length} data kalender dari cache disk.`);
-    }
-  }
-} catch (e) {
-  log.warn(`Gagal membaca disk cache: ${e.message}`);
-}
-
-function saveDiskCache(data) {
-  try {
-    const dir = path.dirname(CACHE_FILE_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(CACHE_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (e) {
-    log.warn(`Gagal menyimpan disk cache: ${e.message}`);
-  }
-}
 
 function getHeaders() {
   const userAgent = config.USER_AGENTS[Math.floor(Math.random() * config.USER_AGENTS.length)] ||
@@ -48,8 +21,9 @@ function getHeaders() {
 
   return {
     'User-Agent': userAgent,
-    'Accept': 'application/xml, application/json, text/xml, */*',
+    'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'en-US,en;q=0.9',
+    'Referer': 'https://www.forexfactory.com/',
     'Cache-Control': 'no-cache',
   };
 }
@@ -97,14 +71,12 @@ async function parseXmlEvents(xmlString) {
     const rawEvents = parsed?.weeklyevents?.event || [];
 
     return rawEvents
-      .filter(item => {
-        const country = item?.country?.[0] || '';
-        return country === 'USD';
-      })
-      .map(item => {
+      .filter(item => item && item.title?.[0])
+      .map((item, idx) => {
         const title = item?.title?.[0] || 'Economic News';
         const dateStr = item?.date?.[0] || '';
         const timeStr = item?.time?.[0] || '';
+        const country = (item?.country?.[0] || 'USD').toUpperCase();
         const impactStr = (item?.impact?.[0] || 'medium').toLowerCase();
         const forecastRaw = item?.forecast?.[0] || '-';
         const previousRaw = item?.previous?.[0] || '-';
@@ -112,15 +84,20 @@ async function parseXmlEvents(xmlString) {
 
         const dateObj = parseFFXmlDate(dateStr, timeStr);
         const wibInfo = formatWIBTime(dateObj);
+        const cleanTitle = title.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        const hasClock = timeStr && /^\d{1,2}:\d{2}(am|pm)$/i.test(String(timeStr).trim());
+        const finalTime = hasClock ? convertETtoWIB(timeStr, dateStr) : '-';
+        const finalTimeWIB = hasClock ? wibInfo.displayWIB : `${wibInfo.displayWIB.split('•')[0].trim()} • -`;
 
         return {
-          id: `ff_xml_${dateStr}_${title}`,
+          id: `ff_xml_${wibInfo.dateStr}_${country}_${cleanTitle}_${idx}`,
           source: 'Forex Factory',
           date: wibInfo.dateStr,
-          time: timeStr || wibInfo.timeWIBStr,
-          timeWIB: wibInfo.displayWIB,
+          time: finalTime,
+          timeWIB: finalTimeWIB,
           timestamp: wibInfo.timestamp,
-          currency: 'USD',
+          currency: country,
           impact: impactStr.includes('high') ? 'high' : impactStr.includes('medium') ? 'medium' : 'low',
           event: title,
           actual: actualRaw !== '' ? actualRaw : '-',
@@ -138,7 +115,7 @@ async function parseXmlEvents(xmlString) {
 }
 
 /**
- * Fallback parser untuk JSON feed Forex Factory.
+ * Fallback parser untuk JSON feed Forex Factory (ff_calendar_thisweek.json).
  */
 function parseJsonEvents(jsonInput) {
   let jsonArray = jsonInput;
@@ -148,22 +125,30 @@ function parseJsonEvents(jsonInput) {
   if (!Array.isArray(jsonArray)) return [];
 
   return jsonArray
-    .filter(item => item && (item.country === 'USD' || item.currency === 'USD'))
-    .map(item => {
+    .filter(item => item && (item.title || item.event))
+    .map((item, idx) => {
       const dateObj = new Date(item.date || Date.now());
       const wibInfo = formatWIBTime(dateObj);
       const impactStr = (item.impact || 'medium').toLowerCase();
+      const currency = (item.country || item.currency || 'USD').toUpperCase();
+      const eventName = item.title || item.event || 'Economic News';
+      const cleanTitle = eventName.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      const timeRaw = item.time || '';
+      const hasClock = timeRaw && /^\d{1,2}:\d{2}(am|pm)$/i.test(String(timeRaw).trim());
+      const finalTime = hasClock ? convertETtoWIB(timeRaw, item.date) : '-';
+      const finalTimeWIB = hasClock ? wibInfo.displayWIB : `${wibInfo.displayWIB.split('•')[0].trim()} • -`;
 
       return {
-        id: `ff_json_${item.date || ''}_${item.title || item.event}`,
+        id: `ff_json_${wibInfo.dateStr}_${currency}_${cleanTitle}_${idx}`,
         source: 'Forex Factory',
         date: wibInfo.dateStr,
-        time: item.time || wibInfo.timeWIBStr,
-        timeWIB: wibInfo.displayWIB,
+        time: finalTime,
+        timeWIB: finalTimeWIB,
         timestamp: wibInfo.timestamp,
-        currency: 'USD',
+        currency: currency,
         impact: impactStr.includes('high') ? 'high' : impactStr.includes('medium') ? 'medium' : 'low',
-        event: item.title || item.event || 'Economic News',
+        event: eventName,
         actual: item.actual && item.actual !== '' ? item.actual : '-',
         forecast: item.forecast && item.forecast !== '' ? item.forecast : '-',
         previous: item.previous && item.previous !== '' ? item.previous : '-',
@@ -175,106 +160,154 @@ function parseJsonEvents(jsonInput) {
 }
 
 /**
- * Fetch data berita kalender Forex Factory secara LIVE REALTIME via RSS XML Feed & JSON Fallback.
+ * Fetch data berita kalender Forex Factory secara LIVE REALTIME via FairEconomy JSON Feed (ff_calendar_thisweek.json) & XML Fallback.
  */
 export async function fetchLiveRealtimeNews() {
   const now = Date.now();
 
-  // Cache 30 detik untuk kelancaran realtime tanpa delay rilis
-  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < (30 * 1000)) {
+  // Cache 10 menit untuk menghindari 429 Rate Limit dari FairEconomy / Cloudflare
+  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < (10 * 60 * 1000)) {
     return cache.data;
   }
 
-  log.info('🌐 Fetching Forex Factory RSS XML Feed (FairEconomy API)...');
-  const primaryXmlUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml';
-  const xmlEndpoints = [
-    primaryXmlUrl,
-    'https://api.allorigins.win/raw?url=' + encodeURIComponent(primaryXmlUrl),
-    'https://corsproxy.io/?url=' + encodeURIComponent(primaryXmlUrl),
-  ];
+  log.info('🌐 Fetching Forex Factory Weekly Calendar (https://nfs.faireconomy.media/ff_calendar_thisweek.json)...');
+  
+  const jsonUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
+  const xmlUrl  = 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml';
 
   let errors = [];
 
-  // 1. STRATEGI 1: RSS XML Feed (Utama)
-  for (const endpointUrl of xmlEndpoints) {
-    try {
-      const res = await axios.get(endpointUrl, {
-        headers: getHeaders(),
-        timeout: 10000,
-        responseType: 'text',
-      });
-
-      if (res.status === 200 && res.data) {
-        const parsed = await parseXmlEvents(res.data);
-        if (parsed.length > 0) {
-          log.info(`✅ Forex Factory RSS XML API Berhasil! (${parsed.length} USD events)`);
-          logScrapeResult('ForexFactoryRSS', true, parsed.length);
-          cache.data = parsed;
-          cache.timestamp = now;
-          saveDiskCache(parsed);
-          return parsed;
-        }
-      }
-    } catch (err) {
-      errors.push(err.message);
-      log.warn(`ForexFactory RSS XML endpoint error (${endpointUrl}): ${err.message}`);
-    }
-  }
-
-  // 2. STRATEGI 2: Fallback ke JSON Feed jika XML terhalang
+  // 1. STRATEGI UTAMA: FairEconomy JSON Feed (ff_calendar_thisweek.json)
   try {
-    const jsonUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
     const jsonRes = await axios.get(jsonUrl, { headers: getHeaders(), timeout: 10000 });
     if (jsonRes.status === 200 && jsonRes.data) {
       const parsedJson = parseJsonEvents(jsonRes.data);
       if (parsedJson.length > 0) {
-        log.info(`✅ Forex Factory JSON Fallback Berhasil! (${parsedJson.length} USD events)`);
+        log.info(`✅ Forex Factory JSON Weekly Feed Berhasil! (${parsedJson.length} total events)`);
         logScrapeResult('ForexFactoryJSON', true, parsedJson.length);
         cache.data = parsedJson;
         cache.timestamp = now;
-        saveDiskCache(parsedJson);
         return parsedJson;
       }
     }
   } catch (jsonErr) {
-    errors.push(jsonErr.message);
+    errors.push(`JSON error: ${jsonErr.message}`);
+    log.warn(`ForexFactory JSON endpoint error: ${jsonErr.message}`);
+  }
+
+  // 2. STRATEGI FALLBACK: FairEconomy XML Feed (ff_calendar_thisweek.xml)
+  try {
+    const xmlRes = await axios.get(xmlUrl, { headers: getHeaders(), timeout: 10000, responseType: 'text' });
+    if (xmlRes.status === 200 && xmlRes.data) {
+      const parsedXml = await parseXmlEvents(xmlRes.data);
+      if (parsedXml.length > 0) {
+        log.info(`✅ Forex Factory XML Weekly Feed Berhasil! (${parsedXml.length} total events)`);
+        logScrapeResult('ForexFactoryXML', true, parsedXml.length);
+        cache.data = parsedXml;
+        cache.timestamp = now;
+        return parsedXml;
+      }
+    }
+  } catch (xmlErr) {
+    errors.push(`XML error: ${xmlErr.message}`);
   }
 
   logScrapeResult('ForexFactory', false, 0, errors.join(' | '));
-
-  // Fallback ke disk cache jika ada
-  if (cache.data && cache.data.length > 0) {
-    log.warn('⚠️ Menggunakan data disk cache kalender karena koneksi live gagal.');
-    return cache.data;
-  }
-
-  return [];
+  return cache.data || [];
 }
 
 import { scrapeLiveCalendarWithPuppeteer } from './puppeteerScraper.js';
-import { fetchRapidApiCalendar } from './rapidApiCalendar.js';
+import { fetchRapidApiWeeklyCalendar, fetchRapidApiCalendar, isRapidApiConfigured } from './rapidApiCalendar.js';
+import { fetchApifyCalendar, isApifyConfigured, clearApifyCache } from './apifyCalendar.js';
 
-export async function getHighImpactNews() {
-  // 1. Sumber utama: RapidAPI Forex Factory Scraper (realtime, termasuk 'actual')
-  let allEvents = await fetchRapidApiCalendar().catch(err => {
-    log.warn(`RapidAPI error: ${err.message}`);
-    return null;
+export async function getHighImpactNews(forceRefresh = false, range = 'realtime') {
+  // 1. FREE SCHEDULE SOURCE ($0 COST): Ambil jadwal mingguan lengkap dari FairEconomy JSON Feed (ff_calendar_thisweek.json)
+  let rawWeekly = await fetchLiveRealtimeNews().catch(err => {
+    log.warn(`Fetch live weekly schedule error: ${err.message}`);
+    return [];
   });
 
-  // 2. Fallback: scrape HTML asli dengan Puppeteer
-  if (!allEvents || allEvents.length === 0) {
-    allEvents = await scrapeLiveCalendarWithPuppeteer();
+  let weeklyEvents = (rawWeekly || []).filter(e => {
+    const curr = (e.currency || 'USD').toUpperCase();
+    return curr === 'USD' || curr === 'ALL';
+  });
+
+  // 2. APIFY ACTUAL UPDATER (Silentflow Forex Factory Scraper)
+  if (isApifyConfigured()) {
+    const apifyEvents = await fetchApifyCalendar({ forceRefresh, range }).catch(err => {
+      log.warn(`Apify calendar error: ${err.message}`);
+      return [];
+    });
+
+    if (Array.isArray(apifyEvents) && apifyEvents.length > 0) {
+      const filteredApify = apifyEvents.filter(ae => {
+        const curr = (ae.currency || 'USD').toUpperCase();
+        return curr === 'USD' || curr === 'ALL';
+      });
+
+      if (weeklyEvents.length > 0) {
+        const apifyMap = new Map();
+        filteredApify.forEach(ae => {
+          const cleanTitle = normalizeCalendarTitleKey(ae.event || ae.title);
+          apifyMap.set(cleanTitle, ae);
+        });
+
+        // Update nilai actual & forecast jika data rilis Apify tersedia
+        weeklyEvents.forEach(we => {
+          const cleanTitle = normalizeCalendarTitleKey(we.event || we.title);
+          if (apifyMap.has(cleanTitle)) {
+            const ae = apifyMap.get(cleanTitle);
+            if (ae.actual && ae.actual !== '-') {
+              we.actual = ae.actual;
+              we.actualValue = ae.actualValue;
+            }
+            if (ae.forecast && ae.forecast !== '-') {
+              we.forecast = ae.forecast;
+              we.forecastValue = ae.forecastValue;
+            }
+            if (ae.previous && ae.previous !== '-') {
+              we.previous = ae.previous;
+              we.previousValue = ae.previousValue;
+            }
+          }
+        });
+
+        // Tambahkan event Apify baru yang belum ada di jadwal minggu ini
+        const existingCleanTitles = new Set(weeklyEvents.map(we => normalizeCalendarTitleKey(we.event || we.title)));
+        filteredApify.forEach(ae => {
+          const cleanTitle = normalizeCalendarTitleKey(ae.event || ae.title);
+          if (!existingCleanTitles.has(cleanTitle)) {
+            weeklyEvents.push(ae);
+          }
+        });
+      } else {
+        weeklyEvents = filteredApify;
+      }
+    }
   }
 
-  // 3. Fallback terakhir: API XML gratis FairEconomy
-  if (!allEvents || allEvents.length === 0) {
-    allEvents = await fetchLiveRealtimeNews();
-  }
+  // Deduplikasi internal secara ketat berdasarkan date, currency & normalizeCalendarTitleKey
+  const seenKeys = new Map();
+  (weeklyEvents || []).forEach((event) => {
+    const clean = normalizeCalendarTitleKey(event.event || event.title);
+    const key = `${event.date}_${event.currency || 'USD'}_${clean}`;
 
-  if (!Array.isArray(allEvents)) return [];
-  return allEvents.filter(e => (e.currency || '').toUpperCase() === 'USD');
+    if (!seenKeys.has(key)) {
+      seenKeys.set(key, event);
+    } else {
+      const existing = seenKeys.get(key);
+      if (event.actual && event.actual !== '-' && (!existing.actual || existing.actual === '-')) {
+        existing.actual = event.actual;
+        existing.actualValue = event.actualValue;
+      }
+    }
+  });
+
+  return Array.from(seenKeys.values());
 }
 
 export function clearCache() {
   cache = { data: null, timestamp: 0 };
+  clearApifyCache();
 }
+

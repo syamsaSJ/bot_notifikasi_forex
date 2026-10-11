@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>XAU/USD Gold - Realtime Economic News & Fundamental Signals</title>
-  
+
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <!-- Header / Navigation -->
   <header class="app-header">
@@ -30,7 +34,10 @@
       <div class="header-actions">
         <div class="status-pill live" id="status-pill">
           <span class="pulse-dot"></span>
-          <span id="system-status">SERVER CONNECTED</span>
+          <span id="system-status">REALTIME XAU/USD</span>
+          <span class="pill-dot-separator">•</span>
+          <i class="fa-regular fa-clock"></i>
+          <span id="last-update-time">--:-- WIB</span>
         </div>
         <button id="btn-toggle-logs" class="btn btn-secondary">
           <i class="fa-solid fa-list-check"></i> Scraper Logs
@@ -85,25 +92,8 @@
           </div>
         </div>
 
-        <!-- Zero-Delay Fast Release Alert Banner Overlay -->
-        <div id="fast-release-banner" class="fast-release-banner hidden">
-          <div class="banner-content">
-            <div class="banner-top">
-              <span class="flash-tag"><i class="fa-solid fa-bolt-lightning"></i> ⚡ RILIS BERITA INSTAN (0 DELAY)</span>
-              <span class="banner-time" id="fast-release-time">22:48 WIB</span>
-            </div>
-            <div class="banner-body">
-              <div class="banner-signal-badge" id="fast-release-signal">BUY</div>
-              <div class="banner-details">
-                <h4 id="fast-release-title">Judul Rilis Berita Ekonomi Baru</h4>
-                <p id="fast-release-desc">Groq AI: Sentimen Emas & USD</p>
-              </div>
-              <button class="banner-close-btn" onclick="hideFastReleaseBanner()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-          </div>
-        </div>
-
         <div class="chart-container" id="tradingview-container">
+
           <div class="tradingview-widget-container" style="height:100%;width:100%">
             <div id="tradingview_xauusd" style="height:calc(100% - 32px);width:100%"></div>
           </div>
@@ -149,43 +139,70 @@
         <!-- System Formula Information Box -->
         <div class="formula-info-box">
           <h4><i class="fa-solid fa-circle-info"></i> Calender Economic & News Forex</h4>
-          <p>Berita kalender & headline pasar digabungkan menjadi 1 aliran terpadu realtime yang diurutkan sesuai jam rilis WIB terbaru.</p>
+          <p>Berita kalender & headline pasar digabungkan menjadi 1 aliran terpadu realtime yang diurutkan sesuai jam
+            rilis WIB terbaru.</p>
         </div>
       </div>
     </section>
 
     <!-- News Feed Controls & Filters -->
     <section class="feed-section">
-      <div class="feed-header">
-        <div class="feed-title">
-          <h2><i class="fa-solid fa-newspaper color-gold"></i> Realtime Forex Calender Economic & News Feed</h2>
-          <p>Kalender Ekonomi Forex & Headline News</p>
-        </div>
+      <div class="feed-title">
+        <h2><i class="fa-solid fa-newspaper color-gold"></i> Realtime Forex Calender Economic & News Feed</h2>
+        <p>Kalender Ekonomi Forex & Headline News</p>
+      </div>
 
-        <div class="filter-controls">
+      <!-- Filter Bar Card -->
+      <div class="filter-card">
+        <div class="filter-row top-row">
           <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="search-input" placeholder="Cari berita (mis. Unemployment, Fed, CPI)..." />
           </div>
 
+          <div class="select-group">
+            <!-- Period Filter Dropdown -->
+            <div class="select-box-wrapper">
+              <i class="fa-solid fa-calendar-days color-gold"></i>
+              <select id="time-select" class="filter-select">
+                <option value="today">Today</option>
+                <option value="this_week" selected>This Week</option>
+                <option value="next_week">Next Week</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+
+            <!-- Sort Order Dropdown -->
+            <div class="select-box-wrapper">
+              <i class="fa-solid fa-arrow-down-short-wide color-gold"></i>
+              <select id="sort-select" class="filter-select">
+                <option value="dsc" selected>DSC (Terbaru)</option>
+                <option value="asc">ASC (Terlama)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-row bottom-row">
           <!-- Source Filter Tabs -->
           <div class="source-tabs">
-            <button class="source-btn active" data-source="all"><i class="fa-solid fa-layer-group"></i> Gabungan</button>
-            <button class="source-btn" data-source="calendar"><i class="fa-solid fa-calendar-days"></i> Forex Factory</button>
-            <button class="source-btn" data-source="investing"><i class="fa-solid fa-newspaper"></i> Headline News</button>
-          </div>
-
-          <!-- Time Filter Tabs -->
-          <div class="time-tabs">
-            <button class="time-btn active" data-time="today"><i class="fa-solid fa-clock"></i> Hari Ini (WIB)</button>
-            <button class="time-btn" data-time="all"><i class="fa-solid fa-calendar-week"></i> Semua Terbaru</button>
+            <button class="source-btn active" data-source="all"><i class="fa-solid fa-layer-group"></i>
+              Gabungan</button>
+            <button class="source-btn" data-source="calendar"><i class="fa-solid fa-calendar-days"></i> Forex
+              Factory</button>
+            <button class="source-btn" data-source="investing"><i class="fa-solid fa-newspaper"></i> Headline
+              News</button>
           </div>
 
           <!-- Impact Filter Tabs -->
           <div class="filter-tabs">
             <button class="filter-btn active" data-filter="all">Semua Impact</button>
-            <button class="filter-btn" data-filter="high"><i class="fa-solid fa-circle color-red"></i> High Impact</button>
-            <button class="filter-btn" data-filter="medium"><i class="fa-solid fa-circle color-orange"></i> Medium Impact</button>
+            <button class="filter-btn" data-filter="high"><i class="fa-solid fa-circle color-red"></i> High
+              Impact</button>
+            <button class="filter-btn" data-filter="medium"><i class="fa-solid fa-circle color-orange"></i> Medium
+              Impact</button>
+            <button class="filter-btn" data-filter="low"><i class="fa-solid fa-circle color-yellow"></i> Low
+              Impact</button>
           </div>
         </div>
       </div>
@@ -208,4 +225,5 @@
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

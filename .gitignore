@@ -1,5 +1,8 @@
 node_modules/
 .env
 *.log
+scratch/
+*.png
 implementation_plan.md
 video referensi.mp4
+dataset_forexfactory-scraper_2026-10-09_03-43-13-455.json

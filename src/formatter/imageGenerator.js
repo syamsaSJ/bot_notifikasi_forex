@@ -79,7 +79,8 @@ export async function generateSignalCardImage(event, signal) {
   ctx.fillText(titleText, cardX + 24, cardY + 45);
 
   // Time Subtitle
-  const timeStr = event.timeWIB || event.time || 'TBD';
+  const rawTimeStr = event.timeWIB || event.time || '-';
+  const timeStr = rawTimeStr.replace(/All Day|All-Day|Tentative|TBD/gi, '-');
   ctx.font = '15px sans-serif';
   ctx.fillStyle = '#9CA3AF';
   ctx.fillText(timeStr, cardX + 24, cardY + 75);

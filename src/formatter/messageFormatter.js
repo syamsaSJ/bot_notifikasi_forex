@@ -15,7 +15,8 @@ function getImpactBadge(impactStr) {
  */
 export function formatMessage(event, signal) {
   const impactBadge = getImpactBadge(event.impact);
-  const timeStr = event.timeWIB || event.time || 'TBD';
+  const rawTimeStr = event.timeWIB || event.time || '-';
+  const timeStr = rawTimeStr.replace(/All Day|All-Day|Tentative|TBD/gi, '-');
 
   const actualDisp   = event.actual   && event.actual   !== '' ? event.actual   : '-';
   const forecastDisp = event.forecast && event.forecast !== '' ? event.forecast : '-';
@@ -66,6 +67,74 @@ export function formatDailySummary(events) {
 
   message += `━━━━━━━━━━━━━━━━━━━━━━━━
 _Total: ${events.length} berita USD_`;
+
+  return message;
+}
+
+/**
+ * Format ringkasan mingguan (Weekly Economic Calendar) yang dikelompokkan berdasarkan tanggal.
+ */
+export function formatWeeklySummary(events) {
+  if (!events || events.length === 0) {
+    return `📅 *JADWAL BERITA EKONOMI MINGGU INI (WIB)*
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Tidak ada berita/event kalender ekonomi USD untuk minggu ini\\.`;
+  }
+
+  const calEvents = events.filter(i => i.itemType === 'calendar' || i.source === 'Forex Factory' || i.event);
+
+  if (calEvents.length === 0) {
+    return `📅 *JADWAL BERITA EKONOMI MINGGU INI (WIB)*
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Tidak ada event kalender ekonomi USD untuk minggu ini\\.`;
+  }
+
+  // Kelompokkan event berdasarkan tanggal WIB
+  const groupedByDate = {};
+  calEvents.forEach(event => {
+    const d = event.date || 'TBD';
+    if (!groupedByDate[d]) groupedByDate[d] = [];
+    groupedByDate[d].push(event);
+  });
+
+  const sortedDates = Object.keys(groupedByDate).sort();
+
+  let message = `📅 *JADWAL BERITA EKONOMI MINGGU INI (WIB)*
+━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  sortedDates.forEach(dateStr => {
+    const dayEvents = groupedByDate[dateStr];
+    const sampleTimeWIB = dayEvents[0]?.timeWIB || '';
+    const dateLabel = sampleTimeWIB.includes('•') ? sampleTimeWIB.split('•')[0].trim() : dateStr;
+
+    message += `🗓️ *${escapeMarkdown(dateLabel)}*\n`;
+
+    dayEvents.forEach((event, idx) => {
+      const statusEmoji = event.actual && event.actual !== '-' ? '✅' : '⏰';
+      const impactBadge = getImpactBadge(event.impact);
+      const curr = (event.currency || 'USD').toUpperCase();
+      let timeOnly = (event.timeWIB && event.timeWIB.includes('•'))
+        ? event.timeWIB.split('•')[1].trim()
+        : (event.time || '-');
+      timeOnly = timeOnly.replace(/All Day|All-Day|Tentative|TBD/gi, '-');
+
+      message += `  ${idx + 1}\\. ${statusEmoji} *[${escapeMarkdown(curr)}]* *${escapeMarkdown(event.event || event.title)}*\n`;
+      message += `     📅 ${escapeMarkdown(timeOnly)} • ${escapeMarkdown(impactBadge)}\n`;
+
+      if (event.actual && event.actual !== '-') {
+        message += `     📊 Actual: *${escapeMarkdown(event.actual)}* | Forecast: ${escapeMarkdown(event.forecast)} | Prev: ${escapeMarkdown(event.previous)}\n`;
+      } else {
+        message += `     📊 Forecast: ${escapeMarkdown(event.forecast)} | Prev: ${escapeMarkdown(event.previous)}\n`;
+      }
+    });
+
+    message += '\n';
+  });
+
+  message += `━━━━━━━━━━━━━━━━━━━━━━━━
+_Total: ${calEvents.length} Event Kalender Ekonomi Minggu Ini_`;
 
   return message;
 }

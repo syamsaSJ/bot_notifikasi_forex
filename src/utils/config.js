@@ -11,6 +11,18 @@ export default {
   GNEWS_API_KEY: process.env.GNEWS_API_KEY || '',
   GROQ_API_KEY: process.env.GROQ_API_KEY || '',
 
+  // Supabase Database Configuration
+  SUPABASE_URL: process.env.SUPABASE_URL || '',
+  SUPABASE_KEY: process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+
+  // Apify Configuration (Silentflow Forex Factory Scraper)
+  APIFY_TOKEN: process.env.APIFY_TOKEN || '',
+  APIFY_ACTOR_ID: process.env.APIFY_ACTOR_ID || 'silentflow/forexfactory-scraper',
+  APIFY_CACHE_TTL_MS: parseInt(process.env.APIFY_CACHE_TTL_MS, 10) || 1 * 60 * 1000,
+
+
+
+
   // RapidAPI - Forex Factory Scraper (sumber utama kalender ekonomi realtime)
   RAPIDAPI_KEY: process.env.RAPIDAPI_KEY || '',
   RAPIDAPI_FF_HOST: process.env.RAPIDAPI_FF_HOST || 'forex-factory-scraper1.p.rapidapi.com',

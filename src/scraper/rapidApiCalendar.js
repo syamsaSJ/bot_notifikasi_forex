@@ -30,27 +30,8 @@ let state = {
   limit: null,
 };
 
-try {
-  if (fs.existsSync(CACHE_FILE_PATH)) {
-    const saved = JSON.parse(fs.readFileSync(CACHE_FILE_PATH, 'utf-8'));
-    if (saved && typeof saved === 'object') {
-      state = { ...state, ...saved };
-      log.info(`💾 Memuat ${state.events?.length || 0} event RapidAPI dari cache disk (${state.dayKey}).`);
-    }
-  }
-} catch (e) {
-  log.warn(`Gagal membaca cache RapidAPI: ${e.message}`);
-}
-
-function persist() {
-  try {
-    const dir = path.dirname(CACHE_FILE_PATH);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(CACHE_FILE_PATH, JSON.stringify(state, null, 2), 'utf-8');
-  } catch (e) {
-    log.warn(`Gagal menyimpan cache RapidAPI: ${e.message}`);
-  }
-}
+// Disk cache disabled to prevent loading stale duplicated events from disk.
+function persist() {}
 
 export function isRapidApiConfigured() {
   return Boolean(config.RAPIDAPI_KEY && !config.RAPIDAPI_KEY.includes('your_'));
@@ -100,8 +81,8 @@ function mapEvent(item) {
     id: `ff_rapid_${dateStr}_${title}`,
     source: 'Forex Factory',
     date: wibInfo.dateStr,
-    time: hasClock ? `${hhmm} WIB` : (timeStr || 'All Day'),
-    timeWIB: hasClock ? wibInfo.displayWIB : `${wibInfo.displayWIB.split('•')[0].trim()} • ${timeStr || 'All Day'}`,
+    time: hasClock ? `${hhmm} WIB` : '-',
+    timeWIB: hasClock ? wibInfo.displayWIB : `${wibInfo.displayWIB.split('•')[0].trim()} • -`,
     timestamp: wibInfo.timestamp,
     hasClockTime: hasClock,
     currency: (item.currency || '').toUpperCase(),
@@ -191,7 +172,7 @@ export async function fetchRapidApiCalendar() {
         year,
         month,
         day,
-        currency: 'USD',
+        currency: 'ALL',
         event_name: 'ALL',
         timezone: API_TIMEZONE,
         time_format: '24h',
@@ -215,7 +196,7 @@ export async function fetchRapidApiCalendar() {
     }
 
     const events = res.data
-      .filter(item => item && (item.currency || '').toUpperCase() === 'USD')
+      .filter(item => item && item.name)
       .map(mapEvent)
       .sort((a, b) => a.timestamp - b.timestamp);
 
@@ -225,7 +206,7 @@ export async function fetchRapidApiCalendar() {
     persist();
 
     const quotaInfo = state.remaining !== null ? ` | sisa kuota ${state.remaining}/${state.limit ?? '?'}` : '';
-    log.info(`✅ RapidAPI Forex Factory berhasil: ${events.length} USD events${quotaInfo}`);
+    log.info(`✅ RapidAPI Forex Factory berhasil: ${events.length} events (All Currencies)${quotaInfo}`);
     logScrapeResult('RapidAPI-ForexFactory', true, events.length);
     return events;
   } catch (err) {
@@ -233,6 +214,76 @@ export async function fetchRapidApiCalendar() {
     log.warn(`Gagal fetch RapidAPI Forex Factory: ${err.message}`);
     logScrapeResult('RapidAPI-ForexFactory', false, 0, err.message);
     return hasTodayCache ? state.events : null;
+  }
+}
+
+export async function fetchRapidApiCalendarForDate(dateParts) {
+  if (!isRapidApiConfigured()) return [];
+
+  const { year, month, day } = dateParts;
+  const dayKey = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+  try {
+    const res = await axios.get(`https://${config.RAPIDAPI_FF_HOST}${ENDPOINT}`, {
+      params: {
+        calendar: 'Forex',
+        year,
+        month,
+        day,
+        currency: 'ALL',
+        event_name: 'ALL',
+        timezone: API_TIMEZONE,
+        time_format: '24h',
+      },
+      headers: {
+        'x-rapidapi-host': config.RAPIDAPI_FF_HOST,
+        'x-rapidapi-key': config.RAPIDAPI_KEY,
+      },
+      timeout: 15000,
+      validateStatus: () => true,
+    });
+
+    if (res.status === 200 && Array.isArray(res.data)) {
+      return res.data
+        .filter(item => item && item.name)
+        .map(mapEvent)
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+    return [];
+  } catch (err) {
+    log.warn(`RapidAPI error untuk tanggal ${dayKey}: ${err.message}`);
+    return [];
+  }
+}
+
+export async function fetchRapidApiWeeklyCalendar() {
+  if (!isRapidApiConfigured()) return [];
+
+  const now = new Date();
+  const todayStr = now.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+  const [y, m, d] = todayStr.split('-').map(Number);
+  const todayUtc = new Date(Date.UTC(y, m - 1, d));
+  const dayOfWeek = todayUtc.getUTCDay(); // 0 = Sun, 1 = Mon, ...
+  const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
+
+  const datesToFetch = [];
+  for (let i = 0; i < 7; i++) {
+    const target = new Date(todayUtc);
+    target.setUTCDate(todayUtc.getUTCDate() + diffToMonday + i);
+    const dateStr = target.toISOString().split('T')[0];
+    const [year, month, day] = dateStr.split('-').map(Number);
+    datesToFetch.push({ year, month, day });
+  }
+
+  try {
+    const results = await Promise.all(datesToFetch.map(dp => fetchRapidApiCalendarForDate(dp)));
+    const allEvents = results.flat().sort((a, b) => a.timestamp - b.timestamp);
+
+    log.info(`✅ RapidAPI Weekly Calendar berhasil: Total ${allEvents.length} USD events minggu ini`);
+    return allEvents;
+  } catch (err) {
+    log.warn(`RapidAPI Weekly fetch error: ${err.message}`);
+    return [];
   }
 }
 

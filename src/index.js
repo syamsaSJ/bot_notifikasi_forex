@@ -8,15 +8,17 @@ import { initBot, sendMessage, sendPhoto, getBot } from './bot/telegram.js';
 import { getUnifiedFeed } from './scraper/unifiedFeed.js';
 import { clearCache } from './scraper/forexFactory.js';
 import { analyzeSignal } from './engine/signalEngine.js';
-import { formatMessage, formatDailySummary, formatHeadlineDigest, formatLogsTelegram, escapeMarkdown } from './formatter/messageFormatter.js';
+import { formatMessage, formatDailySummary, formatWeeklySummary, formatHeadlineDigest, formatLogsTelegram, escapeMarkdown } from './formatter/messageFormatter.js';
 import { generateSignalCardImage } from './formatter/imageGenerator.js';
 import { startScheduler, getNextRun } from './scheduler/cronJob.js';
 import { getScrapeLogs, getSourceHealth } from './utils/scrapeLogger.js';
 import { initBrowser, closeBrowser } from './scraper/puppeteerScraper.js';
+import { getFeedFromSupabase, isSupabaseConfigured } from './services/supabaseService.js';
 
 const log = createLogger('Main');
 
 const sentNotifications = new Set();
+let isFirstStartupRun = true;
 let latestNewsCache = [];
 
 // SSE (Server-Sent Events) clients untuk 0-delay real-time push ke Web Dashboard
@@ -55,17 +57,30 @@ function startWebServer() {
     });
   });
 
-  // Unified Feed Endpoint (Gabungan ForexFactory & Investing.com)
+  // Unified Feed Endpoint (Gabungan ForexFactory, Apify & Investing.com)
   app.get('/api/news', async (req, res) => {
     try {
-      const items = await getUnifiedFeed();
+      const forceRefresh = req.query.refresh === 'true' || req.query.force === 'true';
+
+      // 1. Coba ambil data dari Database Supabase jika terkonfigurasi (kecuali jika paksa refresh)
+      if (!forceRefresh && isSupabaseConfigured()) {
+        const dbItems = await getFeedFromSupabase();
+        if (dbItems && dbItems.length > 0) {
+          latestNewsCache = dbItems;
+          return res.json({ events: dbItems, total: dbItems.length, source: 'supabase' });
+        }
+      }
+
+      const range = req.query.range || (forceRefresh ? 'realtime' : 'realtime');
+      const items = await getUnifiedFeed(forceRefresh, range);
       latestNewsCache = items;
-      return res.json({ events: items, total: items.length });
+      return res.json({ events: items, total: items.length, source: 'live' });
     } catch (err) {
       log.error('Error in /api/news:', err.message);
       res.status(500).json({ error: err.message, events: [] });
     }
   });
+
 
   // Scraping Health & Logs Endpoint
   app.get('/api/scrape-logs', (req, res) => {
@@ -75,6 +90,25 @@ function startWebServer() {
       res.json({ health, logs });
     } catch (err) {
       res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Webhook / External Trigger Endpoint (Apify Schedule & External Cron Pemicu Render)
+  app.all(['/api/webhook/apify', '/api/trigger-scrape'], express.json(), async (req, res) => {
+    log.info('🔔 External Webhook / Apify Trigger diterima! Memproses scrape realtime & sync Supabase...');
+    try {
+      const range = req.query.range || req.body?.range || 'realtime';
+      const items = await getUnifiedFeed(true, range);
+      return res.json({
+        success: true,
+        message: 'Trigger & Sync Supabase Berhasil',
+        range,
+        itemCount: items.length,
+        timestamp: new Date().toISOString()
+      });
+    } catch (err) {
+      log.error('Error in Webhook /api/trigger-scrape:', err.message);
+      return res.status(500).json({ success: false, error: err.message });
     }
   });
 
@@ -98,9 +132,25 @@ async function mainTask() {
   log.debug('=== Pengecekan realtime berita terpadu ===');
 
   try {
-    const items = await getUnifiedFeed();
+    // Otomatis tentukan range: Jika hari Senin WIB, gunakan range 'weekly' (This Week + Next Week)
+    const nowWibStr = new Date().toLocaleString('en-US', { timeZone: config.TIMEZONE });
+    const dayOfWeekWib = new Date(nowWibStr).getDay(); // 1 = Monday
+    const range = dayOfWeekWib === 1 ? 'weekly' : 'realtime';
+
+    const items = await getUnifiedFeed(false, range);
 
     if (!items || items.length === 0) {
+      return;
+    }
+
+    // Pada startup pertama kali, tandai seluruh data historical sebagai terproses agar tidak spam notifikasi
+    if (isFirstStartupRun) {
+      log.info(`📌 Initial startup: Memuat ${items.length} item histori dari Supabase ke memori (notifikasi spam dinonaktifkan).`);
+      for (const item of items) {
+        const uniqueKey = `${item.date}-${item.title || item.event}-${item.actual || item.pubDate || 'v1'}`;
+        sentNotifications.add(uniqueKey);
+      }
+      isFirstStartupRun = false;
       return;
     }
 
@@ -174,6 +224,7 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
 *Perintah:*
 /check \\- Cek berita & sinyal terbaru sekarang
 /today \\- Jadwal berita harian WIB
+/weekly \\- Jadwal kalender ekonomi minggu ini (WIB)
 /logs \\- Status & log error scraping
 /status \\- Status server bot
 /help \\- Bantuan`;
@@ -234,6 +285,48 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
     }
   });
 
+  // /weekly & /week - Jadwal kalender ekonomi minggu ini
+  const handleWeeklyCommand = async (msg) => {
+    const chatId = msg.chat.id;
+    await sendMessage('⏳ _Mengambil jadwal kalender ekonomi minggu ini (WIB)\\.\\.\\._', chatId.toString());
+
+    try {
+      const items = await getUnifiedFeed(true, 'weekly');
+      const calItems = items.filter(i => i.itemType === 'calendar' || i.event);
+
+      if (!calItems || calItems.length === 0) {
+        await sendMessage('✅ Tidak ada event kalender ekonomi minggu ini\\.', chatId.toString());
+        return;
+      }
+
+      const fullSummary = formatWeeklySummary(calItems);
+
+      if (fullSummary.length <= 3800) {
+        await sendMessage(fullSummary, chatId.toString());
+      } else {
+        // Split berdasarkan bagian tanggal agar tidak terpotong
+        const parts = fullSummary.split(/(?=🗓️ \*)/g);
+        let currentChunk = '';
+        for (const part of parts) {
+          if ((currentChunk + part).length > 3800) {
+            if (currentChunk.trim()) await sendMessage(currentChunk, chatId.toString());
+            currentChunk = part;
+          } else {
+            currentChunk += part;
+          }
+        }
+        if (currentChunk.trim()) {
+          await sendMessage(currentChunk, chatId.toString());
+        }
+      }
+    } catch (err) {
+      await sendMessage(`❌ Error: ${escapeMarkdown(err.message)}`, chatId.toString());
+    }
+  };
+
+  bot.onText(/\/weekly/, handleWeeklyCommand);
+  bot.onText(/\/week/, handleWeeklyCommand);
+
   // /logs - Log error & status scraping
   bot.onText(/\/logs/, async (msg) => {
     const chatId = msg.chat.id;
@@ -273,6 +366,7 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
 *Perintah:*
 /check \\- Cek berita terpadu & sinyal sekarang
 /today \\- Lihat jadwal berita hari ini (WIB)
+/weekly \\- Lihat jadwal kalender ekonomi minggu ini (WIB)
 /logs \\- Cek status kesehatan scraper & log error
 /status \\- Cek status bot & scheduler
 /help \\- Tampilkan bantuan ini
@@ -285,7 +379,7 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
     await sendMessage(helpMsg, chatId.toString());
   });
 
-  log.info('Bot commands registered: /start, /check, /today, /logs, /status, /help');
+  log.info('Bot commands registered: /start, /check, /today, /weekly, /logs, /status, /help');
 }
 
 /**

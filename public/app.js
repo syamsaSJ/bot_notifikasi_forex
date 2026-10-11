@@ -1,7 +1,9 @@
 // State Management
 let unifiedNewsEvents = [];
 let activeSource = 'all'; // 'all', 'calendar', 'investing'
-let activeTime = 'today'; // 'today', 'all'
+let activeTime = 'this_week'; // 'today', 'this_week', 'next_week', 'all'
+let activeSort = 'dsc'; // 'dsc', 'asc'
+
 let activeFilter = 'all'; // 'all', 'high', 'medium'
 let searchQuery = '';
 
@@ -10,7 +12,8 @@ const container = document.getElementById('news-cards-container');
 const searchInput = document.getElementById('search-input');
 const filterBtns = document.querySelectorAll('.filter-btn');
 const sourceBtns = document.querySelectorAll('.source-btn');
-const timeBtns = document.querySelectorAll('.time-btn');
+const timeSelect = document.getElementById('time-select');
+const sortSelect = document.getElementById('sort-select');
 const btnRefresh = document.getElementById('btn-refresh');
 const countBuy = document.getElementById('count-buy');
 const countSell = document.getElementById('count-sell');
@@ -34,7 +37,7 @@ function initTradingView() {
     new TradingView.widget({
       "autosize": true,
       "symbol": "OANDA:XAUUSD",
-      "interval": "60",
+      "interval": "5",
       "timezone": "Asia/Jakarta",
       "theme": "dark",
       "style": "1",
@@ -42,6 +45,7 @@ function initTradingView() {
       "toolbar_bg": "#15161C",
       "enable_publishing": false,
       "allow_symbol_change": true,
+      "hide_side_toolbar": false,
       "container_id": "tradingview_xauusd"
     });
   }
@@ -57,22 +61,30 @@ function showToast(message, isSuccess = true) {
 }
 
 // Fetch Unified Realtime News Feed
-async function fetchNewsData() {
+async function fetchNewsData(forceRefresh = false) {
   if (btnRefresh) btnRefresh.classList.add('loading');
   if (systemStatus) systemStatus.textContent = 'CONNECTING...';
 
   try {
-    const res = await fetch('/api/news');
+    const url = forceRefresh ? '/api/news?refresh=true' : '/api/news';
+    const res = await fetch(url);
     const data = await res.json();
 
     if (data && Array.isArray(data.events)) {
       unifiedNewsEvents = data.events;
       if (systemStatus) systemStatus.textContent = 'REALTIME XAU/USD';
       if (statusPill) statusPill.className = 'status-pill live';
-      showToast('✅ Feed berita & sinyal khusus pergerakan XAU/USD GOLD diperbarui!');
+      showToast(forceRefresh ? '⚡ Refreshed! Data Apify & Feed Ekonomi diperbarui.' : '✅ Feed berita & sinyal khusus pergerakan XAU/USD GOLD diperbarui!');
     } else {
       unifiedNewsEvents = [];
       if (systemStatus) systemStatus.textContent = 'NO DATA';
+    }
+
+
+    const lastUpdateTimeEl = document.getElementById('last-update-time');
+    if (lastUpdateTimeEl) {
+      const nowStr = new Date().toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      lastUpdateTimeEl.textContent = `${nowStr} WIB`;
     }
 
     renderDashboard();
@@ -86,6 +98,7 @@ async function fetchNewsData() {
     if (btnRefresh) btnRefresh.classList.remove('loading');
   }
 }
+
 
 // Fetch Scraping Health & Log Errors
 async function fetchScrapeLogs() {
@@ -144,17 +157,69 @@ function renderDashboard() {
   // 1. Source Filtering
   let filtered = unifiedNewsEvents.filter(item => {
     if (activeSource === 'calendar' && item.itemType !== 'calendar') return false;
+    if (activeSource === 'tradingview') {
+      const src = (item.source || '').toLowerCase();
+      const cat = (item.category || '').toLowerCase();
+      return src.includes('tradingview') || cat.includes('tradingview');
+    }
     if (activeSource === 'investing' && item.itemType !== 'investing') return false;
     return true;
   });
 
-  // 2. Time Filtering (Today vs All Latest)
-  const todayWIBStr = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+  // 2. Time Filtering (Today vs This Week vs Next Week vs All)
+  const now = new Date();
+  const dateStrWIB = now.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+  const [y, m, d] = dateStrWIB.split('-').map(Number);
+  const todayUtc = new Date(Date.UTC(y, m - 1, d));
+  const dayOfWeek = todayUtc.getUTCDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+  const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
+
+  const mondayThisWeekUtc = new Date(todayUtc);
+  mondayThisWeekUtc.setUTCDate(todayUtc.getUTCDate() + diffToMonday);
+
+  const sundayThisWeekUtc = new Date(mondayThisWeekUtc);
+  sundayThisWeekUtc.setUTCDate(mondayThisWeekUtc.getUTCDate() + 6);
+
+  const startThisWeekStr = mondayThisWeekUtc.toISOString().split('T')[0];
+  const endThisWeekStr = sundayThisWeekUtc.toISOString().split('T')[0];
+  const mondayThisWeekTs = mondayThisWeekUtc.getTime();
+  const sundayThisWeekTsEnd = sundayThisWeekUtc.getTime() + 86399999;
+
+  // Next Week Date Range
+  const mondayNextWeekUtc = new Date(mondayThisWeekUtc);
+  mondayNextWeekUtc.setUTCDate(mondayThisWeekUtc.getUTCDate() + 7);
+
+  const sundayNextWeekUtc = new Date(mondayNextWeekUtc);
+  sundayNextWeekUtc.setUTCDate(mondayNextWeekUtc.getUTCDate() + 6);
+
+  const startNextWeekStr = mondayNextWeekUtc.toISOString().split('T')[0];
+  const endNextWeekStr = sundayNextWeekUtc.toISOString().split('T')[0];
+  const mondayNextWeekTs = mondayNextWeekUtc.getTime();
+  const sundayNextWeekTsEnd = sundayNextWeekUtc.getTime() + 86399999;
+
   if (activeTime === 'today') {
     filtered = filtered.filter(item => {
       const itemDate = item.date || '';
       const itemTimeWIB = item.timeWIB || '';
-      return itemDate === todayWIBStr || itemTimeWIB.includes('Hari Ini');
+      return itemDate === dateStrWIB || itemTimeWIB.includes('Hari Ini');
+    });
+  } else if (activeTime === 'this_week' || activeTime === 'weekly') {
+    filtered = filtered.filter(item => {
+      const itemDate = item.date || '';
+      if (itemDate && /^\d{4}-\d{2}-\d{2}$/.test(itemDate)) {
+        return itemDate >= startThisWeekStr && itemDate <= endThisWeekStr;
+      }
+      const itemTimestamp = item.timestamp || 0;
+      return itemTimestamp >= mondayThisWeekTs && itemTimestamp <= sundayThisWeekTsEnd;
+    });
+  } else if (activeTime === 'next_week') {
+    filtered = filtered.filter(item => {
+      const itemDate = item.date || '';
+      if (itemDate && /^\d{4}-\d{2}-\d{2}$/.test(itemDate)) {
+        return itemDate >= startNextWeekStr && itemDate <= endNextWeekStr;
+      }
+      const itemTimestamp = item.timestamp || 0;
+      return itemTimestamp >= mondayNextWeekTs && itemTimestamp <= sundayNextWeekTsEnd;
     });
   }
 
@@ -173,6 +238,13 @@ function renderDashboard() {
       const text = (item.event || item.title || '').toLowerCase();
       return text.includes(q);
     });
+  }
+
+  // 5. Sorting (DSC = Terbaru ke Terlama, ASC = Terlama ke Terbaru)
+  if (activeSort === 'asc') {
+    filtered.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+  } else {
+    filtered.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
   }
 
   // Calculate Sinyal Metrics
@@ -226,13 +298,16 @@ function renderCalendarCard(item) {
   const foreDisp = item.forecast && item.forecast !== '' ? item.forecast : '-';
   const prevDisp = item.previous && item.previous !== '' ? item.previous : '-';
 
+  const rawTimeStr = item.timeWIB || item.time || '-';
+  const displayTime = rawTimeStr.replace(/All Day|All-Day|Tentative|TBD/gi, '-');
+
   return `
     <div class="signal-card calendar-card">
       <div class="signal-card-header">
         <div class="event-info">
           <span class="source-badge ff"><i class="fa-solid fa-coins color-gold"></i> XAU/USD GOLD • ${item.source || 'Forex Factory'}</span>
           <h3>${item.event || item.title}</h3>
-          <span class="time-tag"><i class="fa-regular fa-clock"></i> ${item.timeWIB || item.time || 'WIB'}</span>
+          <span class="time-tag"><i class="fa-regular fa-clock"></i> ${displayTime}</span>
         </div>
         <span class="impact-badge ${impactClass}">${impactLabel}</span>
       </div>
@@ -271,8 +346,9 @@ function renderCalendarCard(item) {
 function renderInvestingCard(item) {
   const analysis = item.analysis || { signal: 'NEUTRAL', impact: 'MEDIUM', direction: 'Sentimen Emas', impactText: 'Analisis berita pasar.' };
   const signalType = analysis.signal || 'HOLD';
-  const impactClass = (analysis.impact || 'medium').toLowerCase().includes('high') ? 'high' : 'medium';
-  const impactLabel = impactClass === 'high' ? '🔴 HIGH IMPACT' : '🟠 MEDIUM IMPACT';
+  const rawImpact = (analysis.impact || item.impact || 'medium').toLowerCase();
+  const impactClass = rawImpact.includes('high') ? 'high' : rawImpact.includes('medium') ? 'medium' : 'low';
+  const impactLabel = impactClass === 'high' ? '🔴 HIGH IMPACT' : impactClass === 'medium' ? '🟠 MEDIUM IMPACT' : '🟡 LOW IMPACT';
 
   return `
     <div class="signal-card investing-card">
@@ -308,7 +384,7 @@ function renderInvestingCard(item) {
   `;
 }
 
-window.copyCardText = function(eventRaw, signal, textRaw) {
+window.copyCardText = function (eventRaw, signal, textRaw) {
   const event = unescape(eventRaw);
   const text = unescape(textRaw);
   const clipStr = `${event}\nSinyal XAU/USD: ${signal}\n\nPREDIKSI & ANALISIS:\n${text}`;
@@ -349,7 +425,7 @@ function playFastReleaseSound(signal = 'BUY') {
 }
 
 // Banner Overlay di atas TradingView Chart
-window.hideFastReleaseBanner = function() {
+window.hideFastReleaseBanner = function () {
   const banner = document.getElementById('fast-release-banner');
   if (banner) banner.classList.add('hidden');
 };
@@ -407,8 +483,7 @@ function initRealtimeSSE() {
           if (!exists) {
             unifiedNewsEvents.unshift(item);
             renderDashboard();
-            showFastReleaseBanner(item);
-            showToast(`⚡ 0-DELAY RELEASE: ${item.event || item.title}`, true);
+            showToast(`⚡ RELEASE BARU: ${item.event || item.title}`, true);
           }
         }
       } catch (e) {
@@ -440,14 +515,19 @@ sourceBtns.forEach(btn => {
   });
 });
 
-timeBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    timeBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeTime = btn.dataset.time;
+if (timeSelect) {
+  timeSelect.addEventListener('change', (e) => {
+    activeTime = e.target.value;
     renderDashboard();
   });
-});
+}
+
+if (sortSelect) {
+  sortSelect.addEventListener('change', (e) => {
+    activeSort = e.target.value;
+    renderDashboard();
+  });
+}
 
 filterBtns.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -466,8 +546,9 @@ if (searchInput) {
 }
 
 if (btnRefresh) {
-  btnRefresh.addEventListener('click', fetchNewsData);
+  btnRefresh.addEventListener('click', () => fetchNewsData(true));
 }
+
 
 // Scraper Logs Modal Listeners
 if (btnToggleLogs && logsModal) {

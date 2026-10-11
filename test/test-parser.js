@@ -47,6 +47,9 @@ assert(wibRes.timeWIBStr === '08:18 WIB', `GMT '2026-10-07 01:18:58' → '08:18 
 // Test 2: ET Conversion
 assert(convertETtoWIB('8:30am', '') === '20:30 WIB', '8:30am ET → 20:30 WIB');
 assert(convertETtoWIB('10:00am', '') === '22:00 WIB', '10:00am ET → 22:00 WIB');
+assert(convertETtoWIB('All Day', '') === '-', 'All Day → "-"');
+assert(convertETtoWIB('Tentative', '') === '-', 'Tentative → "-"');
+assert(convertETtoWIB('', '') === '-', 'Empty string → "-"');
 
 // =====================================================
 console.log('\n🧠 TEST: Signal Engine & Inverted Indicators');
@@ -80,6 +83,8 @@ assert(isRelevantToXAUUSD('US Dollar surges following strong CPI inflation data'
 assert(isRelevantToXAUUSD('Bitcoin dips as over $400 million in crypto longs are liquidated') === false, 'Bitcoin/Crypto news → FILTERED OUT (false)');
 assert(isRelevantToXAUUSD('Tesla Q3 earnings report released, price target raised') === false, 'Tesla/Stock news → FILTERED OUT (false)');
 assert(isRelevantToXAUUSD('EUR/JPY technical analysis for upcoming session') === false, 'Cross currency non-USD → FILTERED OUT (false)');
+assert(isRelevantToXAUUSD('YouTube Gold: Duke-Texas A&M, 1987 - Yahoo Sports') === false, 'YouTube Gold / Yahoo Sports news → FILTERED OUT (false)');
+assert(isRelevantToXAUUSD('US Olympic Team Wins Gold Medal in Gymnastics') === false, 'Sports Gold Medal news → FILTERED OUT (false)');
 
 // =====================================================
 console.log('\n📋 TEST: Scrape Logger & Error Tracking');

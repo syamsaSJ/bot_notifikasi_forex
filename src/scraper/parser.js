@@ -141,13 +141,13 @@ export function formatWIBTime(dateInput) {
  * @returns {string} - Waktu dalam WIB
  */
 export function convertETtoWIB(timeStr, dateStr) {
-  if (!timeStr || timeStr === 'All Day' || timeStr === 'Tentative' || timeStr === '') {
-    return timeStr || 'TBD';
+  if (!timeStr || /^(all day|all-day|tentative|tbd|-)$/i.test(String(timeStr).trim()) || String(timeStr).trim() === '') {
+    return '-';
   }
 
   try {
-    const match = timeStr.match(/^(\d{1,2}):(\d{2})(am|pm)$/i);
-    if (!match) return timeStr;
+    const match = String(timeStr).trim().match(/^(\d{1,2}):(\d{2})(am|pm)$/i);
+    if (!match) return '-';
 
     let hours = parseInt(match[1]);
     const minutes = parseInt(match[2]);
@@ -165,7 +165,7 @@ export function convertETtoWIB(timeStr, dateStr) {
     return `${formattedHours}:${formattedMinutes} WIB`;
   } catch (err) {
     log.warn('Gagal konversi waktu ET:', { timeStr, error: err.message });
-    return timeStr;
+    return '-';
   }
 }
 
@@ -239,3 +239,17 @@ export function parseCalendarHTML(html) {
 export function filterHighImpact(events) {
   return events.filter(e => e.impact === 'high' || e.impact === 'medium');
 }
+
+/**
+ * Normalisasi nama event kalender untuk pencocokan & penggabungan antar-sumber.
+ */
+export function normalizeCalendarTitleKey(title = '') {
+  if (!title) return '';
+  let s = String(title).toLowerCase().trim();
+  s = s.replace(/\b(us|u\.s\.|united states)\b/g, '');
+  s = s.replace(/\binitial jobless claims\b/g, 'unemployment claims');
+  s = s.replace(/\bnonfarm employment change\b/g, 'non farm payrolls');
+  s = s.replace(/\bism non-manufacturing pmi\b/g, 'ism services pmi');
+  return s.replace(/[^a-z0-9]/g, '');
+}
+
