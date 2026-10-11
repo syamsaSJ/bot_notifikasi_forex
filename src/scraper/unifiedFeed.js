@@ -363,18 +363,19 @@ async function fetchTradingViewNews() {
  * 1. Kalender Ekonomi: RapidAPI Forex Factory Scraper (fallback: Puppeteer -> Forex Factory RSS XML)
  * 2. News Headlines: ForexLive.com + NewsData.io API + GNews API + GNews RSS + TradingView News
  */
-export async function getUnifiedFeed(forceRefresh = false, range = 'realtime') {
+export async function getUnifiedFeed(forceRefresh = false, range = 'this_week', options = {}) {
   const now = Date.now();
 
-  if (!forceRefresh && unifiedCache.data && (now - unifiedCache.timestamp) < 30000) {
+  if (!forceRefresh && unifiedCache.data && (now - unifiedCache.timestamp) < 20000) {
     return unifiedCache.data;
   }
 
-  log.info(`🌐 Mengambil & Memproses Feed Realtime (Forex Factory + TradingView + ForexLive + News API) [Range: ${range}]...`);
+  log.info(`🌐 Mengambil Feed Berita Realtime & Kalender [Range: ${range}, SyncCalendar: ${Boolean(options.syncCalendar)}]...`);
 
   try {
+    const shouldSyncCalendar = options.syncCalendar === true;
     const [calendarEvents, ffNewsItems, forexLiveItems, newsDataIoItems, gnewsApiItems, gnewsRssItems, tradingViewNewsItems] = await Promise.all([
-      getHighImpactNews(forceRefresh, range).catch(err => {
+      getHighImpactNews(shouldSyncCalendar, range).catch(err => {
         log.error('Error in getHighImpactNews:', err.message);
         return [];
       }),

@@ -265,7 +265,33 @@ body {
   border-color: #3B3E50;
 }
 
-.btn-secondary.loading i {
+.btn-primary {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #FFF;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #D97706, #B45309);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+}
+
+.btn-warning {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: var(--accent-gold);
+}
+
+.btn-warning:hover {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: var(--accent-gold);
+}
+
+.btn.loading i,
+.btn-secondary.loading i,
+.btn-primary.loading i,
+.btn-warning.loading i {
   animation: spin 1s linear infinite;
 }
 

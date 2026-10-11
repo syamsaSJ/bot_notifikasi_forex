@@ -14,6 +14,10 @@ let cache = {
   timestamp: 0,
 };
 
+// Cooldown anti pemborosan kuota Apify (minimal 5 menit antar live run)
+let lastLiveRunTimestamp = 0;
+const LIVE_RUN_COOLDOWN_MS = 5 * 60 * 1000;
+
 /**
  * Cek apakah API Token Apify terkonfigurasi.
  */
@@ -81,10 +85,10 @@ export function formatApifyItem(item, idx = 0) {
 }
 
 /**
- * Hitung rentang tanggal (Senin minggu ini s.d. Minggu minggu depan)
- * untuk jadwal rutin setiap awal minggu / Senin.
+ * Hitung rentang tanggal (Senin minggu ini s.d. Minggu minggu depan = 14 hari)
+ * Khusus untuk scrape awal minggu / hari Senin.
  */
-function getThisAndNextWeekDateRange() {
+export function getThisAndNextWeekDateRange() {
   const now = new Date();
   const dateStrWIB = now.toLocaleDateString('sv-SE', { timeZone: config.TIMEZONE || 'Asia/Jakarta' });
   const [y, m, d] = dateStrWIB.split('-').map(Number);
@@ -106,17 +110,18 @@ function getThisAndNextWeekDateRange() {
 }
 
 /**
- * Generic helper untuk fetch dataset dari Apify Actor silentflow/forexfactory-scraper.
+ * Helper untuk fetch dataset Apify:
+ * - Jika forceLiveRun === false: Selalu coba ambil dataset dari run terakhir ($0 Cost, hemat kredit).
+ * - Jika forceLiveRun === true: Eksekusi Live Actor Run Apify.
  */
-async function fetchActorDataset(actorId, input, forceRefresh = false) {
+async function fetchActorDataset(actorId, input, forceLiveRun = false) {
   const token = config.APIFY_TOKEN;
   if (!token || token.includes('your_')) return [];
 
-  // Normalisasi nama actor (mengganti / dengan ~ jika dipanggil via REST API URI)
   const normalizedActorId = actorId.replace('/', '~');
 
-  // 1. STRATEGI HEMAT SALDO ($0 COST): Ambil dataset dari run terakhir jika bukan forceRefresh
-  if (!forceRefresh) {
+  // 1. STRATEGI HEMAT SALDO ($0 COST): Ambil dataset dari run terakhir jika bukan live run
+  if (!forceLiveRun) {
     try {
       const lastRunUrl = `https://api.apify.com/v2/actors/${normalizedActorId}/runs/last/dataset/items?token=${token}&status=SUCCEEDED`;
       const res = await axios.get(lastRunUrl, { timeout: 10000 });
@@ -130,9 +135,9 @@ async function fetchActorDataset(actorId, input, forceRefresh = false) {
     }
   }
 
-  // 2. STRATEGI LIVE ACTOR RUN via Apify SDK (Saat forceRefresh = true / trigger manual)
+  // 2. STRATEGI LIVE ACTOR RUN via Apify SDK (Hanya dipanggil saat jadwal Senin / refresh kalender eksplisit)
   try {
-    log.info(`🌐 Executing Live Apify Actor Run [${actorId}]...`);
+    log.info(`🌐 [APIFY LIVE RUN] Menjalankan Actor [${actorId}]...`);
     const client = new ApifyClient({ token });
     const run = await client.actor(actorId).call(input);
 
@@ -140,6 +145,7 @@ async function fetchActorDataset(actorId, input, forceRefresh = false) {
       const { items } = await client.dataset(run.defaultDatasetId).listItems();
       if (Array.isArray(items) && items.length > 0) {
         log.info(`✅ ApifyClient SDK [${actorId}] Berhasil! (${items.length} events)`);
+        lastLiveRunTimestamp = Date.now();
         return items;
       }
     }
@@ -157,13 +163,14 @@ async function fetchActorDataset(actorId, input, forceRefresh = false) {
 
     if ((res.status === 200 || res.status === 201) && Array.isArray(res.data) && res.data.length > 0) {
       log.info(`✅ Apify REST Sync [${actorId}] Berhasil! (${res.data.length} events)`);
+      lastLiveRunTimestamp = Date.now();
       return res.data;
     }
   } catch (restErr) {
     log.warn(`Apify REST Sync error [${actorId}]: ${restErr.message}`);
   }
 
-  // 4. Last Resort Fallback (Last Run Dataset)
+  // 4. Fallback ke last run dataset jika live run gagal
   try {
     const lastRunUrl = `https://api.apify.com/v2/actors/${normalizedActorId}/runs/last/dataset/items?token=${token}&status=SUCCEEDED`;
     const res = await axios.get(lastRunUrl, { timeout: 10000 });
@@ -176,58 +183,9 @@ async function fetchActorDataset(actorId, input, forceRefresh = false) {
 }
 
 /**
- * Fetch data kalender ekonomi menggunakan silentflow/forexfactory-scraper:
- * - Jika range === 'realtime' (misal: tombol Refresh Realtime): Ambil data Hari Ini & Minggu Ini (dateRange: 'this_week').
- * - Jika range === 'weekly' atau jadwal berkala (Senin/Awal Minggu): Ambil data Minggu Ini & Minggu Depan (dateRange: 'custom').
+ * Deduplikasi dan penggabungan item kalender dengan memprioritaskan nilai actual rilis.
  */
-export async function fetchApifyCalendar(options = {}) {
-  const { forceRefresh = false, range = 'realtime' } = options;
-  const now = Date.now();
-
-  if (!forceRefresh && cache.data && cache.data.length > 0 && (now - cache.timestamp) < config.APIFY_CACHE_TTL_MS) {
-    return cache.data;
-  }
-
-  if (!isApifyConfigured()) {
-    log.warn('Apify API token belum di-set di file .env');
-    return cache.data || [];
-  }
-
-  const actorId = config.APIFY_ACTOR_ID || 'silentflow/forexfactory-scraper';
-  let input = {};
-
-  if (range === 'weekly') {
-    // Ambil Minggu ini & Minggu depan (Senin minggu ini s.d. Minggu minggu depan)
-    const { startDate, endDate } = getThisAndNextWeekDateRange();
-    log.info(`🌐 Fetching Silentflow Scraper [WEEKLY SCOPE]: ${startDate} s/d ${endDate}`);
-    input = {
-      currencies: ['USD'],
-      dateRange: 'custom',
-      startDate,
-      endDate,
-      timeZone: 'UTC',
-      maxItems: 400,
-    };
-  } else {
-    // Tombol Refresh Realtime -> Ambil Today & Minggu Ini (this_week)
-    log.info(`🌐 Fetching Silentflow Scraper [REALTIME REFRESH SCOPE]: Today & This Week`);
-    input = {
-      currencies: ['USD'],
-      dateRange: 'this_week',
-      timeZone: 'UTC',
-      maxItems: 250,
-    };
-  }
-
-  const rawItems = await fetchActorDataset(actorId, input, forceRefresh).catch(() => []);
-  const formattedItems = rawItems.map((item, idx) => formatApifyItem(item, idx));
-
-  if (formattedItems.length === 0) {
-    logScrapeResult('ApifyCalendar', false, 0, `Silentflow Actor (${actorId}) gagal mengambil data`);
-    return cache.data || [];
-  }
-
-  // Merging & Deduplikasi internal (Prioritaskan nilai ACTUAL yang terisi)
+function deduplicateCalendarItems(formattedItems) {
   const mergedMap = new Map();
   formattedItems.forEach(item => {
     const titleKey = normalizeCalendarTitleKey(item.event || item.title);
@@ -254,16 +212,118 @@ export async function fetchApifyCalendar(options = {}) {
     }
   });
 
-  const finalEvents = Array.from(mergedMap.values());
-  log.info(`✅ Silentflow Forex Factory Scraper Berhasil! (Total ${finalEvents.length} unique events)`);
+  return Array.from(mergedMap.values());
+}
+
+/**
+ * SYNC KHUSUS APIFY:
+ * 1. Awal Minggu / Senin: scope = 'two_weeks' (Minggu ini & Next week)
+ * 2. Refresh Minggu Ini: scope = 'this_week' (Hanya minggu ini untuk update nilai actual/forecast)
+ * 
+ * Melindungi dari pemborosan kuota Apify dengan cooldown 5 menit.
+ */
+export async function syncApifyCalendar(options = {}) {
+  const { scope = 'this_week', force = false } = options;
+  const now = Date.now();
+
+  if (!isApifyConfigured()) {
+    log.warn('⚠️ Apify API token belum di-set di file .env');
+    return cache.data || [];
+  }
+
+  // Cooldown check agar tidak boros limit Apify jika dipanggil bertubi-tubi
+  if (!force && (now - lastLiveRunTimestamp) < LIVE_RUN_COOLDOWN_MS && cache.data && cache.data.length > 0) {
+    const sisaDetik = Math.round((LIVE_RUN_COOLDOWN_MS - (now - lastLiveRunTimestamp)) / 1000);
+    log.info(`⏳ [APIFY COOLDOWN] Live scrape baru saja dijalankan. Menggunakan data tersimpan (sisa cooldown: ${sisaDetik}s).`);
+    return cache.data;
+  }
+
+  const actorId = config.APIFY_ACTOR_ID || 'silentflow/forexfactory-scraper';
+  let input = {};
+
+  if (scope === 'two_weeks' || scope === 'weekly') {
+    const { startDate, endDate } = getThisAndNextWeekDateRange();
+    log.info(`🌐 [APIFY SYNC AWAL MINGGU] Mengambil data This Week & Next Week: ${startDate} s/d ${endDate}`);
+    input = {
+      currencies: ['USD'],
+      dateRange: 'custom',
+      startDate,
+      endDate,
+      timeZone: 'UTC',
+      maxItems: 400,
+    };
+  } else {
+    log.info(`🌐 [APIFY REFRESH MINGGU INI] Mengambil data rilis minggu ini (this_week)...`);
+    input = {
+      currencies: ['USD'],
+      dateRange: 'this_week',
+      timeZone: 'UTC',
+      maxItems: 250,
+    };
+  }
+
+  const rawItems = await fetchActorDataset(actorId, input, true);
+  const formattedItems = rawItems.map((item, idx) => formatApifyItem(item, idx));
+
+  if (formattedItems.length === 0) {
+    logScrapeResult('ApifyCalendar', false, 0, `Gagal mengambil data dari actor ${actorId}`);
+    return cache.data || [];
+  }
+
+  const finalEvents = deduplicateCalendarItems(formattedItems);
+  log.info(`✅ Apify Sync Berhasil! Diperoleh ${finalEvents.length} event kalender.`);
   logScrapeResult('ApifyCalendar', true, finalEvents.length);
 
-  // Simpan/Upsert ke Supabase Database
-  saveUnifiedFeedToSupabase(finalEvents).catch(e => log.warn(`Gagal async save ke Supabase: ${e.message}`));
+  // Simpan / upsert langsung ke Database Supabase
+  await saveUnifiedFeedToSupabase(finalEvents).catch(e => log.warn(`Gagal save Apify events ke Supabase: ${e.message}`));
 
   cache.data = finalEvents;
   cache.timestamp = now;
   return finalEvents;
+}
+
+/**
+ * Fetch calendar events untuk kebutuhan umum bot / feed (GRATIS, 0 BIAYA).
+ * - Tidak memicu Live Actor Run kecuali jika forceLiveRun = true.
+ * - Mengutamakan in-memory cache atau Last Run Dataset.
+ */
+export async function fetchApifyCalendar(options = {}) {
+  const { forceLiveRun = false, scope = 'this_week' } = options;
+  const now = Date.now();
+
+  // Jika live run secara spesifik diminta
+  if (forceLiveRun) {
+    return await syncApifyCalendar({ scope, force: true });
+  }
+
+  // Gunakan cache jika masih valid
+  if (cache.data && cache.data.length > 0 && (now - cache.timestamp) < config.APIFY_CACHE_TTL_MS) {
+    return cache.data;
+  }
+
+  if (!isApifyConfigured()) {
+    return cache.data || [];
+  }
+
+  const actorId = config.APIFY_ACTOR_ID || 'silentflow/forexfactory-scraper';
+  const input = {
+    currencies: ['USD'],
+    dateRange: 'this_week',
+    timeZone: 'UTC',
+    maxItems: 250,
+  };
+
+  // Hanya ambil last-run dataset ($0 Cost) tanpa memicu Actor Run baru
+  const rawItems = await fetchActorDataset(actorId, input, false).catch(() => []);
+  if (rawItems.length > 0) {
+    const formatted = rawItems.map((item, idx) => formatApifyItem(item, idx));
+    const deduped = deduplicateCalendarItems(formatted);
+    cache.data = deduped;
+    cache.timestamp = now;
+    return deduped;
+  }
+
+  return cache.data || [];
 }
 
 export function clearApifyCache() {

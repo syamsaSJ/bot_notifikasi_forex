@@ -15,6 +15,7 @@ const sourceBtns = document.querySelectorAll('.source-btn');
 const timeSelect = document.getElementById('time-select');
 const sortSelect = document.getElementById('sort-select');
 const btnRefresh = document.getElementById('btn-refresh');
+const btnSyncCalendar = document.getElementById('btn-sync-calendar');
 const countBuy = document.getElementById('count-buy');
 const countSell = document.getElementById('count-sell');
 const countTotal = document.getElementById('count-total');
@@ -74,7 +75,7 @@ async function fetchNewsData(forceRefresh = false) {
       unifiedNewsEvents = data.events;
       if (systemStatus) systemStatus.textContent = 'REALTIME XAU/USD';
       if (statusPill) statusPill.className = 'status-pill live';
-      showToast(forceRefresh ? '⚡ Refreshed! Data Apify & Feed Ekonomi diperbarui.' : '✅ Feed berita & sinyal khusus pergerakan XAU/USD GOLD diperbarui!');
+      showToast(forceRefresh ? '⚡ Refreshed! Data feed & berita pasar diperbarui.' : '✅ Feed berita & sinyal khusus pergerakan XAU/USD GOLD diperbarui!');
     } else {
       unifiedNewsEvents = [];
       if (systemStatus) systemStatus.textContent = 'NO DATA';
@@ -478,12 +479,19 @@ function initRealtimeSSE() {
           const item = payload.item;
           console.log('⚡ 0-DELAY SSE RELEASE RECEIVED:', item);
 
-          // Cek apakah item sudah ada untuk menghindari duplikat
-          const exists = unifiedNewsEvents.some(e => e.id === item.id || (e.title === item.title && e.date === item.date));
-          if (!exists) {
+          // Cek apakah item sudah ada untuk di-update in-place atau prepend jika baru
+          const existingIdx = unifiedNewsEvents.findIndex(e => e.id === item.id || (e.title === item.title && e.date === item.date));
+          if (existingIdx !== -1) {
+            unifiedNewsEvents[existingIdx] = item;
+          } else {
             unifiedNewsEvents.unshift(item);
-            renderDashboard();
-            showToast(`⚡ RELEASE BARU: ${item.event || item.title}`, true);
+          }
+          renderDashboard();
+          showToast(`⚡ RELEASE BARU: ${item.event || item.title}`, true);
+
+          const sig = item.signal ? item.signal.signal : (item.analysis ? item.analysis.signal : 'NEUTRAL');
+          if (sig === 'BUY' || sig === 'SELL') {
+            showFastReleaseBanner(item);
           }
         }
       } catch (e) {
@@ -547,6 +555,28 @@ if (searchInput) {
 
 if (btnRefresh) {
   btnRefresh.addEventListener('click', () => fetchNewsData(true));
+}
+
+if (btnSyncCalendar) {
+  btnSyncCalendar.addEventListener('click', async () => {
+    btnSyncCalendar.classList.add('loading');
+    showToast('⏳ Menyinkronkan kalender ekonomi via Apify... Mohon tunggu.');
+    try {
+      const scope = (activeTime === 'next_week') ? 'two_weeks' : 'this_week';
+      const res = await fetch(`/api/calendar/sync?scope=${scope}&force=true`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`✅ Kalender Apify Berhasil Disinkronkan (${data.itemCount} items)!`);
+        await fetchNewsData(false);
+      } else {
+        showToast(`⚠️ ${data.message || data.error}`, false);
+      }
+    } catch (e) {
+      showToast('❌ Gagal sinkronisasi kalender Apify: ' + e.message, false);
+    } finally {
+      btnSyncCalendar.classList.remove('loading');
+    }
+  });
 }
 
 

@@ -51,6 +51,107 @@ export async function clearEconomicCalendarTable() {
 }
 
 /**
+ * Hapus data duplikat legacy dari sumber FairEconomy ff_json_ dan ff_xml_
+ * yang menyebabkan data ganda tanpa jam di Supabase.
+ */
+export async function cleanLegacyDuplicateCalendarEntries() {
+  if (!supabaseClient) return false;
+  try {
+    const { error: err1 } = await supabaseClient
+      .from('economic_calendar')
+      .delete()
+      .like('id', 'ff_json_%');
+
+    const { error: err2 } = await supabaseClient
+      .from('economic_calendar')
+      .delete()
+      .like('id', 'ff_xml_%');
+
+    if (err1 || err2) {
+      log.warn(`Gagal membersihkan data legacy ff_json/ff_xml: ${err1?.message || err2?.message}`);
+      return false;
+    }
+
+    log.info('🧹 Berhasil membersihkan seluruh entri duplikat legacy (ff_json / ff_xml) dari Supabase.');
+    return true;
+  } catch (err) {
+    log.error('Error saat membersihkan entri legacy ff_json/ff_xml:', err.message);
+    return false;
+  }
+}
+
+/**
+ * Cek apakah jadwal kalender next week sudah tersimpan di Supabase.
+ * Melindungi dari pemborosan kuota Apify jika server Render restart atau sleep-wake pada hari Senin.
+ */
+export async function hasNextWeekCalendarInSupabase() {
+  if (!supabaseClient) return false;
+  try {
+    const now = new Date();
+    const dateStrWIB = now.toLocaleDateString('sv-SE', { timeZone: config.TIMEZONE || 'Asia/Jakarta' });
+    const [y, m, d] = dateStrWIB.split('-').map(Number);
+    const todayUtc = new Date(Date.UTC(y, m - 1, d));
+    const dayOfWeek = todayUtc.getUTCDay();
+    const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
+
+    const mondayNextWeek = new Date(todayUtc);
+    mondayNextWeek.setUTCDate(todayUtc.getUTCDate() + diffToMonday + 7);
+    const sundayNextWeek = new Date(mondayNextWeek);
+    sundayNextWeek.setUTCDate(mondayNextWeek.getUTCDate() + 6);
+
+    const startNextWeek = mondayNextWeek.toISOString().split('T')[0];
+    const endNextWeek = sundayNextWeek.toISOString().split('T')[0];
+
+    const { data, error } = await supabaseClient
+      .from('economic_calendar')
+      .select('id')
+      .gte('date', startNextWeek)
+      .lte('date', endNextWeek)
+      .limit(3);
+
+    if (error) return false;
+    return Boolean(data && data.length > 0);
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * Cek apakah jadwal kalender minggu ini sudah ada di Supabase.
+ */
+export async function hasThisWeekCalendarInSupabase() {
+  if (!supabaseClient) return false;
+  try {
+    const now = new Date();
+    const dateStrWIB = now.toLocaleDateString('sv-SE', { timeZone: config.TIMEZONE || 'Asia/Jakarta' });
+    const [y, m, d] = dateStrWIB.split('-').map(Number);
+    const todayUtc = new Date(Date.UTC(y, m - 1, d));
+    const dayOfWeek = todayUtc.getUTCDay();
+    const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
+
+    const mondayThisWeek = new Date(todayUtc);
+    mondayThisWeek.setUTCDate(todayUtc.getUTCDate() + diffToMonday);
+    const sundayThisWeek = new Date(mondayThisWeek);
+    sundayThisWeek.setUTCDate(mondayThisWeek.getUTCDate() + 6);
+
+    const startThisWeek = mondayThisWeek.toISOString().split('T')[0];
+    const endThisWeek = sundayThisWeek.toISOString().split('T')[0];
+
+    const { data, error } = await supabaseClient
+      .from('economic_calendar')
+      .select('id')
+      .gte('date', startThisWeek)
+      .lte('date', endThisWeek)
+      .limit(3);
+
+    if (error) return false;
+    return Boolean(data && data.length > 0);
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
  * Hapus data kalender non-USD/ALL dari Supabase (khusus fokus pergerakan Emas/XAUUSD).
  */
 export async function deleteNonUSDFromSupabase() {
@@ -73,6 +174,7 @@ export async function deleteNonUSDFromSupabase() {
   }
 }
 
+
 /**
   * Simpan/Upsert Feed Terpadu (Kalender Ekonomi & Headline News) ke Database Supabase.
   * @param {Array} items - Array items dari unifiedFeed
@@ -92,10 +194,11 @@ export async function saveUnifiedFeedToSupabase(items) {
         if (curr !== 'USD' && curr !== 'ALL') return;
 
         const cleanEvt = normalizeCalendarTitleKey(item.event || item.title || '');
-        const idFallback = `cal_${item.date || new Date().toISOString().split('T')[0]}_${curr}_${cleanEvt}`;
+        const dateStr = item.date || new Date().toISOString().split('T')[0];
+        const eventId = (item.id && item.id.startsWith('cal_')) ? item.id : `cal_${dateStr}_${curr}_${cleanEvt}`;
 
         calendarRows.push({
-          id: item.id || idFallback,
+          id: eventId,
           source: item.source || 'Forex Factory',
           event: item.event || item.title || 'Economic News',
           title: item.title || item.event || 'Economic News',

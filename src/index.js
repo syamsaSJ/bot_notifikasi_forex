@@ -13,13 +13,15 @@ import { generateSignalCardImage } from './formatter/imageGenerator.js';
 import { startScheduler, getNextRun } from './scheduler/cronJob.js';
 import { getScrapeLogs, getSourceHealth } from './utils/scrapeLogger.js';
 import { initBrowser, closeBrowser } from './scraper/puppeteerScraper.js';
-import { getFeedFromSupabase, isSupabaseConfigured } from './services/supabaseService.js';
+import { getFeedFromSupabase, isSupabaseConfigured, cleanLegacyDuplicateCalendarEntries, hasNextWeekCalendarInSupabase, hasThisWeekCalendarInSupabase } from './services/supabaseService.js';
+import { syncApifyCalendar, isApifyConfigured } from './scraper/apifyCalendar.js';
 
 const log = createLogger('Main');
 
 const sentNotifications = new Set();
 let isFirstStartupRun = true;
 let latestNewsCache = [];
+let lastWeeklyApifySyncKey = '';
 
 // SSE (Server-Sent Events) clients untuk 0-delay real-time push ke Web Dashboard
 const sseClients = new Set();
@@ -33,6 +35,15 @@ function broadcastSSE(eventType, data) {
       sseClients.delete(client);
     }
   });
+}
+
+function getCurrentWeekKey() {
+  const d = new Date(new Date().toLocaleString('en-US', { timeZone: config.TIMEZONE }));
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+  const yearStart = new Date(d.getFullYear(), 0, 1);
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return `${d.getFullYear()}-W${weekNo}`;
 }
 
 function startWebServer() {
@@ -57,7 +68,7 @@ function startWebServer() {
     });
   });
 
-  // Unified Feed Endpoint (Gabungan ForexFactory, Apify & Investing.com)
+  // Unified Feed Endpoint (Kalender Supabase + Live Free Headlines, $0 Cost, TIDAK memicu Apify live run)
   app.get('/api/news', async (req, res) => {
     try {
       const forceRefresh = req.query.refresh === 'true' || req.query.force === 'true';
@@ -71,8 +82,9 @@ function startWebServer() {
         }
       }
 
-      const range = req.query.range || (forceRefresh ? 'realtime' : 'realtime');
-      const items = await getUnifiedFeed(forceRefresh, range);
+      // Ambil feed berita (Free headlines live + cached calendar dari Supabase, syncCalendar = false)
+      const range = req.query.range || 'this_week';
+      const items = await getUnifiedFeed(forceRefresh, range, { syncCalendar: false });
       latestNewsCache = items;
       return res.json({ events: items, total: items.length, source: 'live' });
     } catch (err) {
@@ -81,6 +93,25 @@ function startWebServer() {
     }
   });
 
+  // Explicit Apify Calendar Sync Endpoint (Awal Minggu: 'two_weeks', Refresh: 'this_week')
+  app.all('/api/calendar/sync', express.json(), async (req, res) => {
+    try {
+      const scope = req.query.scope || req.body?.scope || 'this_week';
+      const force = req.query.force === 'true' || req.body?.force === true;
+      log.info(`📅 Request sinkronisasi kalender Apify diterima (scope: ${scope}, force: ${force})`);
+
+      const events = await syncApifyCalendar({ scope, force });
+      return res.json({
+        success: true,
+        message: `Sinkronisasi Kalender Apify (${scope}) berhasil`,
+        itemCount: events.length,
+        timestamp: new Date().toISOString()
+      });
+    } catch (err) {
+      log.error('Error in /api/calendar/sync:', err.message);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
 
   // Scraping Health & Logs Endpoint
   app.get('/api/scrape-logs', (req, res) => {
@@ -93,21 +124,21 @@ function startWebServer() {
     }
   });
 
-  // Webhook / External Trigger Endpoint (Apify Schedule & External Cron Pemicu Render)
+  // Webhook / External Trigger Endpoint
   app.all(['/api/webhook/apify', '/api/trigger-scrape'], express.json(), async (req, res) => {
-    log.info('🔔 External Webhook / Apify Trigger diterima! Memproses scrape realtime & sync Supabase...');
+    log.info('🔔 External Webhook diterima! Memproses sync Supabase...');
     try {
-      const range = req.query.range || req.body?.range || 'realtime';
-      const items = await getUnifiedFeed(true, range);
+      const scope = req.query.scope || req.body?.scope || 'this_week';
+      const events = await syncApifyCalendar({ scope, force: true });
       return res.json({
         success: true,
-        message: 'Trigger & Sync Supabase Berhasil',
-        range,
-        itemCount: items.length,
+        message: 'Sync Supabase Berhasil',
+        scope,
+        itemCount: events.length,
         timestamp: new Date().toISOString()
       });
     } catch (err) {
-      log.error('Error in Webhook /api/trigger-scrape:', err.message);
+      log.error('Error in Webhook:', err.message);
       return res.status(500).json({ success: false, error: err.message });
     }
   });
@@ -126,19 +157,39 @@ function startWebServer() {
 
 /**
  * Main Task: Polling realtime 1-menit.
- * Mengambil unified feed -> mendeteksi event/headline baru -> broadcast 0-delay SSE -> kirim notifikasi Telegram.
+ * 1. Otomatis jalankan scrape Apify This Week + Next Week pada hari Senin (awal minggu).
+ * 2. Cek headline berita pasar gratis (TradingView, ForexLive, RSS) setiap 1 menit tanpa boros limit Apify.
+ * 3. Deteksi event/headline baru -> broadcast 0-delay SSE -> kirim notifikasi Telegram.
  */
 async function mainTask() {
   log.debug('=== Pengecekan realtime berita terpadu ===');
 
   try {
-    // Otomatis tentukan range: Jika hari Senin WIB, gunakan range 'weekly' (This Week + Next Week)
-    const nowWibStr = new Date().toLocaleString('en-US', { timeZone: config.TIMEZONE });
-    const dayOfWeekWib = new Date(nowWibStr).getDay(); // 1 = Monday
-    const range = dayOfWeekWib === 1 ? 'weekly' : 'realtime';
+    const nowWib = new Date(new Date().toLocaleString('en-US', { timeZone: config.TIMEZONE }));
+    const dayOfWeekWib = nowWib.getDay(); // 1 = Monday
+    const currentWeekKey = getCurrentWeekKey();
 
-    // Polling 1-menit otomatis (FairEconomy live 1-min feed + Apify last-run dataset)
-    const items = await getUnifiedFeed(false, range);
+    // 1. JADWAL OTOMATIS AWAL MINGGU (HARI SENIN): Scrape Minggu Ini & Next Week via Apify
+    if (dayOfWeekWib === 1 && lastWeeklyApifySyncKey !== currentWeekKey && isApifyConfigured()) {
+      // PERIKSA KE DATABASE SUPABASE: Apakah next week sudah ada datanya? (Mencegah scrape ulang jika Render restart/wake-up)
+      const alreadyInSupabase = await hasNextWeekCalendarInSupabase();
+      if (alreadyInSupabase) {
+        lastWeeklyApifySyncKey = currentWeekKey;
+        log.info(`ℹ️ [SENIN CHECK] Jadwal kalender minggu depan sudah lengkap di Supabase. Melewati scrape ulang Apify ($0 Cost).`);
+      } else {
+        log.info(`🗓️ [JADWAL AWAL MINGGU / SENIN WIB] Menjalankan scrape Apify untuk Minggu Ini & Next Week (${currentWeekKey})...`);
+        try {
+          await syncApifyCalendar({ scope: 'two_weeks', force: true });
+          lastWeeklyApifySyncKey = currentWeekKey;
+          log.info(`✅ [JADWAL SENIN] Kalender 2 minggu berhasil di-update ke Supabase!`);
+        } catch (apifyErr) {
+          log.error(`Gagal scrape Apify jadwal Senin: ${apifyErr.message}`);
+        }
+      }
+    }
+
+    // 2. Polling headline berita realtime gratis (TradingView, ForexLive, RSS) - TIDAK panggil Apify!
+    const items = await getUnifiedFeed(false, 'this_week', { syncCalendar: false });
 
     if (!items || items.length === 0) {
       return;
@@ -146,7 +197,7 @@ async function mainTask() {
 
     // Pada startup pertama kali, tandai seluruh data historical sebagai terproses agar tidak spam notifikasi
     if (isFirstStartupRun) {
-      log.info(`📌 Initial startup: Memuat ${items.length} item histori dari Supabase ke memori (notifikasi spam dinonaktifkan).`);
+      log.info(`📌 Initial startup: Memuat ${items.length} item histori ke memori (notifikasi spam dinonaktifkan).`);
       for (const item of items) {
         const uniqueKey = `${item.date}-${item.title || item.event}-${item.actual || item.pubDate || 'v1'}`;
         sentNotifications.add(uniqueKey);
@@ -166,7 +217,7 @@ async function mainTask() {
       // Broadcast Instan KE Dashboard Web (0 Delay SSE)
       broadcastSSE('NEWS_RELEASE', { item, timestamp: Date.now() });
 
-      // 1. Jika item berupa Kalender Ekonomi (Forex Factory)
+      // 1. Jika item berupa Kalender Ekonomi
       if (item.itemType === 'calendar') {
         const signal = item.signal || analyzeSignal(item);
         log.info(`⚡ [ZERO DELAY BROADCAST] ${item.event}: ${signal.signal} (${signal.reason})`);
@@ -184,7 +235,7 @@ async function mainTask() {
         sentNotifications.add(uniqueKey);
         await new Promise(resolve => setTimeout(resolve, 1200));
       }
-      // 2. Jika item berupa Headline Berita Relevan (Investing / News)
+      // 2. Jika item berupa Headline Berita Relevan (Investing / TradingView / ForexLive)
       else if (item.itemType === 'investing') {
         const sig = item.analysis || {};
         // Auto-kirim hanya jika berita punya sinyal tegas BUY / SELL (High Relevance)
@@ -198,7 +249,6 @@ async function mainTask() {
           sentNotifications.add(uniqueKey);
           await new Promise(resolve => setTimeout(resolve, 1200));
         } else {
-          // Tandai sebagai sudah diproses agar tidak menumpuk
           sentNotifications.add(uniqueKey);
         }
       }
@@ -220,12 +270,13 @@ function setupBotCommands() {
     const chatId = msg.chat.id;
     const welcome = `🤖 *Bot XAU/USD Signal Unified Realtime*
 
-Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realtime (polling 1-menit) dengan konversi waktu WIB yang presisi.
+Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara realtime (polling 1-menit) dengan konversi waktu WIB yang presisi.
 
 *Perintah:*
 /check \\- Cek berita & sinyal terbaru sekarang
 /today \\- Jadwal berita harian WIB
 /weekly \\- Jadwal kalender ekonomi minggu ini (WIB)
+/synccalendar \\- Sinkronisasi manual kalender ekonomi via Apify
 /logs \\- Status & log error scraping
 /status \\- Status server bot
 /help \\- Bantuan`;
@@ -240,7 +291,7 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
     clearCache();
 
     try {
-      const items = await getUnifiedFeed(true);
+      const items = await getUnifiedFeed(true, 'this_week', { syncCalendar: false });
 
       if (!items || items.length === 0) {
         await sendMessage('✅ Tidak ada berita/event aktif saat ini\\.', chatId.toString());
@@ -276,7 +327,7 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
     await sendMessage('⏳ _Mengambil jadwal & berita hari ini (WIB)\\.\\.\\._', chatId.toString());
 
     try {
-      const items = await getUnifiedFeed();
+      const items = await getUnifiedFeed(false, 'this_week', { syncCalendar: false });
       const todayWIBStr = new Date().toLocaleDateString('sv-SE', { timeZone: config.TIMEZONE });
       const todayItems = items.filter(i => i.date === todayWIBStr || (i.timeWIB && i.timeWIB.includes('Hari Ini')));
       const summary = formatDailySummary(todayItems.length > 0 ? todayItems : items.slice(0, 8));
@@ -292,7 +343,7 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
     await sendMessage('⏳ _Mengambil jadwal kalender ekonomi minggu ini (WIB)\\.\\.\\._', chatId.toString());
 
     try {
-      const items = await getUnifiedFeed(true, 'weekly');
+      const items = await getUnifiedFeed(false, 'this_week', { syncCalendar: false });
       const calItems = items.filter(i => i.itemType === 'calendar' || i.event);
 
       if (!calItems || calItems.length === 0) {
@@ -305,7 +356,6 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
       if (fullSummary.length <= 3800) {
         await sendMessage(fullSummary, chatId.toString());
       } else {
-        // Split berdasarkan bagian tanggal agar tidak terpotong
         const parts = fullSummary.split(/(?=🗓️ \*)/g);
         let currentChunk = '';
         for (const part of parts) {
@@ -327,6 +377,20 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
 
   bot.onText(/\/weekly/, handleWeeklyCommand);
   bot.onText(/\/week/, handleWeeklyCommand);
+
+  // /synccalendar - Sinkronisasi manual kalender via Apify
+  bot.onText(/\/synccalendar(?:\s+(this_week|two_weeks))?/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const scope = match[1] || 'this_week';
+    await sendMessage(`⏳ _Memulai sinkronisasi Kalender Ekonomi via Apify (${scope === 'two_weeks' ? 'Minggu Ini & Next Week' : 'Minggu Ini'})..._`, chatId.toString());
+
+    try {
+      const events = await syncApifyCalendar({ scope, force: true });
+      await sendMessage(`✅ *Sinkronisasi Apify Berhasil!*\nTotal: ${events.length} event kalender tersimpan rapi di database.`, chatId.toString());
+    } catch (err) {
+      await sendMessage(`❌ Gagal sync Apify: ${escapeMarkdown(err.message)}`, chatId.toString());
+    }
+  });
 
   // /logs - Log error & status scraping
   bot.onText(/\/logs/, async (msg) => {
@@ -350,7 +414,8 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
 ⏰ *Waktu WIB:* ${escapeMarkdown(now)}
 ⏱️ *Uptime:* ${hours}h ${minutes}m
 📊 *Notifikasi Terkirim:* ${sentNotifications.size}
-⚡ *Interval Polling:* Setiap 1 Menit
+⚡ *Interval Polling:* Setiap 1 Menit (Free Headlines & SSE)
+🗓️ *Apify Kalender:* Senin (This + Next Week) & Refresh
 📅 *Next Check:* ${escapeMarkdown(getNextRun())}
 
 ━━━━━━━━━━━━━━━━━━`;
@@ -368,19 +433,15 @@ Bot aktif mendeteksi rilis berita ekonomi & headline pasar XAU/USD secara realti
 /check \\- Cek berita terpadu & sinyal sekarang
 /today \\- Lihat jadwal berita hari ini (WIB)
 /weekly \\- Lihat jadwal kalender ekonomi minggu ini (WIB)
+/synccalendar \\- Sync manual kalender Apify (/synccalendar this_week atau two_weeks)
 /logs \\- Cek status kesehatan scraper & log error
 /status \\- Cek status bot & scheduler
-/help \\- Tampilkan bantuan ini
-
-*Sistem Unified Realtime:*
-• Menggabungkan Forex Factory, Investing.com, dan Headline Pasar secara realtime.
-• Konversi waktu otomatis ke WIB (+7).
-• Notifikasi dikirim instan jika ada rilis atau berita baru.`;
+/help \\- Tampilkan bantuan ini`;
 
     await sendMessage(helpMsg, chatId.toString());
   });
 
-  log.info('Bot commands registered: /start, /check, /today, /weekly, /logs, /status, /help');
+  log.info('Bot commands registered: /start, /check, /today, /weekly, /synccalendar, /logs, /status, /help');
 }
 
 /**
@@ -393,6 +454,19 @@ async function main() {
 
   await initBrowser(); // Inisialisasi Puppeteer di awal agar selalu siap sedia
   startWebServer();
+
+  // 1. Bersihkan seluruh data duplikat legacy (ff_json_ dan ff_xml_) dari database Supabase
+  if (isSupabaseConfigured()) {
+    log.info('🧹 Memeriksa dan membersihkan duplikat legacy di database Supabase...');
+    await cleanLegacyDuplicateCalendarEntries().catch(e => log.warn(`Legacy cleanup error: ${e.message}`));
+
+    // 2. Cek apakah database Supabase masih kosong kalender minggu ini
+    const hasThisWeek = await hasThisWeekCalendarInSupabase().catch(() => true);
+    if (!hasThisWeek && isApifyConfigured()) {
+      log.info('📌 Kalender minggu ini belum ada di Supabase. Menjalankan sinkronisasi awal Apify...');
+      await syncApifyCalendar({ scope: 'two_weeks' }).catch(e => log.warn(`Initial Apify sync error: ${e.message}`));
+    }
+  }
 
   const isPlaceholderToken = !config.TELEGRAM_BOT_TOKEN || config.TELEGRAM_BOT_TOKEN.includes('your_') || config.TELEGRAM_BOT_TOKEN.includes('here');
   if (isPlaceholderToken) {
