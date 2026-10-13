@@ -691,14 +691,40 @@ function renderApifyModal(data) {
   const slotsHtml = slots.length === 0
     ? `<div class="log-item empty">Tidak ada jadwal rilis data USD ber-jam spesifik pada hari ini (${rel.todayDateWIB || '-'}).</div>`
     : slots.map(slot => {
-        const evtList = slot.events.map(e => `${e.event}${e.actual && e.actual !== '-' ? ` [Actual: ${e.actual}]` : ` [Forecast: ${e.forecast}]`}`).join(', ');
+        const badgeText = slot.statusBadge || (slot.allReleased ? '✅ Sudah Rilis' : '⏳ Menunggu Rilis');
+        const badgeColor = slot.allReleased ? '#10B981' : slot.isPassed ? '#9CA3AF' : '#F59E0B';
+        const badgeBg = slot.allReleased ? 'rgba(16,185,129,0.15)' : slot.isPassed ? 'rgba(156,163,175,0.15)' : 'rgba(245,158,11,0.15)';
+
+        const eventsHtml = slot.events.map(e => {
+          const hasActual = e.actual && e.actual !== '-';
+          const actSpan = hasActual ? `<b style="color:#10B981;">Actual: ${e.actual}</b>` : `Actual: <span style="color:#9CA3AF;">-</span>`;
+          const foreSpan = e.forecast && e.forecast !== '-' ? `Forecast: ${e.forecast}` : `Forecast: -`;
+          const prevSpan = e.previous && e.previous !== '-' ? `Prev: ${e.previous}` : '';
+          const metrics = [actSpan, foreSpan, prevSpan].filter(Boolean).join(' • ');
+
+          return `
+            <div style="background:#181920;border:1px solid #282A36;border-radius:8px;padding:0.45rem 0.65rem;margin-top:0.3rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <strong style="color:#FFF;font-size:0.85rem;">${e.event}</strong>
+                ${hasActual ? `<span style="font-size:0.75rem;font-weight:800;color:${e.signal === 'BUY' ? '#10B981' : e.signal === 'SELL' ? '#EF4444' : '#F59E0B'};">Sinyal: ${e.signal}</span>` : ''}
+              </div>
+              <div style="font-size:0.75rem;color:#D1D5DB;margin-top:0.15rem;">📊 ${metrics}</div>
+              <div style="font-size:0.72rem;color:#F59E0B;margin-top:0.15rem;">
+                ${hasActual ? '✅ Selesai di-update ke database' : `🔄 <b>Yang Dipantau Berubah:</b> ${e.dataChangeDesc || 'Nilai ACTUAL (dari "-") & Sinyal XAU/USD'}`}
+              </div>
+            </div>
+          `;
+        }).join('');
+
         return `
-          <div class="log-item ${slot.allReleased ? 'success' : ''}" style="flex-direction:column;gap:0.2rem;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:0.5rem;">
+          <div class="log-item" style="flex-direction:column;gap:0.35rem;border-bottom:1px solid rgba(255,255,255,0.06);padding:0.6rem 0.4rem;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span><b class="color-gold">⏰ Jam Rilis: ${slot.releaseTimeWIB}</b> ➜ Trigger Apify: <b>${slot.triggerTimeWIB}</b></span>
-              <span>${slot.allReleased ? '✅ Sudah Rilis' : '⏳ Menunggu Rilis'}</span>
+              <span style="font-size:0.75rem;padding:0.15rem 0.55rem;border-radius:999px;background:${badgeBg};color:${badgeColor};font-weight:700;">
+                ${badgeText}
+              </span>
             </div>
-            <div style="color:#D1D5DB;font-size:0.78rem;">Data: ${evtList}</div>
+            ${eventsHtml}
           </div>
         `;
       }).join('');

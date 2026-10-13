@@ -227,10 +227,16 @@ export function getTodayReleaseScheduleInfo(events = []) {
         timestamp: evt.timestamp,
         events: [],
         allReleased: true,
+        isSpeechOnly: true,
       });
     }
 
     const slot = slotMap.get(timeKey);
+    const isSpeechEvent = /speaks|speech|meeting|testimony|statement/i.test(evt.event || evt.title || '') || (!evt.forecast || evt.forecast === '-') && (!evt.previous || evt.previous === '-');
+    if (!isSpeechEvent) {
+      slot.isSpeechOnly = false;
+    }
+
     slot.events.push({
       id: evt.id,
       event: evt.event || evt.title,
@@ -238,14 +244,42 @@ export function getTodayReleaseScheduleInfo(events = []) {
       actual: evt.actual || '-',
       forecast: evt.forecast || '-',
       previous: evt.previous || '-',
+      signal: evt.signal?.signal || 'HOLD',
+      isSpeech: isSpeechEvent,
+      dataChangeDesc: isSpeechEvent
+        ? 'Pidato Pejabat The Fed (Sentimen Pasar)'
+        : 'Nilai ACTUAL (dari "-") & Sinyal XAU/USD (BUY/SELL)',
     });
 
-    if (!evt.actual || evt.actual === '-') {
+    // Jika event bukan speech dan actual masih '-', slot dianggap belum rilis
+    if (!isSpeechEvent && (!evt.actual || evt.actual === '-')) {
       slot.allReleased = false;
     }
   });
 
   const slots = Array.from(slotMap.values());
+
+  // Evaluasi status masing-masing slot berdasarkan waktu sekarang
+  slots.forEach(slot => {
+    const isPassed = nowMs > (slot.timestamp + 15 * 60 * 1000);
+    slot.isPassed = isPassed;
+
+    if (slot.allReleased) {
+      slot.statusBadge = '✅ Sudah Rilis';
+      slot.statusDesc = 'Data Actual sudah terbit dan sinyal telah dianalisis.';
+    } else if (isPassed && slot.isSpeechOnly) {
+      slot.statusBadge = '✅ Selesai (Pidato Berlangsung)';
+      slot.statusDesc = 'Pidato/event The Fed telah berlangsung (tidak ada angka numerik Actual).';
+      slot.allReleased = true; // Tandai selesai agar tidak memicu scrape berulang
+    } else if (isPassed) {
+      slot.statusBadge = '⏱️ Jadwal Lewat';
+      slot.statusDesc = 'Jam rilis telah lewat, menunggu angka Actual terisi di Forex Factory.';
+    } else {
+      slot.statusBadge = '⏳ Menunggu Rilis';
+      slot.statusDesc = 'Memantau perubahan kolom ACTUAL & SINYAL XAU/USD (BUY/SELL).';
+    }
+  });
+
   // Cari slot yang belum rilis (actual === '-') dan waktunya belum lewat lebih dari 15 menit
   const upcomingSlots = slots.filter(s => !s.allReleased && (nowMs <= s.timestamp + 15 * 60 * 1000));
 
@@ -349,28 +383,28 @@ export async function syncApifyCloudSchedules(calendarEvents = []) {
       log.info(`🚀 [APIFY SCHEDULE] Schedule Senin 02:00 WIB berhasil dibuat (ID: ${weeklySchedule.id})`);
     }
 
-    // 2. KONFIGURASI SCHEDULE JAM RILIS DATA HARI INI (Otomatis aktif jika ada rilis berita hari ini)
+    // 2. KONFIGURASI SCHEDULE JAM RILIS DATA HARI INI (HANYA HARI ITU AJA, BUKAN MINGGUAN)
     const sourceEvents = (calendarEvents && calendarEvents.length > 0) ? calendarEvents : (cache.data || []);
     const releaseInfo = getTodayReleaseScheduleInfo(sourceEvents);
 
     const releaseInput = {
       currencies: ['USD'],
-      dateRange: 'this_week',
+      dateRange: 'today', // Khusus hari rilis itu saja (bukan seminggu/dua minggu)
       timeZone: 'UTC',
-      maxItems: 250,
+      maxItems: 60,
     };
 
     const upcomingLabels = releaseInfo.upcomingSlots.map(s => s.releaseTimeWIB).join(', ');
     const rawReleaseTitle = releaseInfo.hasActiveReleaseToday
-      ? `Forex Rilis: ${upcomingLabels}`
+      ? `Forex Rilis Hari Ini: ${upcomingLabels}`
       : `Forex Rilis Hari Ini (Standby)`;
 
     const releaseSchedulePayload = {
       name: SCHEDULE_RELEASE_NAME,
       title: rawReleaseTitle.slice(0, 40),
       description: releaseInfo.hasActiveReleaseToday
-        ? `Otomatis mengambil angka Actual rilis data USD hari ini (${releaseInfo.todayDateWIB}) pada jam: ${upcomingLabels} (Trigger H+1 menit).`
-        : `Jadwal rilis berita USD hari ini (${releaseInfo.todayDateWIB}). Otomatis aktif ketika ada jadwal rilis data yang belum keluar.`,
+        ? `Otomatis mengambil data rilis USD HARI INI (${releaseInfo.todayDateWIB}) pada jam: ${upcomingLabels} (dateRange: today).`
+        : `Jadwal rilis berita USD hari ini (${releaseInfo.todayDateWIB}). Otomatis aktif saat jam rilis data hari ini.`,
       cronExpression: releaseInfo.nextCronExpression,
       timezone: 'Asia/Jakarta',
       isEnabled: releaseInfo.hasActiveReleaseToday,
@@ -390,10 +424,10 @@ export async function syncApifyCloudSchedules(calendarEvents = []) {
     let releaseSchedule = existingSchedules.find(s => s.name === SCHEDULE_RELEASE_NAME || (s.title && s.title.startsWith('Forex Rilis')));
     if (releaseSchedule) {
       releaseSchedule = await client.schedule(releaseSchedule.id).update(releaseSchedulePayload);
-      log.info(`✅ [APIFY SCHEDULE] Schedule Jam Rilis Harian di-update: Cron="${releaseInfo.nextCronExpression}" | Enabled=${releaseInfo.hasActiveReleaseToday}`);
+      log.info(`✅ [APIFY SCHEDULE] Schedule Jam Rilis Hari Ini di-update (dateRange: today, Cron="${releaseInfo.nextCronExpression}", Enabled=${releaseInfo.hasActiveReleaseToday})`);
     } else {
       releaseSchedule = await client.schedules().create(releaseSchedulePayload);
-      log.info(`🚀 [APIFY SCHEDULE] Schedule Jam Rilis Harian dibuat: Cron="${releaseInfo.nextCronExpression}" | Enabled=${releaseInfo.hasActiveReleaseToday}`);
+      log.info(`🚀 [APIFY SCHEDULE] Schedule Jam Rilis Hari Ini dibuat (dateRange: today, Cron="${releaseInfo.nextCronExpression}", Enabled=${releaseInfo.hasActiveReleaseToday})`);
     }
 
     // Invalidate status cache agar UI / Telegram langsung mendapat data terbaru
@@ -688,6 +722,14 @@ export async function syncApifyCalendar(options = {}) {
       timeZone: 'UTC',
       maxItems: 400,
     };
+  } else if (scope === 'today') {
+    log.info(`🌐 [APIFY SYNC RILIS HARI INI] Mengambil data HARI INI SAJA (today)...`);
+    input = {
+      currencies: ['USD'],
+      dateRange: 'today', // Khusus hari itu saja sesuai rilis berita
+      timeZone: 'UTC',
+      maxItems: 60,
+    };
   } else {
     log.info(`🌐 [APIFY REFRESH MINGGU INI] Mengambil data rilis minggu ini (this_week)...`);
     input = {
@@ -706,8 +748,13 @@ export async function syncApifyCalendar(options = {}) {
     return cache.data || [];
   }
 
-  const finalEvents = deduplicateCalendarItems(formattedItems);
-  log.info(`✅ Apify Sync Berhasil! Diperoleh ${finalEvents.length} event kalender.`);
+  // Jika scrape scope 'today', gabungkan dengan cache data mingguan agar jadwal hari lain tidak hilang
+  const itemsToMerge = scope === 'today' && cache.data && cache.data.length > 0
+    ? [...cache.data, ...formattedItems]
+    : formattedItems;
+
+  const finalEvents = deduplicateCalendarItems(itemsToMerge);
+  log.info(`✅ Apify Sync (${scope}) Berhasil! Diperoleh ${formattedItems.length} item baru (Total database/cache: ${finalEvents.length} events).`);
   logScrapeResult('ApifyCalendar', true, finalEvents.length);
 
   // Simpan / upsert langsung ke Database Supabase
@@ -724,9 +771,11 @@ export async function syncApifyCalendar(options = {}) {
 
 /**
  * Cek apakah saat ini tepat berada di hari & jam rilis data kalender ekonomi USD.
- * Jika ya (H+45 detik s/d H+10 menit dari jam rilis dan nilai Actual masih '-'):
- * 1. Cek dulu Last Run Dataset Apify ($0 Cost) siapa tahu Schedule Cloud Apify baru saja selesai jalan.
- * 2. Jika belum ada angka Actual terbaru dan sudah melewati cooldown, jalankan Live Sync Apify (this_week) otomatis!
+ * Anti Double-Run Protection:
+ * 1. Cek apakah slot jam rilis ini sudah pernah di-sync hari ini (cegah run berulang).
+ * 2. Cek apakah Schedule di Apify Cloud SEDANG RUNNING: jika ya, tunggu selesai dan ambil hasilnya ($0 Cost, cegah double run!).
+ * 3. Cek apakah Schedule di Apify Cloud BARU SELESAI (< 3 menit): jika ya, ambil datasetnya ($0 Cost, cegah double run!).
+ * 4. Hanya jika Schedule Cloud belum/tidak jalan, bot jalankan live sync khusus 'today'.
  */
 export async function checkAndRunReleaseTimeSync(knownEvents = []) {
   if (!isApifyConfigured()) return null;
@@ -753,36 +802,75 @@ export async function checkAndRunReleaseTimeSync(knownEvents = []) {
   }
 
   const slotSyncKey = `${releaseInfo.todayDateWIB}_${dueSlot.releaseTimeWIB}`;
-  const pendingNames = dueSlot.events.filter(e => !e.actual || e.actual === '-').map(e => e.event).join(', ');
-
-  // 1. Pertama coba tarik Last Run Dataset ($0 Cost) terlebih dahulu (karena Apify Schedule mungkin baru saja jalan di menit H+1)
-  try {
-    const actorId = config.APIFY_ACTOR_ID || 'silentflow/forexfactory-scraper';
-    const lastRunRaw = await fetchActorDataset(actorId, {}, false);
-    if (Array.isArray(lastRunRaw) && lastRunRaw.length > 0) {
-      const formatted = deduplicateCalendarItems(lastRunRaw.map((item, idx) => formatApifyItem(item, idx)));
-      const updatedSlotInfo = getTodayReleaseScheduleInfo(formatted);
-      const matchingUpdatedSlot = updatedSlotInfo.slots.find(s => s.releaseTimeWIB === dueSlot.releaseTimeWIB);
-
-      if (matchingUpdatedSlot && matchingUpdatedSlot.allReleased) {
-        log.info(`⚡ [RELEASE TIME $0 SYNC] Data Actual untuk jam ${dueSlot.releaseTimeWIB} (${pendingNames}) berhasil ditemukan dari Apify Scheduled Run!`);
-        await saveUnifiedFeedToSupabase(formatted).catch(() => {});
-        cache.data = formatted;
-        cache.timestamp = now;
-        syncedReleaseKeys.add(slotSyncKey);
-        syncApifyCloudSchedules(formatted).catch(() => {});
-        return formatted;
-      }
-    }
-  } catch (e) {
-    log.debug(`Release time last-run check error: ${e.message}`);
+  // 1. CEK ANTI DOUBLE-RUN: Jika slot jam rilis ini sudah pernah diproses hari ini, lewati!
+  if (syncedReleaseKeys.has(slotSyncKey)) {
+    return null;
   }
 
-  // 2. Jika di Last Run belum ada nilai Actual-nya, jalankan Live Actor Run Apify (dengan proteksi cooldown 3 menit)
+  const pendingNames = dueSlot.events.filter(e => !e.actual || e.actual === '-').map(e => e.event).join(', ');
+  const token = getActiveApifyToken();
+  const client = new ApifyClient({ token });
+  const actorId = config.APIFY_ACTOR_ID || 'silentflow/forexfactory-scraper';
+
+  // 2. CEK STATUS RUN APIFY CLOUD: Jangan jalankan run baru jika Schedule Cloud sedang/baru berjalan!
+  try {
+    const recentRuns = await client.runs().list({ limit: 1, desc: true });
+    const latestRun = recentRuns.items?.[0];
+
+    if (latestRun) {
+      const runStartedMs = new Date(latestRun.startedAt).getTime();
+      const isRecent = (now - runStartedMs) <= (5 * 60 * 1000); // Run terjadi dalam 5 menit terakhir
+
+      // Kasus A: Schedule Apify Cloud SEDANG RUNNING -> Tunggu sampai selesai (cegah double run!)
+      if (latestRun.status === 'RUNNING' && isRecent) {
+        log.info(`⏳ [APIFY SCHEDULE ACTIVE] Terdeteksi run Apify Cloud sedang berjalan (${latestRun.id}). Menunggu hasil selesai ($0 Cost)...`);
+        const finishedRun = await client.run(latestRun.id).waitForFinish({ waitSecs: 35 });
+        if (finishedRun && finishedRun.defaultDatasetId) {
+          const { items } = await client.dataset(finishedRun.defaultDatasetId).listItems();
+          if (Array.isArray(items) && items.length > 0) {
+            log.info(`✅ [APIFY $0 SYNC] Menggunakan hasil run Apify Cloud (${items.length} events) tanpa menduplikasi run!`);
+            const formatted = deduplicateCalendarItems(items.map((it, idx) => formatApifyItem(it, idx)));
+            const merged = deduplicateCalendarItems([...(cache.data || []), ...formatted]);
+            await saveUnifiedFeedToSupabase(merged).catch(() => {});
+            cache.data = merged;
+            cache.timestamp = now;
+            syncedReleaseKeys.add(slotSyncKey);
+            syncApifyCloudSchedules(merged).catch(() => {});
+            return merged;
+          }
+        }
+      }
+
+      // Kasus B: Schedule Apify Cloud BARU SAJA SUCCEEDED (< 3 menit yang lalu) -> Ambil datasetnya langsung!
+      if (latestRun.status === 'SUCCEEDED' && isRecent && latestRun.defaultDatasetId) {
+        const { items } = await client.dataset(latestRun.defaultDatasetId).listItems();
+        if (Array.isArray(items) && items.length > 0) {
+          const formatted = deduplicateCalendarItems(items.map((it, idx) => formatApifyItem(it, idx)));
+          const updatedSlotInfo = getTodayReleaseScheduleInfo(formatted);
+          const matchingSlot = updatedSlotInfo.slots.find(s => s.releaseTimeWIB === dueSlot.releaseTimeWIB);
+
+          if (matchingSlot && matchingSlot.allReleased) {
+            log.info(`✅ [APIFY $0 SYNC] Data Actual jam ${dueSlot.releaseTimeWIB} (${pendingNames}) berhasil didapat dari run Apify Cloud terakhir!`);
+            const merged = deduplicateCalendarItems([...(cache.data || []), ...formatted]);
+            await saveUnifiedFeedToSupabase(merged).catch(() => {});
+            cache.data = merged;
+            cache.timestamp = now;
+            syncedReleaseKeys.add(slotSyncKey);
+            syncApifyCloudSchedules(merged).catch(() => {});
+            return merged;
+          }
+        }
+      }
+    }
+  } catch (cloudCheckErr) {
+    log.debug(`Cek cloud run error: ${cloudCheckErr.message}`);
+  }
+
+  // 3. Fallback: Jika Schedule Cloud tidak berjalan dan cooldown lewat, jalankan sync 'today' (HANYA HARI ITU AJA)
   if ((now - lastLiveRunTimestamp) >= LIVE_RUN_COOLDOWN_MS) {
-    log.info(`⏰ [JADWAL RILIS TIBA - ${dueSlot.releaseTimeWIB}] Menjalankan Apify untuk mengambil nilai Actual: ${pendingNames}`);
-    const syncedEvents = await syncApifyCalendar({ scope: 'this_week', force: true });
+    log.info(`⏰ [JADWAL RILIS TIBA - ${dueSlot.releaseTimeWIB}] Menjalankan Apify (scope: today) untuk mengambil Actual: ${pendingNames}`);
     syncedReleaseKeys.add(slotSyncKey);
+    const syncedEvents = await syncApifyCalendar({ scope: 'today', force: true });
     return syncedEvents;
   }
 

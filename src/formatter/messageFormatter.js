@@ -212,22 +212,37 @@ Token Apify belum dikonfigurasi pada file \`.env\`\\.`;
     msg += `\`${escapeMarkdown(statusData.twoWeeksRange.startDate)}\` s/d \`${escapeMarkdown(statusData.twoWeeksRange.endDate)}\` \\(Minggu Ini & Depan\\)\n\n`;
   }
 
-  // 4. Bagian Jam Rilis Data Hari Ini (Auto Trigger)
+  // 4. Bagian Jam Rilis Data Hari Ini (Auto Trigger & Data Yang Berubah)
   const rel = statusData.releaseInfo;
   msg += `⏰ *JADWAL AUTO\\-AMBIL RILIS HARI INI \\(${escapeMarkdown(rel?.todayDateWIB || '-')}\\)*\n`;
   if (!rel || !rel.slots || rel.slots.length === 0) {
     msg += `✅ _Tidak ada jadwal rilis data USD ber\\-jam spesifik hari ini\\._\n`;
   } else {
     rel.slots.forEach((slot, i) => {
-      const stIcon = slot.allReleased ? '✅ Sudah Rilis' : '⏳ Menunggu Rilis';
-      const evtNames = slot.events.map(e => `${e.event}${e.actual && e.actual !== '-' ? ` (${e.actual})` : ''}`).join(', ');
-      msg += `${i + 1}\\. *Jam Rilis ${escapeMarkdown(slot.releaseTimeWIB)}* \\(Trigger Apify: *${escapeMarkdown(slot.triggerTimeWIB)}*\\)\n`;
-      msg += `   • Status: ${escapeMarkdown(stIcon)}\n`;
-      msg += `   • Data: ${escapeMarkdown(evtNames)}\n`;
+      const badge = slot.statusBadge || (slot.allReleased ? '✅ Sudah Rilis' : '⏳ Menunggu Rilis');
+      msg += `${i + 1}\\. *Jam Rilis ${escapeMarkdown(slot.releaseTimeWIB)}* ➜ Trigger Apify: *${escapeMarkdown(slot.triggerTimeWIB)}*\n`;
+      msg += `   • Status: *${escapeMarkdown(badge)}*\n`;
+
+      slot.events.forEach(e => {
+        const hasActual = e.actual && e.actual !== '-';
+        const actLabel = hasActual ? `Actual: *${escapeMarkdown(e.actual)}*` : `Actual: \`-\``;
+        const foreLabel = e.forecast && e.forecast !== '-' ? `Forecast: ${escapeMarkdown(e.forecast)}` : `Forecast: \`-\``;
+        const prevLabel = e.previous && e.previous !== '-' ? `Prev: ${escapeMarkdown(e.previous)}` : '';
+        const metricsStr = [actLabel, foreLabel, prevLabel].filter(Boolean).join(' \\| ');
+
+        msg += `   • Data: *${escapeMarkdown(e.event)}*\n`;
+        msg += `     📊 ${metricsStr}\n`;
+        if (hasActual) {
+          msg += `     🎯 Sinyal: *${escapeMarkdown(e.signal)}*\n`;
+        } else {
+          msg += `     🔄 *Yang Berubah:* ${escapeMarkdown(e.dataChangeDesc || 'Nilai ACTUAL & Sinyal XAU/USD')}\n`;
+        }
+      });
+      msg += '\n';
     });
   }
 
-  msg += `\n━━━━━━━━━━━━━━━━━━━━━━━━
+  msg += `━━━━━━━━━━━━━━━━━━━━━━━━
 _Ketik /syncschedule untuk memperbarui jadwal Apify_`;
 
   return msg;

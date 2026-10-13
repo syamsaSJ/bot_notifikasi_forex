@@ -233,21 +233,7 @@ async function mainTask() {
       }
     }
 
-    // 2. SINKRONISASI SCHEDULE HARIAN DI APIFY SETIAP PERGANTIAN HARI WIB
-    if (isApifyConfigured() && lastDailyScheduleSyncDate !== todayDateWib && latestNewsCache.length > 0) {
-      lastDailyScheduleSyncDate = todayDateWib;
-      syncApifyCloudSchedules(latestNewsCache).catch(e => log.debug(`Daily schedule sync error: ${e.message}`));
-    }
-
-    // 3. DETEKSI JAM RILIS DATA HARI INI: Jika tepat pada hari & jam rilis berita USD (actual masih '-'), otomatis ambil data Apify!
-    if (isApifyConfigured() && latestNewsCache.length > 0) {
-      const releasedEvents = await checkAndRunReleaseTimeSync(latestNewsCache);
-      if (releasedEvents && releasedEvents.length > 0) {
-        log.info(`⚡ [AUTO RELEASE SYNC] Data rilis terbaru berhasil diambil (${releasedEvents.length} items).`);
-      }
-    }
-
-    // 4. Polling headline berita realtime gratis (TradingView, ForexLive, RSS) + Kalender dari Supabase
+    // 2. Polling headline berita realtime gratis (TradingView, ForexLive, RSS) + Kalender dari Supabase
     const items = await getUnifiedFeed(false, 'this_week', { syncCalendar: false });
 
     if (!items || items.length === 0) {
@@ -256,20 +242,31 @@ async function mainTask() {
 
     latestNewsCache = items;
 
-    // Pada startup pertama kali, tandai seluruh data historical sebagai terproses agar tidak spam notifikasi
+    // 3. INITIAL STARTUP GUARD (Render Redeploy / Server Restart):
+    // Pada saat restart/deploy pertama kali, murni muat histori ke memori dan JANGAN picu scrape/notifikasi baru!
     if (isFirstStartupRun) {
-      log.info(`📌 Initial startup: Memuat ${items.length} item histori ke memori (notifikasi spam dinonaktifkan).`);
+      log.info(`📌 Initial startup: Memuat ${items.length} item histori ke memori (notifikasi spam & auto-scrape dinonaktifkan).`);
       for (const item of items) {
         const uniqueKey = `${item.date}-${item.title || item.event}-${item.actual || item.pubDate || 'v1'}`;
         sentNotifications.add(uniqueKey);
       }
       isFirstStartupRun = false;
-      // Pastikan schedule Apify di cloud langsung sinkron dengan data kalender yang dimuat
-      if (isApifyConfigured()) {
-        lastDailyScheduleSyncDate = todayDateWib;
-        syncApifyCloudSchedules(items).catch(() => {});
-      }
+      lastDailyScheduleSyncDate = todayDateWib;
       return;
+    }
+
+    // 4. SINKRONISASI SCHEDULE HARIAN DI APIFY SETIAP PERGANTIAN HARI WIB ($0 Cost, hanya update cron jadwal)
+    if (isApifyConfigured() && lastDailyScheduleSyncDate !== todayDateWib && latestNewsCache.length > 0) {
+      lastDailyScheduleSyncDate = todayDateWib;
+      syncApifyCloudSchedules(latestNewsCache).catch(e => log.debug(`Daily schedule sync error: ${e.message}`));
+    }
+
+    // 5. DETEKSI JAM RILIS DATA HARI INI: Hanya aktif saat siklus normal (bukan startup) tepat di jam rilis berita USD!
+    if (isApifyConfigured() && latestNewsCache.length > 0) {
+      const releasedEvents = await checkAndRunReleaseTimeSync(latestNewsCache);
+      if (releasedEvents && releasedEvents.length > 0) {
+        log.info(`⚡ [AUTO RELEASE SYNC] Data rilis terbaru berhasil diambil (${releasedEvents.length} items).`);
+      }
     }
 
     // Ambil item terbaru yang belum dikirim
