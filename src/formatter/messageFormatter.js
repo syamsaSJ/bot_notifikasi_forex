@@ -161,9 +161,82 @@ _Sumber: Investing.com & Pasar Forex Realtime_`;
   return msg;
 }
 
+/**
+ * Format tampilan Limit Saldo Apify & Jadwal Schedule Otomatis untuk Telegram.
+ */
+export function formatApifyStatusTelegram(statusData) {
+  if (!statusData || !statusData.configured) {
+    return `⚠️ *APIFY SCHEDULE & SALDO*
+━━━━━━━━━━━━━━━━━━━━━━━━
+Token Apify belum dikonfigurasi pada file \`.env\`\\.`;
+  }
+
+  let msg = `☁️ *APIFY SCHEDULE & LIMIT SALDO*
+━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  // 1. Bagian Limit & Saldo Kredit Apify
+  if (statusData.limits) {
+    const lim = statusData.limits;
+    const isLowBalance = Number(lim.remainingUsd) < 1.0;
+    const balanceIcon = isLowBalance ? '🔴' : '🟢';
+
+    msg += `💰 *LIMIT & SALDO KREDIT APIFY*\n`;
+    msg += `• *Akun / Plan:* ${escapeMarkdown(lim.username)} \\(${escapeMarkdown(lim.plan)}\\)\n`;
+    msg += `• *Terpakai:* \\$${escapeMarkdown(lim.usedUsd)} / \\$${escapeMarkdown(lim.maxUsd)} \\(${escapeMarkdown(String(lim.usagePercent))}%\\)\n`;
+    msg += `• *Sisa Saldo:* ${balanceIcon} *\\$${escapeMarkdown(lim.remainingUsd)}*\n`;
+    msg += `• *Compute Units:* ${escapeMarkdown(lim.computeUnitsUsed)} CU\n`;
+    msg += `• *Periode Kuota:* ${escapeMarkdown(lim.cycleStart)} \\- ${escapeMarkdown(lim.cycleEnd)}\n\n`;
+  } else {
+    msg += `💰 *LIMIT & SALDO KREDIT APIFY*\n`;
+    msg += `_Gagal memuat detail limit saldo \\(${escapeMarkdown(statusData.error || 'Cek koneksi')}\\)_\n\n`;
+  }
+
+  // 2. Bagian Daftar Schedule di Cloud Apify
+  msg += `🗓️ *JADWAL SCHEDULE APIFY \\(WIB\\)*\n`;
+  const schedules = statusData.schedules || [];
+  if (schedules.length === 0) {
+    msg += `_Belum ada schedule terdaftar di Apify\\. Ketik /syncschedule untuk membuat otomatis\\._\n\n`;
+  } else {
+    schedules.forEach((sch, idx) => {
+      const badge = sch.isEnabled ? '🟢 AKTIF' : '⚪ STANDBY';
+      msg += `${idx + 1}\\. *${escapeMarkdown(sch.title)}*\n`;
+      msg += `   • Status: *${escapeMarkdown(badge)}* \\| Cron: \`${escapeMarkdown(sch.cronExpression)}\`\n`;
+      msg += `   • Next Run: *${escapeMarkdown(sch.nextRunWIB)}*\n`;
+      msg += `   • Last Run: ${escapeMarkdown(sch.lastRunWIB)}\n\n`;
+    });
+  }
+
+  // 3. Bagian Rentang Minggu Ini & Minggu Depan
+  if (statusData.twoWeeksRange) {
+    msg += `📆 *Rentang Ambil Senin \\(02:00 WIB\\):*\n`;
+    msg += `\`${escapeMarkdown(statusData.twoWeeksRange.startDate)}\` s/d \`${escapeMarkdown(statusData.twoWeeksRange.endDate)}\` \\(Minggu Ini & Depan\\)\n\n`;
+  }
+
+  // 4. Bagian Jam Rilis Data Hari Ini (Auto Trigger)
+  const rel = statusData.releaseInfo;
+  msg += `⏰ *JADWAL AUTO\\-AMBIL RILIS HARI INI \\(${escapeMarkdown(rel?.todayDateWIB || '-')}\\)*\n`;
+  if (!rel || !rel.slots || rel.slots.length === 0) {
+    msg += `✅ _Tidak ada jadwal rilis data USD ber\\-jam spesifik hari ini\\._\n`;
+  } else {
+    rel.slots.forEach((slot, i) => {
+      const stIcon = slot.allReleased ? '✅ Sudah Rilis' : '⏳ Menunggu Rilis';
+      const evtNames = slot.events.map(e => `${e.event}${e.actual && e.actual !== '-' ? ` (${e.actual})` : ''}`).join(', ');
+      msg += `${i + 1}\\. *Jam Rilis ${escapeMarkdown(slot.releaseTimeWIB)}* \\(Trigger Apify: *${escapeMarkdown(slot.triggerTimeWIB)}*\\)\n`;
+      msg += `   • Status: ${escapeMarkdown(stIcon)}\n`;
+      msg += `   • Data: ${escapeMarkdown(evtNames)}\n`;
+    });
+  }
+
+  msg += `\n━━━━━━━━━━━━━━━━━━━━━━━━
+_Ketik /syncschedule untuk memperbarui jadwal Apify_`;
+
+  return msg;
+}
+
 export { formatLogsTelegram };
 
 export function escapeMarkdown(text) {
   if (!text) return '';
   return text.replace(/([_\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
 }
+

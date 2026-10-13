@@ -39,6 +39,10 @@
           <i class="fa-regular fa-clock"></i>
           <span id="last-update-time">--:-- WIB</span>
         </div>
+        <button id="btn-toggle-apify" class="btn btn-secondary" title="Lihat Jadwal Schedule & Limit Saldo Apify">
+          <i class="fa-solid fa-calendar-check color-gold"></i>
+          <span id="apify-balance-pill">Jadwal & Saldo Apify</span>
+        </button>
         <button id="btn-toggle-logs" class="btn btn-secondary">
           <i class="fa-solid fa-list-check"></i> Scraper Logs
         </button>
@@ -56,6 +60,24 @@
   <div id="toast" class="toast hidden">
     <i class="fa-solid fa-circle-check"></i>
     <span id="toast-message">Terhubung! Data berita & sinyal diperbarui.</span>
+  </div>
+
+  <!-- Modal Jadwal Schedule & Limit Saldo Apify -->
+  <div id="apify-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-calendar-check color-gold"></i> Jadwal Schedule & Limit Saldo Apify</h3>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <button id="btn-sync-apify-schedule" class="btn btn-warning" style="padding:0.4rem 0.85rem;font-size:0.78rem;">
+            <i class="fa-solid fa-rotate"></i> Update Schedule Apify
+          </button>
+          <button id="btn-close-apify" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+      <div class="modal-body" id="apify-modal-body">
+        <div class="health-item">Memuat informasi Schedule & Limit Saldo Apify...</div>
+      </div>
+    </div>
   </div>
 
   <!-- Modal / Collapsible Scraper Health Logs -->

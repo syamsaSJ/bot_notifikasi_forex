@@ -8,13 +8,19 @@ import { initBot, sendMessage, sendPhoto, getBot } from './bot/telegram.js';
 import { getUnifiedFeed } from './scraper/unifiedFeed.js';
 import { clearCache } from './scraper/forexFactory.js';
 import { analyzeSignal } from './engine/signalEngine.js';
-import { formatMessage, formatDailySummary, formatWeeklySummary, formatHeadlineDigest, formatLogsTelegram, escapeMarkdown } from './formatter/messageFormatter.js';
+import { formatMessage, formatDailySummary, formatWeeklySummary, formatHeadlineDigest, formatLogsTelegram, formatApifyStatusTelegram, escapeMarkdown } from './formatter/messageFormatter.js';
 import { generateSignalCardImage } from './formatter/imageGenerator.js';
 import { startScheduler, getNextRun } from './scheduler/cronJob.js';
 import { getScrapeLogs, getSourceHealth } from './utils/scrapeLogger.js';
 import { initBrowser, closeBrowser } from './scraper/puppeteerScraper.js';
 import { getFeedFromSupabase, isSupabaseConfigured, cleanLegacyDuplicateCalendarEntries, hasNextWeekCalendarInSupabase, hasThisWeekCalendarInSupabase } from './services/supabaseService.js';
-import { syncApifyCalendar, isApifyConfigured } from './scraper/apifyCalendar.js';
+import {
+  syncApifyCalendar,
+  isApifyConfigured,
+  syncApifyCloudSchedules,
+  getApifyStatusAndSchedules,
+  checkAndRunReleaseTimeSync,
+} from './scraper/apifyCalendar.js';
 
 const log = createLogger('Main');
 
@@ -22,6 +28,7 @@ const sentNotifications = new Set();
 let isFirstStartupRun = true;
 let latestNewsCache = [];
 let lastWeeklyApifySyncKey = '';
+let lastDailyScheduleSyncDate = '';
 
 // SSE (Server-Sent Events) clients untuk 0-delay real-time push ke Web Dashboard
 const sseClients = new Set();
@@ -113,6 +120,42 @@ function startWebServer() {
     }
   });
 
+  // Apify Schedule & Limit Saldo Endpoint
+  app.get('/api/apify/status', async (req, res) => {
+    try {
+      const forceRefresh = req.query.refresh === 'true';
+      if ((!latestNewsCache || latestNewsCache.length === 0) && isSupabaseConfigured()) {
+        const dbItems = await getFeedFromSupabase().catch(() => []);
+        if (dbItems && dbItems.length > 0) latestNewsCache = dbItems;
+      }
+      const status = await getApifyStatusAndSchedules(latestNewsCache, forceRefresh);
+      return res.json(status);
+    } catch (err) {
+      log.error('Error in /api/apify/status:', err.message);
+      return res.status(500).json({ configured: false, error: err.message });
+    }
+  });
+
+  // Sync / Update Schedules di Apify Console
+  app.post('/api/apify/sync-schedules', express.json(), async (req, res) => {
+    try {
+      if ((!latestNewsCache || latestNewsCache.length === 0) && isSupabaseConfigured()) {
+        const dbItems = await getFeedFromSupabase().catch(() => []);
+        if (dbItems && dbItems.length > 0) latestNewsCache = dbItems;
+      }
+      const syncRes = await syncApifyCloudSchedules(latestNewsCache);
+      const status = await getApifyStatusAndSchedules(latestNewsCache, true);
+      return res.json({
+        success: syncRes.success,
+        error: syncRes.error || null,
+        status,
+      });
+    } catch (err) {
+      log.error('Error in /api/apify/sync-schedules:', err.message);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
   // Scraping Health & Logs Endpoint
   app.get('/api/scrape-logs', (req, res) => {
     try {
@@ -124,7 +167,7 @@ function startWebServer() {
     }
   });
 
-  // Webhook / External Trigger Endpoint
+  // Webhook / External Trigger Endpoint (Dipanggil saat Schedule Apify selesai jalan)
   app.all(['/api/webhook/apify', '/api/trigger-scrape'], express.json(), async (req, res) => {
     log.info('🔔 External Webhook diterima! Memproses sync Supabase...');
     try {
@@ -157,9 +200,10 @@ function startWebServer() {
 
 /**
  * Main Task: Polling realtime 1-menit.
- * 1. Otomatis jalankan scrape Apify This Week + Next Week pada hari Senin (awal minggu).
- * 2. Cek headline berita pasar gratis (TradingView, ForexLive, RSS) setiap 1 menit tanpa boros limit Apify.
- * 3. Deteksi event/headline baru -> broadcast 0-delay SSE -> kirim notifikasi Telegram.
+ * 1. Otomatis jalankan scrape Apify This Week + Next Week setiap Hari Senin jam >= 02:00 WIB.
+ * 2. Otomatis cek apakah hari ini & jam sekarang ada jadwal rilis data USD (jika ada & actual masih '-', otomatis ambil data Apify).
+ * 3. Cek headline berita pasar gratis (TradingView, ForexLive, RSS) setiap 1 menit tanpa boros limit Apify.
+ * 4. Deteksi event/headline baru -> broadcast 0-delay SSE -> kirim notifikasi Telegram.
  */
 async function mainTask() {
   log.debug('=== Pengecekan realtime berita terpadu ===');
@@ -167,33 +211,50 @@ async function mainTask() {
   try {
     const nowWib = new Date(new Date().toLocaleString('en-US', { timeZone: config.TIMEZONE }));
     const dayOfWeekWib = nowWib.getDay(); // 1 = Monday
+    const hourWib = nowWib.getHours();
+    const todayDateWib = new Date().toLocaleDateString('sv-SE', { timeZone: config.TIMEZONE });
     const currentWeekKey = getCurrentWeekKey();
 
-    // 1. JADWAL OTOMATIS AWAL MINGGU (HARI SENIN): Scrape Minggu Ini & Next Week via Apify
-    if (dayOfWeekWib === 1 && lastWeeklyApifySyncKey !== currentWeekKey && isApifyConfigured()) {
-      // PERIKSA KE DATABASE SUPABASE: Apakah next week sudah ada datanya? (Mencegah scrape ulang jika Render restart/wake-up)
+    // 1. JADWAL OTOMATIS AWAL MINGGU (SETIAP HARI SENIN JAM >= 02:00 WIB): Scrape Minggu Ini & Next Week via Apify
+    if (dayOfWeekWib === 1 && hourWib >= 2 && lastWeeklyApifySyncKey !== currentWeekKey && isApifyConfigured()) {
       const alreadyInSupabase = await hasNextWeekCalendarInSupabase();
       if (alreadyInSupabase) {
         lastWeeklyApifySyncKey = currentWeekKey;
-        log.info(`ℹ️ [SENIN CHECK] Jadwal kalender minggu depan sudah lengkap di Supabase. Melewati scrape ulang Apify ($0 Cost).`);
+        log.info(`ℹ️ [SENIN 02:00 WIB CHECK] Jadwal kalender minggu depan sudah lengkap di Supabase. Melewati scrape ulang Apify ($0 Cost).`);
       } else {
-        log.info(`🗓️ [JADWAL AWAL MINGGU / SENIN WIB] Menjalankan scrape Apify untuk Minggu Ini & Next Week (${currentWeekKey})...`);
+        log.info(`🗓️ [JADWAL SENIN 02:00 WIB] Menjalankan scrape Apify untuk Minggu Ini & Next Week (${currentWeekKey})...`);
         try {
           await syncApifyCalendar({ scope: 'two_weeks', force: true });
           lastWeeklyApifySyncKey = currentWeekKey;
-          log.info(`✅ [JADWAL SENIN] Kalender 2 minggu berhasil di-update ke Supabase!`);
+          log.info(`✅ [JADWAL SENIN 02:00 WIB] Kalender 2 minggu berhasil di-update ke Supabase!`);
         } catch (apifyErr) {
           log.error(`Gagal scrape Apify jadwal Senin: ${apifyErr.message}`);
         }
       }
     }
 
-    // 2. Polling headline berita realtime gratis (TradingView, ForexLive, RSS) - TIDAK panggil Apify!
+    // 2. SINKRONISASI SCHEDULE HARIAN DI APIFY SETIAP PERGANTIAN HARI WIB
+    if (isApifyConfigured() && lastDailyScheduleSyncDate !== todayDateWib && latestNewsCache.length > 0) {
+      lastDailyScheduleSyncDate = todayDateWib;
+      syncApifyCloudSchedules(latestNewsCache).catch(e => log.debug(`Daily schedule sync error: ${e.message}`));
+    }
+
+    // 3. DETEKSI JAM RILIS DATA HARI INI: Jika tepat pada hari & jam rilis berita USD (actual masih '-'), otomatis ambil data Apify!
+    if (isApifyConfigured() && latestNewsCache.length > 0) {
+      const releasedEvents = await checkAndRunReleaseTimeSync(latestNewsCache);
+      if (releasedEvents && releasedEvents.length > 0) {
+        log.info(`⚡ [AUTO RELEASE SYNC] Data rilis terbaru berhasil diambil (${releasedEvents.length} items).`);
+      }
+    }
+
+    // 4. Polling headline berita realtime gratis (TradingView, ForexLive, RSS) + Kalender dari Supabase
     const items = await getUnifiedFeed(false, 'this_week', { syncCalendar: false });
 
     if (!items || items.length === 0) {
       return;
     }
+
+    latestNewsCache = items;
 
     // Pada startup pertama kali, tandai seluruh data historical sebagai terproses agar tidak spam notifikasi
     if (isFirstStartupRun) {
@@ -203,6 +264,11 @@ async function mainTask() {
         sentNotifications.add(uniqueKey);
       }
       isFirstStartupRun = false;
+      // Pastikan schedule Apify di cloud langsung sinkron dengan data kalender yang dimuat
+      if (isApifyConfigured()) {
+        lastDailyScheduleSyncDate = todayDateWib;
+        syncApifyCloudSchedules(items).catch(() => {});
+      }
       return;
     }
 
@@ -276,9 +342,11 @@ Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara real
 /check \\- Cek berita & sinyal terbaru sekarang
 /today \\- Jadwal berita harian WIB
 /weekly \\- Jadwal kalender ekonomi minggu ini (WIB)
+/apify \\- Cek jadwal Schedule Apify & Limit Saldo Kredit Apify
+/syncschedule \\- Update otomatis Schedule di Cloud Apify
 /synccalendar \\- Sinkronisasi manual kalender ekonomi via Apify
 /logs \\- Status & log error scraping
-/status \\- Status server bot
+/status \\- Status server bot & saldo Apify
 /help \\- Bantuan`;
 
     await sendMessage(welcome, chatId.toString());
@@ -378,6 +446,49 @@ Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara real
   bot.onText(/\/weekly/, handleWeeklyCommand);
   bot.onText(/\/week/, handleWeeklyCommand);
 
+  // /apify, /jadwal, /schedule - Lihat Jadwal Schedule Apify & Limit Saldo Apify
+  const handleApifyScheduleCommand = async (msg) => {
+    const chatId = msg.chat.id;
+    await sendMessage('⏳ _Mengambil informasi Schedule & Limit Saldo Apify\\.\\.\\._', chatId.toString());
+
+    try {
+      if (!latestNewsCache || latestNewsCache.length === 0) {
+        latestNewsCache = await getUnifiedFeed(false, 'this_week', { syncCalendar: false });
+      }
+      const statusData = await getApifyStatusAndSchedules(latestNewsCache, true);
+      const textMsg = formatApifyStatusTelegram(statusData);
+      await sendMessage(textMsg, chatId.toString());
+    } catch (err) {
+      await sendMessage(`❌ Error cek Apify: ${escapeMarkdown(err.message)}`, chatId.toString());
+    }
+  };
+
+  bot.onText(/\/apify/, handleApifyScheduleCommand);
+  bot.onText(/\/jadwal/, handleApifyScheduleCommand);
+  bot.onText(/\/schedule/, handleApifyScheduleCommand);
+
+  // /syncschedule - Sinkronisasi jadwal Schedule ke Cloud Apify (Senin 02:00 WIB + Jam Rilis Hari Ini)
+  bot.onText(/\/syncschedule/, async (msg) => {
+    const chatId = msg.chat.id;
+    await sendMessage('⏳ _Menyinkronkan Schedule Senin 02:00 WIB & Jam Rilis Harian ke Cloud Apify\\.\\.\\._', chatId.toString());
+
+    try {
+      if (!latestNewsCache || latestNewsCache.length === 0) {
+        latestNewsCache = await getUnifiedFeed(false, 'this_week', { syncCalendar: false });
+      }
+      const res = await syncApifyCloudSchedules(latestNewsCache);
+      if (!res.success) {
+        await sendMessage(`❌ Gagal update schedule Apify: ${escapeMarkdown(res.error || 'Unknown error')}`, chatId.toString());
+        return;
+      }
+      const statusData = await getApifyStatusAndSchedules(latestNewsCache, true);
+      const textMsg = formatApifyStatusTelegram(statusData);
+      await sendMessage(textMsg, chatId.toString());
+    } catch (err) {
+      await sendMessage(`❌ Error sync schedule: ${escapeMarkdown(err.message)}`, chatId.toString());
+    }
+  });
+
   // /synccalendar - Sinkronisasi manual kalender via Apify
   bot.onText(/\/synccalendar(?:\s+(this_week|two_weeks))?/, async (msg, match) => {
     const chatId = msg.chat.id;
@@ -386,7 +497,7 @@ Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara real
 
     try {
       const events = await syncApifyCalendar({ scope, force: true });
-      await sendMessage(`✅ *Sinkronisasi Apify Berhasil!*\nTotal: ${events.length} event kalender tersimpan rapi di database.`, chatId.toString());
+      await sendMessage(`✅ *Sinkronisasi Apify Berhasil!*\nTotal: ${events.length} event kalender tersimpan rapi di database & jadwal rilis diperbarui.`, chatId.toString());
     } catch (err) {
       await sendMessage(`❌ Gagal sync Apify: ${escapeMarkdown(err.message)}`, chatId.toString());
     }
@@ -399,13 +510,19 @@ Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara real
     await sendMessage(logsMsg, chatId.toString());
   });
 
-  // /status - Server status
+  // /status - Server status + Ringkasan Saldo & Schedule Apify
   bot.onText(/\/status/, async (msg) => {
     const chatId = msg.chat.id;
     const uptime = process.uptime();
     const hours = Math.floor(uptime / 3600);
     const minutes = Math.floor((uptime % 3600) / 60);
     const now = new Date().toLocaleString('id-ID', { timeZone: config.TIMEZONE });
+
+    const apifyStat = await getApifyStatusAndSchedules(latestNewsCache, false).catch(() => null);
+    let saldoLine = 'Belum dikonfigurasi';
+    if (apifyStat?.limits) {
+      saldoLine = `\\$${escapeMarkdown(apifyStat.limits.usedUsd)} / \\$${escapeMarkdown(apifyStat.limits.maxUsd)} \\(Sisa: \\$${escapeMarkdown(apifyStat.limits.remainingUsd)}\\)`;
+    }
 
     const statusMsg = `🤖 *STATUS BOT & SCHEDULER*
 ━━━━━━━━━━━━━━━━━━
@@ -414,10 +531,13 @@ Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara real
 ⏰ *Waktu WIB:* ${escapeMarkdown(now)}
 ⏱️ *Uptime:* ${hours}h ${minutes}m
 📊 *Notifikasi Terkirim:* ${sentNotifications.size}
-⚡ *Interval Polling:* Setiap 1 Menit (Free Headlines & SSE)
-🗓️ *Apify Kalender:* Senin (This + Next Week) & Refresh
+⚡ *Interval Polling:* Setiap 1 Menit \\(Free Headlines & SSE\\)
+🗓️ *Schedule Mingguan:* Setiap Senin 02:00 WIB \\(Minggu Ini & Depan\\)
+⏰ *Schedule Rilis:* Otomatis Saat Jam Rilis Berita \\(WIB\\)
+💰 *Saldo Kredit Apify:* ${saldoLine}
 📅 *Next Check:* ${escapeMarkdown(getNextRun())}
 
+_Ketik /apify atau /jadwal untuk detail lengkap jadwal & saldo Apify_
 ━━━━━━━━━━━━━━━━━━`;
 
     await sendMessage(statusMsg, chatId.toString());
@@ -433,15 +553,18 @@ Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara real
 /check \\- Cek berita terpadu & sinyal sekarang
 /today \\- Lihat jadwal berita hari ini (WIB)
 /weekly \\- Lihat jadwal kalender ekonomi minggu ini (WIB)
+/apify \\- Lihat jadwal Schedule Apify & Limit Saldo Apify
+/jadwal \\- Lihat jadwal rilis data & Schedule Apify
+/syncschedule \\- Update otomatis jadwal Schedule di Apify Console
 /synccalendar \\- Sync manual kalender Apify (/synccalendar this_week atau two_weeks)
 /logs \\- Cek status kesehatan scraper & log error
-/status \\- Cek status bot & scheduler
+/status \\- Cek status bot, jadwal & saldo Apify
 /help \\- Tampilkan bantuan ini`;
 
     await sendMessage(helpMsg, chatId.toString());
   });
 
-  log.info('Bot commands registered: /start, /check, /today, /weekly, /synccalendar, /logs, /status, /help');
+  log.info('Bot commands registered: /start, /check, /today, /weekly, /apify, /jadwal, /syncschedule, /synccalendar, /logs, /status, /help');
 }
 
 /**
@@ -466,6 +589,17 @@ async function main() {
       log.info('📌 Kalender minggu ini belum ada di Supabase. Menjalankan sinkronisasi awal Apify...');
       await syncApifyCalendar({ scope: 'two_weeks' }).catch(e => log.warn(`Initial Apify sync error: ${e.message}`));
     }
+
+    // 3. Muat data kalender dari Supabase & sinkronkan Schedule Apify (Senin 02:00 WIB + Jam Rilis Hari Ini)
+    const initialDbItems = await getFeedFromSupabase().catch(() => []);
+    if (initialDbItems && initialDbItems.length > 0) {
+      latestNewsCache = initialDbItems;
+    }
+  }
+
+  if (isApifyConfigured()) {
+    log.info('🗓️ Mengonfigurasi Schedule Otomatis di Cloud Apify (Senin 02:00 WIB & Jam Rilis Harian)...');
+    syncApifyCloudSchedules(latestNewsCache).catch(e => log.warn(`Initial Apify Schedule sync warning: ${e.message}`));
   }
 
   const isPlaceholderToken = !config.TELEGRAM_BOT_TOKEN || config.TELEGRAM_BOT_TOKEN.includes('your_') || config.TELEGRAM_BOT_TOKEN.includes('here');

@@ -594,9 +594,175 @@ if (btnCloseLogs && logsModal) {
   });
 }
 
+// Apify Schedule & Limit Saldo Modal Elements & Functions
+const btnToggleApify = document.getElementById('btn-toggle-apify');
+const btnCloseApify = document.getElementById('btn-close-apify');
+const btnSyncApifySchedule = document.getElementById('btn-sync-apify-schedule');
+const apifyModal = document.getElementById('apify-modal');
+const apifyModalBody = document.getElementById('apify-modal-body');
+const apifyBalancePill = document.getElementById('apify-balance-pill');
+
+async function fetchApifyStatus(forceRefresh = false) {
+  try {
+    const res = await fetch(forceRefresh ? '/api/apify/status?refresh=true' : '/api/apify/status');
+    const data = await res.json();
+
+    if (data && data.limits && apifyBalancePill) {
+      apifyBalancePill.textContent = `Apify: $${data.limits.usedUsd} / $${data.limits.maxUsd} (Sisa $${data.limits.remainingUsd})`;
+    }
+
+    if (apifyModalBody) {
+      renderApifyModal(data);
+    }
+  } catch (err) {
+    console.error('Fetch Apify status error:', err);
+  }
+}
+
+function renderApifyModal(data) {
+  if (!apifyModalBody) return;
+
+  if (!data || !data.configured) {
+    apifyModalBody.innerHTML = `
+      <div class="health-card err">
+        <strong>⚠️ Token Apify Belum Dikonfigurasi</strong>
+        <p style="font-size:0.85rem;color:#9CA3AF;">Pastikan <code>APIFY_TOKEN</code> sudah diisi pada file <code>.env</code>.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const lim = data.limits;
+  const schedules = data.schedules || [];
+  const rel = data.releaseInfo || {};
+  const range = data.twoWeeksRange || {};
+
+  let limitsHtml = '';
+  if (lim) {
+    const barColor = Number(lim.remainingUsd) < 1.0 ? '#EF4444' : '#10B981';
+    limitsHtml = `
+      <div class="health-card ok" style="border-color:rgba(245,158,11,0.4);">
+        <div class="health-title" style="justify-content:space-between;">
+          <span><i class="fa-solid fa-wallet color-gold"></i> <strong>Limit & Saldo Kredit Apify (${lim.username} • ${lim.plan})</strong></span>
+          <span style="font-size:0.85rem;font-weight:800;color:${barColor};">Sisa Saldo: $${lim.remainingUsd}</span>
+        </div>
+        <div style="background:#121319;border-radius:8px;height:10px;width:100%;overflow:hidden;margin:0.4rem 0;border:1px solid #282A36;">
+          <div style="background:${barColor};height:100%;width:${Math.min(100, lim.usagePercent)}%;transition:width 0.3s;"></div>
+        </div>
+        <div class="health-meta" style="flex-direction:row;flex-wrap:wrap;justify-content:space-between;gap:0.75rem;">
+          <span>Terpakai: <b style="color:#FFF;">$${lim.usedUsd} / $${lim.maxUsd} (${lim.usagePercent}%)</b></span>
+          <span>Compute Units: <b style="color:#FFF;">${lim.computeUnitsUsed} CU</b></span>
+          <span>Periode Reset: <b style="color:#FFF;">${lim.cycleStart} - ${lim.cycleEnd}</b></span>
+        </div>
+      </div>
+    `;
+  } else {
+    limitsHtml = `
+      <div class="health-card err">
+        <strong>💰 Limit & Saldo Apify</strong>
+        <div class="health-meta">Gagal mengambil data limit saldo: ${data.error || 'Periksa koneksi'}</div>
+      </div>
+    `;
+  }
+
+  const schedulesHtml = schedules.length === 0
+    ? `<div class="health-card"><div class="health-meta">Belum ada Schedule terdaftar. Klik <b>Update Schedule Apify</b> di kanan atas untuk membuat otomatis.</div></div>`
+    : schedules.map(sch => `
+        <div class="health-card ${sch.isEnabled ? 'ok' : ''}">
+          <div class="health-title" style="justify-content:space-between;">
+            <span>
+              <i class="fa-solid ${sch.isEnabled ? 'fa-circle-check color-emerald' : 'fa-clock color-gold'}"></i>
+              <strong>${sch.title}</strong>
+            </span>
+            <span style="font-size:0.72rem;padding:0.15rem 0.55rem;border-radius:999px;background:${sch.isEnabled ? 'rgba(16,185,129,0.2)' : 'rgba(156,163,175,0.2)'};color:${sch.isEnabled ? '#10B981' : '#9CA3AF'};font-weight:700;">
+              ${sch.isEnabled ? 'AKTIF' : 'STANDBY'}
+            </span>
+          </div>
+          <div class="health-meta">
+            <span>Cron Expression: <code style="color:#F59E0B;">${sch.cronExpression}</code> (${sch.timezone})</span>
+            <span>Jadwal Jalan Berikutnya (Next Run): <b style="color:#10B981;">${sch.nextRunWIB}</b></span>
+            <span>Terakhir Dijalankan (Last Run): <b>${sch.lastRunWIB}</b></span>
+            ${sch.description ? `<span style="margin-top:0.25rem;color:#D1D5DB;">${sch.description}</span>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+  const slots = rel.slots || [];
+  const slotsHtml = slots.length === 0
+    ? `<div class="log-item empty">Tidak ada jadwal rilis data USD ber-jam spesifik pada hari ini (${rel.todayDateWIB || '-'}).</div>`
+    : slots.map(slot => {
+        const evtList = slot.events.map(e => `${e.event}${e.actual && e.actual !== '-' ? ` [Actual: ${e.actual}]` : ` [Forecast: ${e.forecast}]`}`).join(', ');
+        return `
+          <div class="log-item ${slot.allReleased ? 'success' : ''}" style="flex-direction:column;gap:0.2rem;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:0.5rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span><b class="color-gold">⏰ Jam Rilis: ${slot.releaseTimeWIB}</b> ➜ Trigger Apify: <b>${slot.triggerTimeWIB}</b></span>
+              <span>${slot.allReleased ? '✅ Sudah Rilis' : '⏳ Menunggu Rilis'}</span>
+            </div>
+            <div style="color:#D1D5DB;font-size:0.78rem;">Data: ${evtList}</div>
+          </div>
+        `;
+      }).join('');
+
+  apifyModalBody.innerHTML = `
+    ${limitsHtml}
+    <div>
+      <h4 style="margin-bottom:0.65rem;font-size:0.95rem;"><i class="fa-solid fa-calendar-days color-gold"></i> Daftar Schedule Otomatis di Cloud Apify (Minggu Ini & Depan: ${range.startDate || '-'} s/d ${range.endDate || '-'})</h4>
+      <div class="source-health-grid" style="grid-template-columns:1fr;">
+        ${schedulesHtml}
+      </div>
+    </div>
+    <div class="logs-table-container">
+      <h4><i class="fa-solid fa-bolt color-gold"></i> Jadwal Auto-Ambil Saat Jam Rilis Data Hari Ini (${rel.todayDateWIB || '-'})</h4>
+      <div class="logs-list" style="max-height:220px;">
+        ${slotsHtml}
+      </div>
+    </div>
+  `;
+}
+
+if (btnToggleApify && apifyModal) {
+  btnToggleApify.addEventListener('click', () => {
+    apifyModal.classList.remove('hidden');
+    fetchApifyStatus(true);
+  });
+}
+
+if (btnCloseApify && apifyModal) {
+  btnCloseApify.addEventListener('click', () => {
+    apifyModal.classList.add('hidden');
+  });
+}
+
+if (btnSyncApifySchedule) {
+  btnSyncApifySchedule.addEventListener('click', async () => {
+    btnSyncApifySchedule.classList.add('loading');
+    showToast('⏳ Memperbarui Schedule Senin 02:00 WIB & Jam Rilis Harian di Apify...');
+    try {
+      const res = await fetch('/api/apify/sync-schedules', { method: 'POST' });
+      const data = await res.json();
+      if (data.success && data.status) {
+        renderApifyModal(data.status);
+        if (data.status.limits && apifyBalancePill) {
+          apifyBalancePill.textContent = `Apify: $${data.status.limits.usedUsd} / $${data.status.limits.maxUsd} (Sisa $${data.status.limits.remainingUsd})`;
+        }
+        showToast('✅ Schedule Apify berhasil disinkronkan!');
+      } else {
+        showToast(`⚠️ Gagal update schedule: ${data.error || 'Unknown error'}`, false);
+      }
+    } catch (e) {
+      showToast('❌ Error sync schedule Apify: ' + e.message, false);
+    } finally {
+      btnSyncApifySchedule.classList.remove('loading');
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initTradingView();
   fetchNewsData();
+  fetchApifyStatus(false);
   initRealtimeSSE();
   setInterval(fetchNewsData, 30000);
+  setInterval(() => fetchApifyStatus(false), 60000);
 });
+
