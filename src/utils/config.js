@@ -30,8 +30,9 @@ export default {
   RAPIDAPI_CALENDAR_TTL_MS: parseInt(process.env.RAPIDAPI_CALENDAR_TTL_MS, 10) || 6 * 60 * 60 * 1000,
   // Jeda minimal antar request RapidAPI (default 2 menit)
   RAPIDAPI_MIN_INTERVAL_MS: parseInt(process.env.RAPIDAPI_MIN_INTERVAL_MS, 10) || 2 * 60 * 1000,
-  // Tunggu setelah jam rilis sebelum fetch 'actual' (default 45 detik)
-  RAPIDAPI_RELEASE_DELAY_MS: parseInt(process.env.RAPIDAPI_RELEASE_DELAY_MS, 10) || 45 * 1000,
+  // Tunggu setelah jam rilis sebelum fetch 'actual' (default: 30 detik)
+  RELEASE_DELAY_MS: parseInt(process.env.RELEASE_DELAY_MS, 10) || 30 * 1000,
+  RAPIDAPI_RELEASE_DELAY_MS: parseInt(process.env.RAPIDAPI_RELEASE_DELAY_MS, 10) || parseInt(process.env.RELEASE_DELAY_MS, 10) || 30 * 1000,
   // Batas waktu menunggu 'actual' setelah jam rilis (default 10 menit)
   RAPIDAPI_RELEASE_WINDOW_MS: parseInt(process.env.RAPIDAPI_RELEASE_WINDOW_MS, 10) || 10 * 60 * 1000,
 

@@ -179,7 +179,7 @@ export function getThisAndNextWeekDateRange() {
 
 /**
  * Ekstrak jam & menit WIB dari event kalender hari ini.
- * Mengembalikan daftar jadwal rilis hari ini beserta cron expression H+1 menit setelah rilis.
+ * Mengembalikan daftar jadwal rilis hari ini beserta cron expression H+30 detik setelah rilis.
  */
 export function getTodayReleaseScheduleInfo(events = []) {
   const todayWIBStr = new Date().toLocaleDateString('sv-SE', { timeZone: config.TIMEZONE || 'Asia/Jakarta' });
@@ -206,13 +206,10 @@ export function getTodayReleaseScheduleInfo(events = []) {
     const minute = parseInt(match[2], 10);
     if (isNaN(hour) || isNaN(minute)) return;
 
-    // Trigger schedule Apify pada H+1 menit setelah jam rilis agar angka Actual sudah muncul
-    let triggerMinute = minute + 1;
-    let triggerHour = hour;
-    if (triggerMinute >= 60) {
-      triggerMinute = triggerMinute - 60;
-      triggerHour = (triggerHour + 1) % 24;
-    }
+    // Jadwal trigger Apify tepat lewat 30 detik setelah jam rilis (H+30 detik: detik ke-30)
+    const triggerSecond = 30;
+    const triggerMinute = minute;
+    const triggerHour = hour;
 
     const timeKey = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
     if (!slotMap.has(timeKey)) {
@@ -222,8 +219,9 @@ export function getTodayReleaseScheduleInfo(events = []) {
         minute,
         triggerHour,
         triggerMinute,
-        triggerTimeWIB: `${String(triggerHour).padStart(2, '0')}:${String(triggerMinute).padStart(2, '0')} WIB`,
-        cronExpression: `${triggerMinute} ${triggerHour} * * *`,
+        triggerSecond,
+        triggerTimeWIB: `${timeKey}:30 WIB`,
+        cronExpression: `${triggerSecond} ${triggerMinute} ${triggerHour} * * *`,
         timestamp: evt.timestamp,
         events: [],
         allReleased: true,
@@ -283,8 +281,8 @@ export function getTodayReleaseScheduleInfo(events = []) {
   // Cari slot yang belum rilis (actual === '-') dan waktunya belum lewat lebih dari 15 menit
   const upcomingSlots = slots.filter(s => !s.allReleased && (nowMs <= s.timestamp + 15 * 60 * 1000));
 
-  // Buat cron expression gabungan untuk slot terdekat / hari ini
-  let nextCronExpression = '31 19 * * 1-5'; // Default fallback jika tidak ada rilis
+  // Buat cron expression gabungan untuk slot terdekat / hari ini (tepat lewat 30 detik: second=30)
+  let nextCronExpression = '30 30 19 * * *'; // Default fallback lewat 30 detik (19:30:30 WIB)
   let hasActiveReleaseToday = false;
 
   if (upcomingSlots.length > 0) {
@@ -295,7 +293,7 @@ export function getTodayReleaseScheduleInfo(events = []) {
       .filter(s => s.triggerMinute === firstSlot.triggerMinute)
       .map(s => s.triggerHour);
     const uniqueHours = [...new Set(sameMinuteHours)].join(',');
-    nextCronExpression = `${firstSlot.triggerMinute} ${uniqueHours} * * *`;
+    nextCronExpression = `30 ${firstSlot.triggerMinute} ${uniqueHours} * * *`;
   } else if (slots.length > 0) {
     // Semua slot hari ini sudah punya actual atau sudah lewat
     const firstSlot = slots[0];
@@ -303,7 +301,7 @@ export function getTodayReleaseScheduleInfo(events = []) {
       .filter(s => s.triggerMinute === firstSlot.triggerMinute)
       .map(s => s.triggerHour);
     const uniqueHours = [...new Set(sameMinuteHours)].join(',');
-    nextCronExpression = `${firstSlot.triggerMinute} ${uniqueHours} * * *`;
+    nextCronExpression = `30 ${firstSlot.triggerMinute} ${uniqueHours} * * *`;
   }
 
   return {
@@ -319,7 +317,7 @@ export function getTodayReleaseScheduleInfo(events = []) {
 /**
  * Buat atau Update Schedule di Apify Console secara terprogram menggunakan ApifyClient & ScheduleActions:
  * 1. Schedule Senin Jam 02:00 WIB ("0 2 * * 1") -> Ambil Minggu Ini & Minggu Depan (two_weeks).
- * 2. Schedule Harian Jam Rilis ("forex-daily-release") -> Jalan otomatis tepat H+1 menit saat ada berita rilis hari itu.
+ * 2. Schedule Harian Jam Rilis ("forex-daily-release") -> Jalan otomatis tepat H+30 detik saat ada berita rilis hari itu.
  */
 export async function syncApifyCloudSchedules(calendarEvents = []) {
   if (!isApifyConfigured()) {
@@ -403,8 +401,8 @@ export async function syncApifyCloudSchedules(calendarEvents = []) {
       name: SCHEDULE_RELEASE_NAME,
       title: rawReleaseTitle.slice(0, 40),
       description: releaseInfo.hasActiveReleaseToday
-        ? `Otomatis mengambil data rilis USD HARI INI (${releaseInfo.todayDateWIB}) pada jam: ${upcomingLabels} (dateRange: today).`
-        : `Jadwal rilis berita USD hari ini (${releaseInfo.todayDateWIB}). Otomatis aktif saat jam rilis data hari ini.`,
+        ? `Otomatis mengambil data rilis USD HARI INI (${releaseInfo.todayDateWIB}) pada jam: ${upcomingLabels} (lewat 30 detik, dateRange: today).`
+        : `Jadwal rilis berita USD hari ini (${releaseInfo.todayDateWIB}). Otomatis aktif saat jam rilis data hari ini (lewat 30 detik).`,
       cronExpression: releaseInfo.nextCronExpression,
       timezone: 'Asia/Jakarta',
       isEnabled: releaseInfo.hasActiveReleaseToday,
@@ -788,8 +786,8 @@ export async function checkAndRunReleaseTimeSync(knownEvents = []) {
     return null;
   }
 
-  // Cari slot rilis hari ini yang sudah memasuki jendela rilis (H+45 detik s/d H+10 menit) dan masih ada event yang actual === '-'
-  const releaseDelayMs = 45 * 1000; // 45 detik setelah jam rilis
+  // Cari slot rilis hari ini yang sudah memasuki jendela rilis (H+30 detik s/d H+10 menit) dan masih ada event yang actual === '-'
+  const releaseDelayMs = config.RELEASE_DELAY_MS || 30 * 1000; // 30 detik setelah jam rilis
   const releaseWindowMs = 10 * 60 * 1000; // 10 menit jendela pantau rilis
 
   const dueSlot = releaseInfo.slots.find(slot => {

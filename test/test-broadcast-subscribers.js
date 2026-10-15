@@ -18,6 +18,26 @@ async function run() {
   const subs = await getActiveSubscribers();
   console.log('8. Active Supabase subscribers list:', subs);
 
+  const { getTodayReleaseScheduleInfo } = await import('../src/scraper/apifyCalendar.js');
+  const todayWIBStr = new Date().toLocaleDateString('sv-SE', { timeZone: config.TIMEZONE || 'Asia/Jakarta' });
+  const sampleEvents = [
+    {
+      itemType: 'calendar',
+      currency: 'USD',
+      date: todayWIBStr,
+      time: '19:30 WIB',
+      timestamp: Date.now() + 60000,
+      actual: '-',
+      forecast: '200K',
+      previous: '190K',
+      event: 'Core CPI m/m',
+    }
+  ];
+  const info = getTodayReleaseScheduleInfo(sampleEvents);
+  console.log('9. Sample slot triggerTimeWIB:', info.slots[0]?.triggerTimeWIB);
+  console.log('10. Sample slot cronExpression:', info.slots[0]?.cronExpression);
+  console.log('11. nextCronExpression:', info.nextCronExpression);
+
   if (targets.includes(String(config.TELEGRAM_CHAT_ID))) {
     console.log('SUCCESS: Primary TELEGRAM_CHAT_ID is included in broadcast targets.');
   } else {

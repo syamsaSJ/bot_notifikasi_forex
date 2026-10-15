@@ -30,6 +30,7 @@ import {
   syncApifyCloudSchedules,
   getApifyStatusAndSchedules,
   checkAndRunReleaseTimeSync,
+  getTodayReleaseScheduleInfo,
 } from './scraper/apifyCalendar.js';
 
 const log = createLogger('Main');
@@ -39,6 +40,7 @@ let isFirstStartupRun = true;
 let latestNewsCache = [];
 let lastWeeklyApifySyncKey = '';
 let lastDailyScheduleSyncDate = '';
+const plannedReleaseTimers = new Set();
 
 // SSE (Server-Sent Events) clients untuk 0-delay real-time push ke Web Dashboard
 const sseClients = new Set();
@@ -177,16 +179,6 @@ function startWebServer() {
     }
   });
 
-  // Active Telegram Subscribers List API
-  app.get('/api/subscribers', async (req, res) => {
-    try {
-      const subs = isSupabaseConfigured() ? await getActiveSubscribers() : [];
-      res.json({ total: subs.length, subscribers: subs });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
   // Webhook / External Trigger Endpoint (Dipanggil saat Schedule Apify selesai jalan)
   app.all(['/api/webhook/apify', '/api/trigger-scrape'], express.json(), async (req, res) => {
     log.info('🔔 External Webhook diterima! Memproses sync Supabase...');
@@ -281,7 +273,46 @@ async function mainTask() {
       syncApifyCloudSchedules(latestNewsCache).catch(e => log.debug(`Daily schedule sync error: ${e.message}`));
     }
 
-    // 5. DETEKSI JAM RILIS DATA HARI INI: Hanya aktif saat siklus normal (bukan startup) tepat di jam rilis berita USD!
+    // 5. JADWALKAN PRECISION TRIGGER H+30 DETIK SETELAH JAM RILIS:
+    if (latestNewsCache.length > 0) {
+      try {
+        const releaseInfo = getTodayReleaseScheduleInfo(latestNewsCache);
+        const nowMs = Date.now();
+        const releaseDelay = config.RELEASE_DELAY_MS || 30 * 1000; // 30 detik
+
+        (releaseInfo.slots || []).forEach(slot => {
+          if (!slot.allReleased && slot.timestamp) {
+            const targetTriggerMs = slot.timestamp + releaseDelay;
+            const diffMs = targetTriggerMs - nowMs;
+            const timerKey = `${releaseInfo.todayDateWIB}_${slot.releaseTimeWIB}`;
+
+            // Jika jadwal rilis tiba dalam rentang 65 detik ke depan (sebelum interval cron berikutnya)
+            if (diffMs > 0 && diffMs <= 65 * 1000 && !plannedReleaseTimers.has(timerKey)) {
+              plannedReleaseTimers.add(timerKey);
+              log.info(`⏱️ [TRIGGER H+30s] Menjadwalkan auto-check rilis ${slot.releaseTimeWIB} dalam ${Math.round(diffMs / 1000)} detik (tepat lewat 30 detik)...`);
+              setTimeout(async () => {
+                log.info(`⚡ [TRIGGER H+30s FIRED] Tepat lewat 30 detik setelah jam rilis ${slot.releaseTimeWIB}! Menjalankan sync data rilis...`);
+                try {
+                  if (isApifyConfigured()) {
+                    const released = await checkAndRunReleaseTimeSync(latestNewsCache);
+                    if (released && released.length > 0) {
+                      log.info(`⚡ [AUTO RELEASE SYNC] Data rilis ${slot.releaseTimeWIB} berhasil diambil (${released.length} items).`);
+                    }
+                  }
+                  await mainTask();
+                } catch (err) {
+                  log.error(`Error pada trigger 30s rilis ${slot.releaseTimeWIB}:`, err.message);
+                }
+              }, diffMs);
+            }
+          }
+        });
+      } catch (scheduleErr) {
+        log.debug(`Precision 30s schedule check error: ${scheduleErr.message}`);
+      }
+    }
+
+    // 6. DETEKSI JAM RILIS DATA HARI INI: Hanya aktif saat siklus normal (bukan startup) tepat di jam rilis berita USD!
     if (isApifyConfigured() && latestNewsCache.length > 0) {
       const releasedEvents = await checkAndRunReleaseTimeSync(latestNewsCache);
       if (releasedEvents && releasedEvents.length > 0) {
@@ -405,32 +436,6 @@ Setiap kali ada rilis berita high\\-impact atau sinyal fundamental BUY / SELL XA
       await sendMessage('✅ *Notifikasi XAU/USD berhasil diaktifkan kembali!*\\nAnda akan menerima sinyal & berita rilis secara otomatis\\.', chatId);
     } else {
       await sendMessage('⚠️ Database belum aktif, hubungi administrator.', chatId);
-    }
-  });
-
-  // /subscribers - Daftar subscriber aktif (khusus admin / info)
-  bot.onText(/\/subscribers/, async (msg) => {
-    const chatId = msg.chat.id.toString();
-    if (!isSupabaseConfigured()) {
-      await sendMessage('⚠️ Database Supabase belum terkonfigurasi\\.', chatId);
-      return;
-    }
-
-    try {
-      const subs = await getActiveSubscribers();
-      if (!subs || subs.length === 0) {
-        await sendMessage('ℹ️ Belum ada subscriber aktif di database\\.', chatId);
-        return;
-      }
-
-      const listText = subs.map((s, idx) => {
-        const u = s.username ? `@${escapeMarkdown(s.username)}` : escapeMarkdown(s.first_name || 'User');
-        return `${idx + 1}\\. ${u} \\(\`${s.chat_id}\`\\)`;
-      }).join('\\n');
-
-      await sendMessage(`👥 *Daftar Subscriber Aktif (${subs.length} orang):*\\n\\n${listText}`, chatId);
-    } catch (err) {
-      await sendMessage(`❌ Gagal mengambil daftar subscriber: ${escapeMarkdown(err.message)}`, chatId);
     }
   });
 
@@ -626,7 +631,7 @@ Setiap kali ada rilis berita high\\-impact atau sinyal fundamental BUY / SELL XA
 💰 *Saldo Kredit Apify:* ${saldoLine}
 📅 *Next Check:* ${escapeMarkdown(getNextRun())}
 
-_Ketik /subscribers untuk melihat daftar penerima notifikasi_
+_Ketik /apify atau /jadwal untuk detail lengkap jadwal & saldo Apify_
 ━━━━━━━━━━━━━━━━━━`;
 
     await sendMessage(statusMsg, chatId.toString());
@@ -646,7 +651,6 @@ _Ketik /subscribers untuk melihat daftar penerima notifikasi_
 /status \\- Cek status bot, jadwal & saldo Apify
 /stop \\- Berhenti berlangganan notifikasi otomatis
 /subscribe \\- Aktifkan kembali notifikasi otomatis
-/subscribers \\- Lihat daftar penerima notifikasi
 
 *Perintah Admin & Advanced:*
 /apify \\- Lihat jadwal Schedule Apify & Limit Saldo Apify
@@ -659,7 +663,7 @@ _Ketik /subscribers untuk melihat daftar penerima notifikasi_
     await sendMessage(helpMsg, chatId.toString());
   });
 
-  log.info('Bot commands registered: /start, /stop, /subscribe, /subscribers, /check, /today, /weekly, /apify, /jadwal, /syncschedule, /synccalendar, /logs, /status, /help');
+  log.info('Bot commands registered: /start, /stop, /subscribe, /check, /today, /weekly, /apify, /jadwal, /syncschedule, /synccalendar, /logs, /status, /help');
 }
 
 /**

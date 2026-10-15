@@ -97,7 +97,6 @@ bot script notif/
 | `/weekly` atau `/week` | Menampilkan jadwal lengkap kalender ekonomi minggu ini (WIB) |
 | `/stop` atau `/unsubscribe` | Berhenti menerima notifikasi otomatis |
 | `/subscribe` | Mengaktifkan kembali notifikasi otomatis |
-| `/subscribers` | Melihat daftar & jumlah penerima notifikasi aktif |
 | `/logs` | Cek status kesehatan scraper & 5 log error terakhir |
 | `/status` | Cek status bot, uptime server, dan jumlah subscriber aktif |
 | `/help` | Panduan bantuan penggunaan bot |
