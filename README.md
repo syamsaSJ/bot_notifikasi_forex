@@ -91,13 +91,17 @@ bot script notif/
 
 | Perintah | Fungsi & Deskripsi |
 |---|---|
-| `/start` | Sambutan & daftar perintah bot |
+| `/start` | Daftar otomatis & aktifkan penerimaan notifikasi sinyal |
 | `/check` | Mengambil berita & sinyal terpadu real-time secara instan |
 | `/today` | Menampilkan jadwal rilis berita & kalender ekonomi hari ini (WIB) |
 | `/weekly` atau `/week` | Menampilkan jadwal lengkap kalender ekonomi minggu ini (WIB) |
+| `/stop` atau `/unsubscribe` | Berhenti menerima notifikasi otomatis |
+| `/subscribe` | Mengaktifkan kembali notifikasi otomatis |
+| `/subscribers` | Melihat daftar & jumlah penerima notifikasi aktif |
 | `/logs` | Cek status kesehatan scraper & 5 log error terakhir |
-| `/status` | Cek status bot, uptime server, dan jadwal polling berikutnya |
+| `/status` | Cek status bot, uptime server, dan jumlah subscriber aktif |
 | `/help` | Panduan bantuan penggunaan bot |
+
 
 ---
 

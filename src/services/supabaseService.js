@@ -438,3 +438,132 @@ export async function getFeedFromSupabase() {
     return null;
   }
 }
+
+/**
+ * =========================================================================
+ * Manajemen Subscriber Telegram (Auto-subscribe via Supabase)
+ * =========================================================================
+ */
+
+/**
+ * Simpan atau perbarui data subscriber Telegram ke Supabase saat /start atau /subscribe.
+ * @param {Object} param0
+ * @param {string|number} param0.chatId
+ * @param {string} [param0.username]
+ * @param {string} [param0.firstName]
+ * @param {string} [param0.lastName]
+ */
+export async function addOrUpdateSubscriber({ chatId, username = '', firstName = '', lastName = '' }) {
+  if (!supabaseClient) return false;
+  try {
+    const { error } = await supabaseClient
+      .from('telegram_subscribers')
+      .upsert({
+        chat_id: String(chatId),
+        username: username || '',
+        first_name: firstName || '',
+        last_name: lastName || '',
+        is_active: true,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'chat_id' });
+
+    if (error) {
+      if (error.code === 'PGRST205' || error.message?.includes('schema cache') || error.message?.includes('does not exist')) {
+        log.warn('⚠️ Tabel telegram_subscribers belum dibuat di Supabase. Jalankan query SQL dari supabase_schema.sql di Supabase SQL Editor.');
+      } else {
+        log.warn(`Gagal simpan subscriber ${chatId}: ${error.message}`);
+      }
+      return false;
+    }
+
+    log.info(`👤 Subscriber baru / aktif terdaftar: ${chatId} (${username ? '@' + username : firstName || 'User'})`);
+    return true;
+  } catch (err) {
+    log.error('Error saat simpan subscriber:', err.message);
+    return false;
+  }
+}
+
+/**
+ * Non-aktifkan subscriber (misal saat /stop atau /unsubscribe).
+ * @param {string|number} chatId
+ */
+export async function unsubscribeSubscriber(chatId) {
+  if (!supabaseClient) return false;
+  try {
+    const { error } = await supabaseClient
+      .from('telegram_subscribers')
+      .update({
+        is_active: false,
+        updated_at: new Date().toISOString()
+      })
+      .eq('chat_id', String(chatId));
+
+    if (error) {
+      log.warn(`Gagal unsubscribe ${chatId}: ${error.message}`);
+      return false;
+    }
+
+    log.info(`🔕 Subscriber berhasil dinonaktifkan: ${chatId}`);
+    return true;
+  } catch (err) {
+    log.error('Error saat unsubscribe subscriber:', err.message);
+    return false;
+  }
+}
+
+/**
+ * Ambil daftar seluruh subscriber aktif untuk broadcast.
+ * @returns {Promise<Array<{ chat_id: string, username: string, first_name: string }>>}
+ */
+export async function getActiveSubscribers() {
+  if (!supabaseClient) return [];
+  try {
+    const { data, error } = await supabaseClient
+      .from('telegram_subscribers')
+      .select('chat_id, username, first_name, last_name')
+      .eq('is_active', true);
+
+    if (error) {
+      if (error.code === 'PGRST205' || error.message?.includes('schema cache') || error.message?.includes('does not exist')) {
+        // Tabel belum dibuat di Supabase, return empty
+        return [];
+      }
+      log.warn(`Gagal mengambil subscriber dari Supabase: ${error.message}`);
+      return [];
+    }
+
+    return data || [];
+  } catch (err) {
+    log.error('Error saat mengambil subscriber:', err.message);
+    return [];
+  }
+}
+
+/**
+ * Dapatkan total jumlah subscriber aktif.
+ * @returns {Promise<number>}
+ */
+export async function getSubscriberCount() {
+  if (!supabaseClient) return 0;
+  try {
+    const { count, error } = await supabaseClient
+      .from('telegram_subscribers')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', true);
+
+    if (error) return 0;
+    return count || 0;
+  } catch (err) {
+    return 0;
+  }
+}
+
+/**
+ * Tandai subscriber non-aktif jika bot diblokir atau chat ID tidak valid.
+ * @param {string|number} chatId
+ */
+export async function markSubscriberInactive(chatId) {
+  return unsubscribeSubscriber(chatId);
+}
+

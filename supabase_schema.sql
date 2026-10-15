@@ -59,3 +59,28 @@ CREATE POLICY "Allow public insert/update calendar" ON public.economic_calendar 
 
 CREATE POLICY "Allow public read access news" ON public.news_headlines FOR SELECT USING (true);
 CREATE POLICY "Allow public insert/update news" ON public.news_headlines FOR ALL USING (true);
+
+-- =========================================================================
+-- 3. Tabel Pelanggan Notifikasi Telegram (Telegram Subscribers)
+-- Menyimpan siapa saja yang mengetik /start ke bot agar menerima broadcast sinyal & rilis berita
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS public.telegram_subscribers (
+    chat_id TEXT PRIMARY KEY,
+    username TEXT,
+    first_name TEXT,
+    last_name TEXT,
+    is_active BOOLEAN DEFAULT true,
+    subscribed_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexing untuk filter subscriber aktif
+CREATE INDEX IF NOT EXISTS idx_subscribers_active ON public.telegram_subscribers (is_active);
+
+-- Row Level Security (RLS) - Izinkan baca, tulis, update & hapus untuk subscribers
+ALTER TABLE public.telegram_subscribers ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read access subscribers" ON public.telegram_subscribers FOR SELECT USING (true);
+CREATE POLICY "Allow public insert/update subscribers" ON public.telegram_subscribers FOR ALL USING (true);
+CREATE POLICY "Allow public delete subscribers" ON public.telegram_subscribers FOR DELETE USING (true);
+

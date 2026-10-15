@@ -13,7 +13,17 @@ import { generateSignalCardImage } from './formatter/imageGenerator.js';
 import { startScheduler, getNextRun } from './scheduler/cronJob.js';
 import { getScrapeLogs, getSourceHealth } from './utils/scrapeLogger.js';
 import { initBrowser, closeBrowser } from './scraper/puppeteerScraper.js';
-import { getFeedFromSupabase, isSupabaseConfigured, cleanLegacyDuplicateCalendarEntries, hasNextWeekCalendarInSupabase, hasThisWeekCalendarInSupabase } from './services/supabaseService.js';
+import {
+  getFeedFromSupabase,
+  isSupabaseConfigured,
+  cleanLegacyDuplicateCalendarEntries,
+  hasNextWeekCalendarInSupabase,
+  hasThisWeekCalendarInSupabase,
+  addOrUpdateSubscriber,
+  unsubscribeSubscriber,
+  getActiveSubscribers,
+  getSubscriberCount,
+} from './services/supabaseService.js';
 import {
   syncApifyCalendar,
   isApifyConfigured,
@@ -162,6 +172,16 @@ function startWebServer() {
       const health = getSourceHealth();
       const logs = getScrapeLogs(30);
       res.json({ health, logs });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Active Telegram Subscribers List API
+  app.get('/api/subscribers', async (req, res) => {
+    try {
+      const subs = isSupabaseConfigured() ? await getActiveSubscribers() : [];
+      res.json({ total: subs.length, subscribers: subs });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -328,25 +348,90 @@ function setupBotCommands() {
   const bot = getBot();
   if (!bot) return;
 
-  // /start
+  // /start - Registrasi & Langganan Notifikasi Otomatis
   bot.onText(/\/start/, async (msg) => {
-    const chatId = msg.chat.id;
+    const chatId = msg.chat.id.toString();
+    const user = msg.from || {};
+
+    if (isSupabaseConfigured()) {
+      await addOrUpdateSubscriber({
+        chatId,
+        username: user.username || '',
+        firstName: user.first_name || '',
+        lastName: user.last_name || '',
+      });
+    }
+
+    const userName = user.first_name ? ` ${escapeMarkdown(user.first_name)}` : '';
     const welcome = `🤖 *Bot XAU/USD Signal Unified Realtime*
 
-Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara realtime (polling 1-menit) dengan konversi waktu WIB yang presisi.
+Halo${userName}! 👋
+✅ *Anda telah terdaftar sebagai penerima notifikasi otomatis!*
+Setiap kali ada rilis berita high\\-impact atau sinyal fundamental BUY / SELL XAU/USD \\(Gold\\), Anda akan otomatis menerima notifikasi langsung di chat ini\\.
 
-*Perintah:*
+*Daftar Perintah:*
 /check \\- Cek berita & sinyal terbaru sekarang
-/today \\- Jadwal berita harian WIB
+/today \\- Jadwal kalender & berita hari ini (WIB)
 /weekly \\- Jadwal kalender ekonomi minggu ini (WIB)
-/apify \\- Cek jadwal Schedule Apify & Limit Saldo Kredit Apify
-/syncschedule \\- Update otomatis Schedule di Cloud Apify
-/synccalendar \\- Sinkronisasi manual kalender ekonomi via Apify
-/logs \\- Status & log error scraping
-/status \\- Status server bot & saldo Apify
-/help \\- Bantuan`;
+/status \\- Status bot & jumlah subscriber aktif
+/stop \\- Berhenti berlangganan notifikasi otomatis
+/help \\- Bantuan & daftar perintah`;
 
-    await sendMessage(welcome, chatId.toString());
+    await sendMessage(welcome, chatId);
+  });
+
+  // /stop & /unsubscribe - Berhenti menerima notifikasi otomatis
+  bot.onText(/\/(stop|unsubscribe)/, async (msg) => {
+    const chatId = msg.chat.id.toString();
+    if (isSupabaseConfigured()) {
+      await unsubscribeSubscriber(chatId);
+      await sendMessage('🔕 *Anda telah berhenti berlangganan notifikasi otomatis XAU/USD\\.*\\n\\nAnda tidak akan menerima broadcast notifikasi lagi\\. Ketik /start atau /subscribe kapan saja untuk mengaktifkan kembali\\.', chatId);
+    } else {
+      await sendMessage('⚠️ Database belum aktif, hubungi administrator.', chatId);
+    }
+  });
+
+  // /subscribe - Aktifkan kembali notifikasi
+  bot.onText(/\/subscribe/, async (msg) => {
+    const chatId = msg.chat.id.toString();
+    const user = msg.from || {};
+    if (isSupabaseConfigured()) {
+      await addOrUpdateSubscriber({
+        chatId,
+        username: user.username || '',
+        firstName: user.first_name || '',
+        lastName: user.last_name || '',
+      });
+      await sendMessage('✅ *Notifikasi XAU/USD berhasil diaktifkan kembali!*\\nAnda akan menerima sinyal & berita rilis secara otomatis\\.', chatId);
+    } else {
+      await sendMessage('⚠️ Database belum aktif, hubungi administrator.', chatId);
+    }
+  });
+
+  // /subscribers - Daftar subscriber aktif (khusus admin / info)
+  bot.onText(/\/subscribers/, async (msg) => {
+    const chatId = msg.chat.id.toString();
+    if (!isSupabaseConfigured()) {
+      await sendMessage('⚠️ Database Supabase belum terkonfigurasi\\.', chatId);
+      return;
+    }
+
+    try {
+      const subs = await getActiveSubscribers();
+      if (!subs || subs.length === 0) {
+        await sendMessage('ℹ️ Belum ada subscriber aktif di database\\.', chatId);
+        return;
+      }
+
+      const listText = subs.map((s, idx) => {
+        const u = s.username ? `@${escapeMarkdown(s.username)}` : escapeMarkdown(s.first_name || 'User');
+        return `${idx + 1}\\. ${u} \\(\`${s.chat_id}\`\\)`;
+      }).join('\\n');
+
+      await sendMessage(`👥 *Daftar Subscriber Aktif (${subs.length} orang):*\\n\\n${listText}`, chatId);
+    } catch (err) {
+      await sendMessage(`❌ Gagal mengambil daftar subscriber: ${escapeMarkdown(err.message)}`, chatId);
+    }
   });
 
   // /check - Manual check
@@ -521,12 +606,19 @@ Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara real
       saldoLine = `\\$${escapeMarkdown(apifyStat.limits.usedUsd)} / \\$${escapeMarkdown(apifyStat.limits.maxUsd)} \\(Sisa: \\$${escapeMarkdown(apifyStat.limits.remainingUsd)}\\)`;
     }
 
+    let subscriberLine = '1 (Local .env)';
+    if (isSupabaseConfigured()) {
+      const subCount = await getSubscriberCount();
+      subscriberLine = `${subCount} orang (Supabase Database)`;
+    }
+
     const statusMsg = `🤖 *STATUS BOT & SCHEDULER*
 ━━━━━━━━━━━━━━━━━━
 
 ✅ *Status Bot:* Online & Realtime
 ⏰ *Waktu WIB:* ${escapeMarkdown(now)}
 ⏱️ *Uptime:* ${hours}h ${minutes}m
+👥 *Subscriber Aktif:* ${escapeMarkdown(subscriberLine)}
 📊 *Notifikasi Terkirim:* ${sentNotifications.size}
 ⚡ *Interval Polling:* Setiap 1 Menit \\(Free Headlines & SSE\\)
 🗓️ *Schedule Mingguan:* Setiap Senin 02:00 WIB \\(Minggu Ini & Depan\\)
@@ -534,7 +626,7 @@ Bot aktif mendeteksi rilis kalender ekonomi & headline pasar XAU/USD secara real
 💰 *Saldo Kredit Apify:* ${saldoLine}
 📅 *Next Check:* ${escapeMarkdown(getNextRun())}
 
-_Ketik /apify atau /jadwal untuk detail lengkap jadwal & saldo Apify_
+_Ketik /subscribers untuk melihat daftar penerima notifikasi_
 ━━━━━━━━━━━━━━━━━━`;
 
     await sendMessage(statusMsg, chatId.toString());
@@ -546,22 +638,28 @@ _Ketik /apify atau /jadwal untuk detail lengkap jadwal & saldo Apify_
     const helpMsg = `📖 *BANTUAN BOT XAU/USD REALTIME*
 ━━━━━━━━━━━━━━━━━━
 
-*Perintah:*
+*Perintah Utama:*
+/start \\- Daftar & aktifkan notifikasi otomatis
 /check \\- Cek berita terpadu & sinyal sekarang
 /today \\- Lihat jadwal berita hari ini (WIB)
 /weekly \\- Lihat jadwal kalender ekonomi minggu ini (WIB)
+/status \\- Cek status bot, jadwal & saldo Apify
+/stop \\- Berhenti berlangganan notifikasi otomatis
+/subscribe \\- Aktifkan kembali notifikasi otomatis
+/subscribers \\- Lihat daftar penerima notifikasi
+
+*Perintah Admin & Advanced:*
 /apify \\- Lihat jadwal Schedule Apify & Limit Saldo Apify
 /jadwal \\- Lihat jadwal rilis data & Schedule Apify
 /syncschedule \\- Update otomatis jadwal Schedule di Apify Console
 /synccalendar \\- Sync manual kalender Apify (/synccalendar this_week atau two_weeks)
 /logs \\- Cek status kesehatan scraper & log error
-/status \\- Cek status bot, jadwal & saldo Apify
 /help \\- Tampilkan bantuan ini`;
 
     await sendMessage(helpMsg, chatId.toString());
   });
 
-  log.info('Bot commands registered: /start, /check, /today, /weekly, /apify, /jadwal, /syncschedule, /synccalendar, /logs, /status, /help');
+  log.info('Bot commands registered: /start, /stop, /subscribe, /subscribers, /check, /today, /weekly, /apify, /jadwal, /syncschedule, /synccalendar, /logs, /status, /help');
 }
 
 /**
