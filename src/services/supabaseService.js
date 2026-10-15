@@ -57,6 +57,7 @@ export async function clearEconomicCalendarTable() {
 export async function cleanLegacyDuplicateCalendarEntries() {
   if (!supabaseClient) return false;
   try {
+    // 1. Hapus entri legacy ff_json_ dan ff_xml_
     const { error: err1 } = await supabaseClient
       .from('economic_calendar')
       .delete()
@@ -69,13 +70,94 @@ export async function cleanLegacyDuplicateCalendarEntries() {
 
     if (err1 || err2) {
       log.warn(`Gagal membersihkan data legacy ff_json/ff_xml: ${err1?.message || err2?.message}`);
-      return false;
     }
 
-    log.info('🧹 Berhasil membersihkan seluruh entri duplikat legacy (ff_json / ff_xml) dari Supabase.');
+    // 2. Deteksi & bersihkan entri duplikat lintas tanggal akibat offset waktu (misal run Apify lama vs Puppeteer baru)
+    const { data: allCal, error: fetchErr } = await supabaseClient
+      .from('economic_calendar')
+      .select('*')
+      .order('date', { ascending: true });
+
+    if (!fetchErr && Array.isArray(allCal) && allCal.length > 0) {
+      const norm = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const groups = new Map();
+
+      allCal.forEach(item => {
+        const key = (item.currency || 'USD') + '__' + norm(item.event);
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(item);
+      });
+
+      const idsToDelete = [];
+      for (const [key, items] of groups.entries()) {
+        if (items.length > 1) {
+          if (key.includes('imfmeetings')) continue; // IMF meetings adalah event multi-hari yang sah
+
+          for (let i = 0; i < items.length; i++) {
+            for (let j = i + 1; j < items.length; j++) {
+              const item1 = items[i];
+              const item2 = items[j];
+              const d1 = new Date(item1.date).getTime();
+              const d2 = new Date(item2.date).getTime();
+              const diffDays = Math.abs(d2 - d1) / (1000 * 60 * 60 * 24);
+
+              // Jika selisih hari <= 1 hari dan salah satunya adalah event tentative / all-day
+              if (diffDays <= 1) {
+                const isTentative1 = !item1.time || item1.time === '-' || /all day|tentative/i.test(item1.time);
+                const isTentative2 = !item2.time || item2.time === '-' || /all day|tentative/i.test(item2.time);
+
+                if (isTentative1 || isTentative2) {
+                  let keepItem = item1;
+                  let deleteItem = item2;
+                  
+                  // Utamakan entri yang memiliki jam WIB spesifik/presisi hasil konversi dateline
+                  const hasTime1 = item1.time && item1.time !== '-' && !/all day/i.test(item1.time);
+                  const hasTime2 = item2.time && item2.time !== '-' && !/all day/i.test(item2.time);
+
+                  if (hasTime2 && !hasTime1) {
+                    keepItem = item2;
+                    deleteItem = item1;
+                  } else if (hasTime1 && !hasTime2) {
+                    keepItem = item1;
+                    deleteItem = item2;
+                  }
+
+                  const updates = {};
+                  if ((!keepItem.actual || keepItem.actual === '-') && deleteItem.actual && deleteItem.actual !== '-') {
+                    updates.actual = deleteItem.actual;
+                    updates.actual_value = deleteItem.actual_value;
+                  }
+                  if ((!keepItem.forecast || keepItem.forecast === '-') && deleteItem.forecast && deleteItem.forecast !== '-') {
+                    updates.forecast = deleteItem.forecast;
+                    updates.forecast_value = deleteItem.forecast_value;
+                  }
+                  if ((!keepItem.previous || keepItem.previous === '-') && deleteItem.previous && deleteItem.previous !== '-') {
+                    updates.previous = deleteItem.previous;
+                    updates.previous_value = deleteItem.previous_value;
+                  }
+
+                  if (Object.keys(updates).length > 0) {
+                    await supabaseClient.from('economic_calendar').update(updates).eq('id', keepItem.id);
+                  }
+
+                  idsToDelete.push(deleteItem.id);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (idsToDelete.length > 0) {
+        log.info(`🧹 Menghapus ${idsToDelete.length} entri duplikat kalender lintas-tanggal dari Supabase: ${idsToDelete.join(', ')}`);
+        await supabaseClient.from('economic_calendar').delete().in('id', idsToDelete);
+      }
+    }
+
+    log.info('🧹 Berhasil membersihkan seluruh entri duplikat dari Supabase.');
     return true;
   } catch (err) {
-    log.error('Error saat membersihkan entri legacy ff_json/ff_xml:', err.message);
+    log.error('Error saat membersihkan entri legacy/duplikat di Supabase:', err.message);
     return false;
   }
 }
@@ -307,6 +389,65 @@ export async function saveUnifiedFeedToSupabase(items) {
             }
           }
         });
+      }
+
+      // Deteksi & bersihkan secara proaktif duplikat sibling lintas-tanggal (misal legacy Apify offset +1 hari)
+      const siblingIdsToCheck = [];
+      const siblingTargetMap = new Map();
+
+      uniqueCalRows.forEach(row => {
+        const isTentative = !row.time || row.time === '-' || /all day|tentative/i.test(row.time_wib || '');
+        if (isTentative && row.date) {
+          const cleanEvt = normalizeCalendarTitleKey(row.event || row.title || '');
+          const d = new Date(row.date);
+          const nextD = new Date(d);
+          nextD.setUTCDate(d.getUTCDate() + 1);
+          const nextDateStr = nextD.toISOString().split('T')[0];
+          const nextId = `cal_${nextDateStr}_${row.currency}_${cleanEvt}`;
+          siblingIdsToCheck.push(nextId);
+          siblingTargetMap.set(nextId, row);
+
+          const prevD = new Date(d);
+          prevD.setUTCDate(d.getUTCDate() - 1);
+          const prevDateStr = prevD.toISOString().split('T')[0];
+          const prevId = `cal_${prevDateStr}_${row.currency}_${cleanEvt}`;
+          siblingIdsToCheck.push(prevId);
+          siblingTargetMap.set(prevId, row);
+        }
+      });
+
+      if (siblingIdsToCheck.length > 0) {
+        const { data: siblings } = await supabaseClient
+          .from('economic_calendar')
+          .select('*')
+          .in('id', siblingIdsToCheck);
+
+        if (siblings && siblings.length > 0) {
+          const delIds = [];
+          siblings.forEach(s => {
+            const targetRow = siblingTargetMap.get(s.id);
+            if (targetRow) {
+              if ((!targetRow.actual || targetRow.actual === '-') && s.actual && s.actual !== '-') {
+                targetRow.actual = s.actual;
+                targetRow.actual_value = s.actual_value;
+              }
+              if ((!targetRow.forecast || targetRow.forecast === '-') && s.forecast && s.forecast !== '-') {
+                targetRow.forecast = s.forecast;
+                targetRow.forecast_value = s.forecast_value;
+              }
+              if ((!targetRow.previous || targetRow.previous === '-') && s.previous && s.previous !== '-') {
+                targetRow.previous = s.previous;
+                targetRow.previous_value = s.previous_value;
+              }
+              delIds.push(s.id);
+            }
+          });
+
+          if (delIds.length > 0) {
+            log.info(`🧹 Proaktif membersihkan ${delIds.length} entri duplikat sibling kalender: ${delIds.join(', ')}`);
+            await supabaseClient.from('economic_calendar').delete().in('id', delIds);
+          }
+        }
       }
 
       const { error: calErr } = await supabaseClient

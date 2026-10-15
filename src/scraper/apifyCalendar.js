@@ -344,46 +344,17 @@ export async function syncApifyCloudSchedules(calendarEvents = []) {
     const { items: existingSchedules = [] } = await client.schedules().list();
     const { startDate, endDate } = getThisAndNextWeekDateRange();
 
-    // 1. KONFIGURASI SCHEDULE SENIN JAM 02:00 WIB (Minggu Ini + Minggu Depan)
-    const weeklyInput = {
-      currencies: ['USD'],
-      dateRange: 'custom',
-      startDate,
-      endDate,
-      timeZone: 'UTC',
-      maxItems: 400,
-    };
-
-    const weeklySchedulePayload = {
-      name: SCHEDULE_WEEKLY_NAME,
-      title: 'Forex 2 Minggu (Senin 02:00 WIB)'.slice(0, 40),
-      description: `Otomatis mengambil jadwal kalender ekonomi USD untuk Minggu Ini & Minggu Depan (${startDate} s/d ${endDate}) setiap hari Senin pukul 02:00 WIB.`,
-      cronExpression: '0 2 * * 1', // Setiap hari Senin jam 02:00 WIB
-      timezone: 'Asia/Jakarta',
-      isEnabled: true,
-      isExclusive: false,
-      actions: [
-        {
-          type: ScheduleActions.RunActor,
-          actorId: resolvedActorId,
-          runInput: {
-            body: JSON.stringify(weeklyInput),
-            contentType: 'application/json; charset=utf-8',
-          },
-        },
-      ],
-    };
-
+    // 1. NONAKTIFKAN SCHEDULE MINGGUAN DI APIFY ($0 Cost, kalender 2 minggu diambil via Puppeteer Stealth tanpa limit)
     let weeklySchedule = existingSchedules.find(s => s.name === SCHEDULE_WEEKLY_NAME || (s.title && s.title.includes('Forex 2 Minggu')));
-    if (weeklySchedule) {
-      weeklySchedule = await client.schedule(weeklySchedule.id).update(weeklySchedulePayload);
-      log.info(`✅ [APIFY SCHEDULE] Schedule Senin 02:00 WIB berhasil di-update (ID: ${weeklySchedule.id})`);
-    } else {
-      weeklySchedule = await client.schedules().create(weeklySchedulePayload);
-      log.info(`🚀 [APIFY SCHEDULE] Schedule Senin 02:00 WIB berhasil dibuat (ID: ${weeklySchedule.id})`);
+    if (weeklySchedule && weeklySchedule.isEnabled) {
+      await client.schedule(weeklySchedule.id).update({
+        isEnabled: false,
+        description: `Dinonaktifkan otomatis: Pengambilan kalender 2 minggu dialihkan ke Puppeteer Stealth lokal ($0 Cost, tanpa batas limit Apify).`,
+      }).catch(e => log.debug(`Disable weekly schedule note: ${e.message}`));
+      log.info(`ℹ️ [APIFY SCHEDULE] Schedule mingguan di Apify dinonaktifkan (digantikan Puppeteer Stealth tanpa batas limit).`);
     }
 
-    // 2. KONFIGURASI SCHEDULE JAM RILIS DATA HARI INI (HANYA HARI ITU AJA, BUKAN MINGGUAN)
+    // 2. KONFIGURASI SCHEDULE JAM RILIS DATA HARI INI (HANYA HARI ITU AJA SESUAI JADWAL RILIS)
     const sourceEvents = (calendarEvents && calendarEvents.length > 0) ? calendarEvents : (cache.data || []);
     const releaseInfo = getTodayReleaseScheduleInfo(sourceEvents);
 

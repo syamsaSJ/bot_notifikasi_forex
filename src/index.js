@@ -12,7 +12,7 @@ import { formatMessage, formatDailySummary, formatWeeklySummary, formatHeadlineD
 import { generateSignalCardImage } from './formatter/imageGenerator.js';
 import { startScheduler, getNextRun } from './scheduler/cronJob.js';
 import { getScrapeLogs, getSourceHealth } from './utils/scrapeLogger.js';
-import { initBrowser, closeBrowser } from './scraper/puppeteerScraper.js';
+import { initBrowser, closeBrowser, fetchForexFactoryCalendarPuppeteer } from './scraper/puppeteerScraper.js';
 import {
   getFeedFromSupabase,
   isSupabaseConfigured,
@@ -114,14 +114,21 @@ function startWebServer() {
   // Explicit Apify Calendar Sync Endpoint (Awal Minggu: 'two_weeks', Refresh: 'this_week')
   app.all('/api/calendar/sync', express.json(), async (req, res) => {
     try {
-      const scope = req.query.scope || req.body?.scope || 'this_week';
+      const scope = req.query.scope || req.body?.scope || 'two_weeks';
       const force = req.query.force === 'true' || req.body?.force === true;
-      log.info(`📅 Request sinkronisasi kalender Apify diterima (scope: ${scope}, force: ${force})`);
+      const provider = req.query.provider || req.body?.provider || 'puppeteer';
+      log.info(`📅 Request sinkronisasi kalender diterima (scope: ${scope}, provider: ${provider}, force: ${force})`);
 
-      const events = await syncApifyCalendar({ scope, force });
+      let events = [];
+      if (provider === 'apify' && isApifyConfigured()) {
+        events = await syncApifyCalendar({ scope, force });
+      } else {
+        events = await fetchForexFactoryCalendarPuppeteer({ scope, force });
+      }
+
       return res.json({
         success: true,
-        message: `Sinkronisasi Kalender Apify (${scope}) berhasil`,
+        message: `Sinkronisasi Kalender (${scope}) berhasil via ${provider}`,
         itemCount: events.length,
         timestamp: new Date().toISOString()
       });
@@ -178,15 +185,15 @@ function startWebServer() {
     }
   });
 
-  // Webhook / External Trigger Endpoint (Dipanggil saat Schedule Apify selesai jalan)
+  // Webhook / External Trigger Endpoint (Sinkronisasi kalender cepat & $0 cost)
   app.all(['/api/webhook/apify', '/api/trigger-scrape'], express.json(), async (req, res) => {
-    log.info('🔔 External Webhook diterima! Memproses sync Supabase...');
+    log.info('🔔 External Webhook / Trigger Scrape diterima! Memproses kalender...');
     try {
-      const scope = req.query.scope || req.body?.scope || 'this_week';
-      const events = await syncApifyCalendar({ scope, force: true });
+      const scope = req.query.scope || req.body?.scope || 'two_weeks';
+      const events = await fetchForexFactoryCalendarPuppeteer({ scope, force: true });
       return res.json({
         success: true,
-        message: 'Sync Supabase Berhasil',
+        message: 'Sync Kalender via Puppeteer Berhasil ($0 Cost)',
         scope,
         itemCount: events.length,
         timestamp: new Date().toISOString()
@@ -226,20 +233,20 @@ async function mainTask() {
     const todayDateWib = new Date().toLocaleDateString('sv-SE', { timeZone: config.TIMEZONE });
     const currentWeekKey = getCurrentWeekKey();
 
-    // 1. JADWAL OTOMATIS AWAL MINGGU (SETIAP HARI SENIN JAM >= 02:00 WIB): Scrape Minggu Ini & Next Week via Apify
-    if (dayOfWeekWib === 1 && hourWib >= 2 && lastWeeklyApifySyncKey !== currentWeekKey && isApifyConfigured()) {
+    // 1. JADWAL OTOMATIS AWAL MINGGU (SETIAP HARI SENIN JAM >= 02:00 WIB): Scrape Minggu Ini & Next Week via Puppeteer ($0 Cost, tanpa limit)
+    if (dayOfWeekWib === 1 && hourWib >= 2 && lastWeeklyApifySyncKey !== currentWeekKey) {
       const alreadyInSupabase = await hasNextWeekCalendarInSupabase();
       if (alreadyInSupabase) {
         lastWeeklyApifySyncKey = currentWeekKey;
-        log.info(`ℹ️ [SENIN 02:00 WIB CHECK] Jadwal kalender minggu depan sudah lengkap di Supabase. Melewati scrape ulang Apify ($0 Cost).`);
+        log.info(`ℹ️ [SENIN 02:00 WIB CHECK] Jadwal kalender minggu depan sudah lengkap di Supabase. Melewati scrape ulang ($0 Cost).`);
       } else {
-        log.info(`🗓️ [JADWAL SENIN 02:00 WIB] Menjalankan scrape Apify untuk Minggu Ini & Next Week (${currentWeekKey})...`);
+        log.info(`🗓️ [JADWAL SENIN 02:00 WIB] Menjalankan scrape Puppeteer Stealth untuk Minggu Ini & Next Week (${currentWeekKey})...`);
         try {
-          await syncApifyCalendar({ scope: 'two_weeks', force: true });
+          await fetchForexFactoryCalendarPuppeteer({ scope: 'two_weeks', force: true });
           lastWeeklyApifySyncKey = currentWeekKey;
-          log.info(`✅ [JADWAL SENIN 02:00 WIB] Kalender 2 minggu berhasil di-update ke Supabase!`);
-        } catch (apifyErr) {
-          log.error(`Gagal scrape Apify jadwal Senin: ${apifyErr.message}`);
+          log.info(`✅ [JADWAL SENIN 02:00 WIB] Kalender 2 minggu berhasil di-update via Puppeteer ke Supabase ($0 Cost)!`);
+        } catch (pupErr) {
+          log.error(`Gagal scrape Puppeteer jadwal Senin: ${pupErr.message}`);
         }
       }
     }
@@ -550,17 +557,17 @@ Setiap kali ada rilis berita high\\-impact atau sinyal fundamental BUY / SELL XA
     }
   });
 
-  // /synccalendar - Sinkronisasi manual kalender via Apify
+  // /synccalendar - Sinkronisasi manual kalender via Puppeteer Stealth ($0 Cost, tanpa batas limit)
   bot.onText(/\/synccalendar(?:\s+(this_week|two_weeks))?/, async (msg, match) => {
     const chatId = msg.chat.id;
-    const scope = match[1] || 'this_week';
-    await sendMessage(`⏳ _Memulai sinkronisasi Kalender Ekonomi via Apify (${scope === 'two_weeks' ? 'Minggu Ini & Next Week' : 'Minggu Ini'})..._`, chatId.toString());
+    const scope = match[1] || 'two_weeks';
+    await sendMessage(`⏳ _Memulai sinkronisasi Kalender Ekonomi via Puppeteer Stealth (${scope === 'two_weeks' ? 'Minggu Ini & Next Week' : 'Minggu Ini'})... ($0 Cost, Tanpa Kuota Limit)_`, chatId.toString());
 
     try {
-      const events = await syncApifyCalendar({ scope, force: true });
-      await sendMessage(`✅ *Sinkronisasi Apify Berhasil!*\nTotal: ${events.length} event kalender tersimpan rapi di database & jadwal rilis diperbarui.`, chatId.toString());
+      const events = await fetchForexFactoryCalendarPuppeteer({ scope, force: true });
+      await sendMessage(`✅ *Sinkronisasi Kalender Berhasil!*\nTotal: ${events.length} event USD untuk Minggu Ini & Minggu Depan tersimpan di database ($0 Cost, kuota Apify hemat & hanya dipakai saat jam rilis).`, chatId.toString());
     } catch (err) {
-      await sendMessage(`❌ Gagal sync Apify: ${escapeMarkdown(err.message)}`, chatId.toString());
+      await sendMessage(`❌ Gagal sync kalender: ${escapeMarkdown(err.message)}`, chatId.toString());
     }
   });
 
@@ -648,7 +655,6 @@ async function main() {
   log.info('  Bot XAU/USD Signal Unified Realtime Start  ');
   log.info('=============================================');
 
-  await initBrowser(); // Inisialisasi Puppeteer di awal agar selalu siap sedia
   startWebServer();
 
   // 1. Bersihkan seluruh data duplikat legacy (ff_json_ dan ff_xml_) dari database Supabase
@@ -656,17 +662,17 @@ async function main() {
     log.info('🧹 Memeriksa dan membersihkan duplikat legacy di database Supabase...');
     await cleanLegacyDuplicateCalendarEntries().catch(e => log.warn(`Legacy cleanup error: ${e.message}`));
 
-    // 2. Cek apakah database Supabase masih kosong kalender minggu ini
-    const hasThisWeek = await hasThisWeekCalendarInSupabase().catch(() => true);
-    if (!hasThisWeek && isApifyConfigured()) {
-      log.info('📌 Kalender minggu ini belum ada di Supabase. Menjalankan sinkronisasi awal Apify...');
-      await syncApifyCalendar({ scope: 'two_weeks' }).catch(e => log.warn(`Initial Apify sync error: ${e.message}`));
-    }
-
-    // 3. Muat data kalender dari Supabase & sinkronkan Schedule Apify (Senin 02:00 WIB + Jam Rilis Hari Ini)
+    // 2. Muat data kalender dari Supabase: jika sudah ada, Puppeteer dilewati (hanya berjalan Senin 02:00 WIB atau tombol Sync)
     const initialDbItems = await getFeedFromSupabase().catch(() => []);
     if (initialDbItems && initialDbItems.length > 0) {
       latestNewsCache = initialDbItems;
+      log.info(`📌 Menggunakan ${initialDbItems.length} data kalender dari Supabase (Puppeteer dilewati saat startup, hemat resource).`);
+    } else {
+      // Hanya jika Supabase benar-benar kosong (initial setup), lakukan scrape awal via Puppeteer
+      log.info('📌 Database Supabase kosong, inisialisasi awal Minggu Ini & Next Week via Puppeteer...');
+      await fetchForexFactoryCalendarPuppeteer({ scope: 'two_weeks', force: true }).catch(e => log.warn(`Initial Puppeteer sync error: ${e.message}`));
+      const seeded = await getFeedFromSupabase().catch(() => []);
+      if (seeded && seeded.length > 0) latestNewsCache = seeded;
     }
   }
 

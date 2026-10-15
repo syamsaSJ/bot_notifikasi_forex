@@ -560,19 +560,19 @@ if (btnRefresh) {
 if (btnSyncCalendar) {
   btnSyncCalendar.addEventListener('click', async () => {
     btnSyncCalendar.classList.add('loading');
-    showToast('⏳ Menyinkronkan kalender ekonomi via Apify... Mohon tunggu.');
+    showToast('⏳ Menyinkronkan kalender ekonomi via Puppeteer Stealth ($0 Cost)... Mohon tunggu.');
     try {
       const scope = (activeTime === 'next_week') ? 'two_weeks' : 'this_week';
       const res = await fetch(`/api/calendar/sync?scope=${scope}&force=true`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
-        showToast(`✅ Kalender Apify Berhasil Disinkronkan (${data.itemCount} items)!`);
+        showToast(`✅ Kalender Berhasil Disinkronkan (${data.itemCount} items) tanpa kuota limit!`);
         await fetchNewsData(false);
       } else {
         showToast(`⚠️ ${data.message || data.error}`, false);
       }
     } catch (e) {
-      showToast('❌ Gagal sinkronisasi kalender Apify: ' + e.message, false);
+      showToast('❌ Gagal sinkronisasi kalender: ' + e.message, false);
     } finally {
       btnSyncCalendar.classList.remove('loading');
     }
