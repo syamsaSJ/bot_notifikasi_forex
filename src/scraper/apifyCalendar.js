@@ -206,10 +206,13 @@ export function getTodayReleaseScheduleInfo(events = []) {
     const minute = parseInt(match[2], 10);
     if (isNaN(hour) || isNaN(minute)) return;
 
-    // Jadwal trigger Apify tepat lewat 30 detik setelah jam rilis (H+30 detik: detik ke-30)
-    const triggerSecond = 30;
-    const triggerMinute = minute;
-    const triggerHour = hour;
+    // Trigger schedule Apify pada H+1 menit setelah jam rilis agar angka Actual sudah muncul
+    let triggerMinute = minute + 1;
+    let triggerHour = hour;
+    if (triggerMinute >= 60) {
+      triggerMinute = triggerMinute - 60;
+      triggerHour = (triggerHour + 1) % 24;
+    }
 
     const timeKey = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
     if (!slotMap.has(timeKey)) {
@@ -219,9 +222,8 @@ export function getTodayReleaseScheduleInfo(events = []) {
         minute,
         triggerHour,
         triggerMinute,
-        triggerSecond,
-        triggerTimeWIB: `${timeKey}:30 WIB`,
-        cronExpression: `${triggerSecond} ${triggerMinute} ${triggerHour} * * *`,
+        triggerTimeWIB: `${String(triggerHour).padStart(2, '0')}:${String(triggerMinute).padStart(2, '0')} WIB`,
+        cronExpression: `${triggerMinute} ${triggerHour} * * *`,
         timestamp: evt.timestamp,
         events: [],
         allReleased: true,
@@ -281,8 +283,8 @@ export function getTodayReleaseScheduleInfo(events = []) {
   // Cari slot yang belum rilis (actual === '-') dan waktunya belum lewat lebih dari 15 menit
   const upcomingSlots = slots.filter(s => !s.allReleased && (nowMs <= s.timestamp + 15 * 60 * 1000));
 
-  // Buat cron expression gabungan untuk slot terdekat / hari ini (tepat lewat 30 detik: second=30)
-  let nextCronExpression = '30 30 19 * * *'; // Default fallback lewat 30 detik (19:30:30 WIB)
+  // Buat cron expression gabungan untuk slot terdekat / hari ini (H+1 menit)
+  let nextCronExpression = '31 19 * * 1-5'; // Default fallback jika tidak ada rilis
   let hasActiveReleaseToday = false;
 
   if (upcomingSlots.length > 0) {
@@ -293,7 +295,7 @@ export function getTodayReleaseScheduleInfo(events = []) {
       .filter(s => s.triggerMinute === firstSlot.triggerMinute)
       .map(s => s.triggerHour);
     const uniqueHours = [...new Set(sameMinuteHours)].join(',');
-    nextCronExpression = `30 ${firstSlot.triggerMinute} ${uniqueHours} * * *`;
+    nextCronExpression = `${firstSlot.triggerMinute} ${uniqueHours} * * *`;
   } else if (slots.length > 0) {
     // Semua slot hari ini sudah punya actual atau sudah lewat
     const firstSlot = slots[0];
@@ -301,7 +303,7 @@ export function getTodayReleaseScheduleInfo(events = []) {
       .filter(s => s.triggerMinute === firstSlot.triggerMinute)
       .map(s => s.triggerHour);
     const uniqueHours = [...new Set(sameMinuteHours)].join(',');
-    nextCronExpression = `30 ${firstSlot.triggerMinute} ${uniqueHours} * * *`;
+    nextCronExpression = `${firstSlot.triggerMinute} ${uniqueHours} * * *`;
   }
 
   return {
@@ -317,7 +319,7 @@ export function getTodayReleaseScheduleInfo(events = []) {
 /**
  * Buat atau Update Schedule di Apify Console secara terprogram menggunakan ApifyClient & ScheduleActions:
  * 1. Schedule Senin Jam 02:00 WIB ("0 2 * * 1") -> Ambil Minggu Ini & Minggu Depan (two_weeks).
- * 2. Schedule Harian Jam Rilis ("forex-daily-release") -> Jalan otomatis tepat H+30 detik saat ada berita rilis hari itu.
+ * 2. Schedule Harian Jam Rilis ("forex-daily-release") -> Jalan otomatis tepat H+1 menit saat ada berita rilis hari itu.
  */
 export async function syncApifyCloudSchedules(calendarEvents = []) {
   if (!isApifyConfigured()) {
@@ -786,8 +788,8 @@ export async function checkAndRunReleaseTimeSync(knownEvents = []) {
     return null;
   }
 
-  // Cari slot rilis hari ini yang sudah memasuki jendela rilis (H+30 detik s/d H+10 menit) dan masih ada event yang actual === '-'
-  const releaseDelayMs = config.RELEASE_DELAY_MS || 30 * 1000; // 30 detik setelah jam rilis
+  // Cari slot rilis hari ini yang sudah memasuki jendela rilis (H+1 menit s/d H+10 menit) dan masih ada event yang actual === '-'
+  const releaseDelayMs = config.RELEASE_DELAY_MS || 60 * 1000; // 1 menit (60 detik) setelah jam rilis
   const releaseWindowMs = 10 * 60 * 1000; // 10 menit jendela pantau rilis
 
   const dueSlot = releaseInfo.slots.find(slot => {
@@ -810,19 +812,23 @@ export async function checkAndRunReleaseTimeSync(knownEvents = []) {
   const client = new ApifyClient({ token });
   const actorId = config.APIFY_ACTOR_ID || 'silentflow/forexfactory-scraper';
 
-  // 2. CEK STATUS RUN APIFY CLOUD: Jangan jalankan run baru jika Schedule Cloud sedang/baru berjalan!
+  // 2. CEK STATUS RUN APIFY CLOUD:
+  // Jika Schedule Apify Cloud sudah / sedang berjalan, CUKUP TUNGGU & AMBIL DATASETNYA ($0 Cost).
+  // JANGAN jalankan API live run baru yang membuat run ganda!
+  let hasActiveOrRecentCloudRun = false;
   try {
-    const recentRuns = await client.runs().list({ limit: 1, desc: true });
+    const recentRuns = await client.runs().list({ limit: 3, desc: true });
     const latestRun = recentRuns.items?.[0];
 
     if (latestRun) {
       const runStartedMs = new Date(latestRun.startedAt).getTime();
-      const isRecent = (now - runStartedMs) <= (5 * 60 * 1000); // Run terjadi dalam 5 menit terakhir
+      const isRecent = (now - runStartedMs) <= (6 * 60 * 1000); // Run terjadi dalam 6 menit terakhir
 
-      // Kasus A: Schedule Apify Cloud SEDANG RUNNING -> Tunggu sampai selesai (cegah double run!)
-      if (latestRun.status === 'RUNNING' && isRecent) {
-        log.info(`⏳ [APIFY SCHEDULE ACTIVE] Terdeteksi run Apify Cloud sedang berjalan (${latestRun.id}). Menunggu hasil selesai ($0 Cost)...`);
-        const finishedRun = await client.run(latestRun.id).waitForFinish({ waitSecs: 35 });
+      // Kasus A: Schedule Apify Cloud SEDANG READY / RUNNING -> Tunggu sampai selesai (cegah double run!)
+      if ((latestRun.status === 'RUNNING' || latestRun.status === 'READY') && isRecent) {
+        hasActiveOrRecentCloudRun = true;
+        log.info(`⏳ [APIFY SCHEDULE ACTIVE] Terdeteksi run Apify Cloud sedang berjalan (${latestRun.id}, status: ${latestRun.status}). Menunggu hasil selesai ($0 Cost, cegah double run)...`);
+        const finishedRun = await client.run(latestRun.id).waitForFinish({ waitSecs: 45 });
         if (finishedRun && finishedRun.defaultDatasetId) {
           const { items } = await client.dataset(finishedRun.defaultDatasetId).listItems();
           if (Array.isArray(items) && items.length > 0) {
@@ -833,30 +839,26 @@ export async function checkAndRunReleaseTimeSync(knownEvents = []) {
             cache.data = merged;
             cache.timestamp = now;
             syncedReleaseKeys.add(slotSyncKey);
-            syncApifyCloudSchedules(merged).catch(() => {});
             return merged;
           }
         }
+        syncedReleaseKeys.add(slotSyncKey);
+        return null;
       }
 
-      // Kasus B: Schedule Apify Cloud BARU SAJA SUCCEEDED (< 3 menit yang lalu) -> Ambil datasetnya langsung!
+      // Kasus B: Schedule Apify Cloud BARU SAJA SUCCEEDED (< 6 menit yang lalu) -> Ambil datasetnya langsung!
       if (latestRun.status === 'SUCCEEDED' && isRecent && latestRun.defaultDatasetId) {
+        hasActiveOrRecentCloudRun = true;
         const { items } = await client.dataset(latestRun.defaultDatasetId).listItems();
         if (Array.isArray(items) && items.length > 0) {
+          log.info(`✅ [APIFY $0 SYNC] Data Actual jam ${dueSlot.releaseTimeWIB} (${pendingNames}) berhasil didapat dari run Apify Cloud terakhir ($0 Cost, tanpa double run)!`);
           const formatted = deduplicateCalendarItems(items.map((it, idx) => formatApifyItem(it, idx)));
-          const updatedSlotInfo = getTodayReleaseScheduleInfo(formatted);
-          const matchingSlot = updatedSlotInfo.slots.find(s => s.releaseTimeWIB === dueSlot.releaseTimeWIB);
-
-          if (matchingSlot && matchingSlot.allReleased) {
-            log.info(`✅ [APIFY $0 SYNC] Data Actual jam ${dueSlot.releaseTimeWIB} (${pendingNames}) berhasil didapat dari run Apify Cloud terakhir!`);
-            const merged = deduplicateCalendarItems([...(cache.data || []), ...formatted]);
-            await saveUnifiedFeedToSupabase(merged).catch(() => {});
-            cache.data = merged;
-            cache.timestamp = now;
-            syncedReleaseKeys.add(slotSyncKey);
-            syncApifyCloudSchedules(merged).catch(() => {});
-            return merged;
-          }
+          const merged = deduplicateCalendarItems([...(cache.data || []), ...formatted]);
+          await saveUnifiedFeedToSupabase(merged).catch(() => {});
+          cache.data = merged;
+          cache.timestamp = now;
+          syncedReleaseKeys.add(slotSyncKey);
+          return merged;
         }
       }
     }
@@ -864,9 +866,9 @@ export async function checkAndRunReleaseTimeSync(knownEvents = []) {
     log.debug(`Cek cloud run error: ${cloudCheckErr.message}`);
   }
 
-  // 3. Fallback: Jika Schedule Cloud tidak berjalan dan cooldown lewat, jalankan sync 'today' (HANYA HARI ITU AJA)
-  if ((now - lastLiveRunTimestamp) >= LIVE_RUN_COOLDOWN_MS) {
-    log.info(`⏰ [JADWAL RILIS TIBA - ${dueSlot.releaseTimeWIB}] Menjalankan Apify (scope: today) untuk mengambil Actual: ${pendingNames}`);
+  // 3. Fallback: HANYA jika benar-benar TIDAK ADA run Apify Cloud yang aktif/berjalan dalam 6 menit terakhir!
+  if (!hasActiveOrRecentCloudRun && (now - lastLiveRunTimestamp) >= LIVE_RUN_COOLDOWN_MS) {
+    log.info(`⏰ [JADWAL RILIS TIBA - ${dueSlot.releaseTimeWIB}] Tidak terdeteksi run Apify Cloud. Menjalankan fallback live run (scope: today)...`);
     syncedReleaseKeys.add(slotSyncKey);
     const syncedEvents = await syncApifyCalendar({ scope: 'today', force: true });
     return syncedEvents;

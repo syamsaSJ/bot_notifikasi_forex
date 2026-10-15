@@ -40,7 +40,6 @@ let isFirstStartupRun = true;
 let latestNewsCache = [];
 let lastWeeklyApifySyncKey = '';
 let lastDailyScheduleSyncDate = '';
-const plannedReleaseTimers = new Set();
 
 // SSE (Server-Sent Events) clients untuk 0-delay real-time push ke Web Dashboard
 const sseClients = new Set();
@@ -273,46 +272,7 @@ async function mainTask() {
       syncApifyCloudSchedules(latestNewsCache).catch(e => log.debug(`Daily schedule sync error: ${e.message}`));
     }
 
-    // 5. JADWALKAN PRECISION TRIGGER H+30 DETIK SETELAH JAM RILIS:
-    if (latestNewsCache.length > 0) {
-      try {
-        const releaseInfo = getTodayReleaseScheduleInfo(latestNewsCache);
-        const nowMs = Date.now();
-        const releaseDelay = config.RELEASE_DELAY_MS || 30 * 1000; // 30 detik
-
-        (releaseInfo.slots || []).forEach(slot => {
-          if (!slot.allReleased && slot.timestamp) {
-            const targetTriggerMs = slot.timestamp + releaseDelay;
-            const diffMs = targetTriggerMs - nowMs;
-            const timerKey = `${releaseInfo.todayDateWIB}_${slot.releaseTimeWIB}`;
-
-            // Jika jadwal rilis tiba dalam rentang 65 detik ke depan (sebelum interval cron berikutnya)
-            if (diffMs > 0 && diffMs <= 65 * 1000 && !plannedReleaseTimers.has(timerKey)) {
-              plannedReleaseTimers.add(timerKey);
-              log.info(`⏱️ [TRIGGER H+30s] Menjadwalkan auto-check rilis ${slot.releaseTimeWIB} dalam ${Math.round(diffMs / 1000)} detik (tepat lewat 30 detik)...`);
-              setTimeout(async () => {
-                log.info(`⚡ [TRIGGER H+30s FIRED] Tepat lewat 30 detik setelah jam rilis ${slot.releaseTimeWIB}! Menjalankan sync data rilis...`);
-                try {
-                  if (isApifyConfigured()) {
-                    const released = await checkAndRunReleaseTimeSync(latestNewsCache);
-                    if (released && released.length > 0) {
-                      log.info(`⚡ [AUTO RELEASE SYNC] Data rilis ${slot.releaseTimeWIB} berhasil diambil (${released.length} items).`);
-                    }
-                  }
-                  await mainTask();
-                } catch (err) {
-                  log.error(`Error pada trigger 30s rilis ${slot.releaseTimeWIB}:`, err.message);
-                }
-              }, diffMs);
-            }
-          }
-        });
-      } catch (scheduleErr) {
-        log.debug(`Precision 30s schedule check error: ${scheduleErr.message}`);
-      }
-    }
-
-    // 6. DETEKSI JAM RILIS DATA HARI INI: Hanya aktif saat siklus normal (bukan startup) tepat di jam rilis berita USD!
+    // 5. DETEKSI JAM RILIS DATA HARI INI: Hanya aktif saat siklus normal (bukan startup) tepat di jam rilis berita USD!
     if (isApifyConfigured() && latestNewsCache.length > 0) {
       const releasedEvents = await checkAndRunReleaseTimeSync(latestNewsCache);
       if (releasedEvents && releasedEvents.length > 0) {
@@ -439,40 +399,54 @@ Setiap kali ada rilis berita high\\-impact atau sinyal fundamental BUY / SELL XA
     }
   });
 
-  // /check - Manual check
+  // /check - Ambil jadwal rilis sekarang/hari ini dan berita realtime
   bot.onText(/\/check/, async (msg) => {
-    const chatId = msg.chat.id;
-    await sendMessage('⏳ _Sedang mengambil berita terpadu realtime\\.\\.\\._', chatId.toString());
+    const chatId = msg.chat.id.toString();
+    await sendMessage('⏳ _Sedang mengambil jadwal kalender hari ini & berita pasar realtime (WIB)\\.\\.\\._', chatId);
     clearCache();
 
     try {
       const items = await getUnifiedFeed(true, 'this_week', { syncCalendar: false });
+      const todayWIBStr = new Date().toLocaleDateString('sv-SE', { timeZone: config.TIMEZONE });
 
-      if (!items || items.length === 0) {
-        await sendMessage('✅ Tidak ada berita/event aktif saat ini\\.', chatId.toString());
-        return;
-      }
+      // 1. Ambil Jadwal Kalender Ekonomi Hari Ini (WIB)
+      const todayCalEvents = (items || []).filter(i =>
+        (i.itemType === 'calendar' || i.source === 'Forex Factory' || i.event) &&
+        (i.date === todayWIBStr || (i.timeWIB && i.timeWIB.includes('Hari Ini')))
+      );
+      todayCalEvents.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
-      const topCalEvents = items.filter(i => i.itemType === 'calendar').slice(0, 3);
-      for (const event of topCalEvents) {
-        const signal = event.signal || analyzeSignal(event);
-        try {
-          const imageBuffer = await generateSignalCardImage(event, signal);
-          await sendPhoto(imageBuffer, '', chatId.toString());
-        } catch (imgErr) {
-          const textMsg = formatMessage(event, signal);
-          await sendMessage(textMsg, chatId.toString());
+      if (todayCalEvents.length > 0) {
+        const todaySummary = formatDailySummary(todayCalEvents);
+        await sendMessage(todaySummary, chatId);
+
+        // Highlight event terpenting / yang baru saja rilis hari ini dalam bentuk Card Image
+        const primeEvent = todayCalEvents.find(e => e.impact === 'high' || (e.actual && e.actual !== '-')) || todayCalEvents[0];
+        if (primeEvent) {
+          try {
+            const signal = primeEvent.signal || analyzeSignal(primeEvent);
+            const imageBuffer = await generateSignalCardImage(primeEvent, signal);
+            await sendPhoto(imageBuffer, '', chatId);
+          } catch (cardErr) {
+            log.warn(`Gagal buat gambar di /check: ${cardErr.message}`);
+          }
         }
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      } else {
+        await sendMessage(`📅 *JADWAL KALENDER EKONOMI HARI INI (${escapeMarkdown(todayWIBStr)})*\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n✅ Tidak ada jadwal rilis berita ekonomi USD ber\\-impact tinggi/sedang hari ini \\(Pasar Tenang\\)\\.`, chatId);
       }
 
-      const topNews = items.filter(i => i.itemType === 'investing').slice(0, 4);
-      if (topNews.length > 0) {
-        const digestMsg = formatHeadlineDigest(topNews);
-        if (digestMsg) await sendMessage(digestMsg, chatId.toString());
+      // 2. Ambil Berita Pasar Realtime (TradingView, Investing.com, ForexLive)
+      const recentNews = (items || []).filter(i => i.itemType === 'investing').slice(0, 4);
+      if (recentNews.length > 0) {
+        const digestMsg = formatHeadlineDigest(recentNews);
+        if (digestMsg) {
+          await sendMessage(digestMsg, chatId);
+        }
+      } else {
+        await sendMessage('ℹ️ Belum ada update headline berita pasar baru dalam 1 jam terakhir\\.', chatId);
       }
     } catch (err) {
-      await sendMessage(`❌ Error: ${escapeMarkdown(err.message)}`, chatId.toString());
+      await sendMessage(`❌ Error: ${escapeMarkdown(err.message)}`, chatId);
     }
   });
 

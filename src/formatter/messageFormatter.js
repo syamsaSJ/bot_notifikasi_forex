@@ -149,14 +149,17 @@ export function formatHeadlineDigest(newsItems) {
 ━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
   newsItems.forEach((item, index) => {
-    const sigEmoji = item.signal.signal === 'BUY' ? '🟢 BUY' : item.signal.signal === 'SELL' ? '🔴 SELL' : '⚪ HOLD';
-    msg += `${index + 1}\\. *[${escapeMarkdown(item.source)}]* ${escapeMarkdown(item.title)}\n`;
-    msg += `   📊 *Sinyal XAU/USD:* ${sigEmoji} \\| ${escapeMarkdown(item.signal.direction || 'Sentimen Pasar')}\n`;
-    msg += `   ⏰ ${escapeMarkdown(item.timeWIB)}\n\n`;
+    const sig = item.signal || item.analysis || {};
+    const sigType = sig.signal || 'HOLD';
+    const sigEmoji = sigType === 'BUY' ? '🟢 BUY' : sigType === 'SELL' ? '🔴 SELL' : '⚪ HOLD';
+    const direction = sig.direction || sig.reason || 'Sentimen Fundamental';
+    msg += `${index + 1}\\. *[${escapeMarkdown(item.source || 'Market')}]* ${escapeMarkdown(item.title)}\n`;
+    msg += `   📊 *Sinyal XAU/USD:* ${sigEmoji} \\| ${escapeMarkdown(direction)}\n`;
+    msg += `   ⏰ ${escapeMarkdown(item.timeWIB || 'Hari Ini')}\n\n`;
   });
 
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━
-_Sumber: Investing.com & Pasar Forex Realtime_`;
+_Sumber: Investing.com, TradingView & Pasar Forex Realtime_`;
 
   return msg;
 }
