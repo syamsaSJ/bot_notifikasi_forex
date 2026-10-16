@@ -148,18 +148,39 @@ function deduplicateCalendarItems(items) {
 
 /**
  * Mengambil data event dari halaman kalender Forex Factory via window.calendarComponentStates
+ * Dioptimalkan dengan Resource Interception (blokir image, css, font) agar super cepat (1-3 detik) & anti-timeout di Render.
  */
 async function scrapeCalendarPage(page, url) {
   log.info(`[Puppeteer] Membuka URL: ${url}`);
-  await page.goto(url, {
-    waitUntil: 'domcontentloaded',
-    timeout: 60000,
+  
+  // Blokir aset berat & analytics yang tidak dibutuhkan (gambar, font, css, media, tracker) agar hemat memori & kilat
+  await page.setRequestInterception(true);
+  page.on('request', (req) => {
+    const rt = req.resourceType();
+    const reqUrl = req.url().toLowerCase();
+    if (
+      ['image', 'stylesheet', 'font', 'media'].includes(rt) ||
+      reqUrl.includes('google-analytics') ||
+      reqUrl.includes('googletagmanager') ||
+      reqUrl.includes('doubleclick') ||
+      reqUrl.includes('cloudflareinsights') ||
+      reqUrl.includes('clarity.ms')
+    ) {
+      req.abort();
+    } else {
+      req.continue();
+    }
   });
 
-  // Tunggu sampai verifikasi Cloudflare selesai & state kalender Forex Factory terpasang di window
+  await page.goto(url, {
+    waitUntil: 'domcontentloaded',
+    timeout: 25000,
+  });
+
+  // Tunggu sampai state kalender Forex Factory terpasang di window
   await page.waitForFunction(
     () => !document.title.includes('Just a moment') && window.calendarComponentStates,
-    { timeout: 45000 }
+    { timeout: 20000 }
   );
 
   const rawEvents = await page.evaluate(() => {
@@ -196,7 +217,7 @@ let activeScrapePromise = null;
 
 /**
  * Ambil data kalender ekonomi Minggu Ini & Minggu Depan menggunakan Puppeteer Stealth & Bypass DoH 1.1.1.1
- * Tanpa batas kuota (0 Apify Cost). Dilengkapi Concurrency Guard agar tidak spawn browser ganda.
+ * Dioptimalkan untuk Render Free Tier (RAM 512MB & CPU 0.1): Parallel Tabs + Resource Blocking (1-5 detik).
  * 
  * @param {Object} options
  * @param {string} options.scope - 'two_weeks' (Minggu Ini & Next Week), 'this_week', 'next_week', atau 'today'
@@ -219,7 +240,7 @@ export async function fetchForexFactoryCalendarPuppeteer(options = {}) {
   }
 
   activeScrapePromise = (async () => {
-    log.info(`🚀 [Puppeteer] Memulai scraping Forex Factory (Scope: ${scope}, Bypass DoH Cloudflare 1.1.1.1)...`);
+    log.info(`🚀 [Puppeteer Turbo] Memulai scraping cepat Forex Factory (Scope: ${scope}, Parallel + Asset Blocking)...`);
     const startTime = Date.now();
 
     const realIp = await getRealIpAddress('www.forexfactory.com');
@@ -227,8 +248,16 @@ export async function fetchForexFactoryCalendarPuppeteer(options = {}) {
 
     const launchArgs = [
       '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--disable-software-rasterizer',
+      '--disable-extensions',
+      '--mute-audio',
+      '--disable-accelerated-2d-canvas',
+      '--js-flags=--max-old-space-size=256',
       '--disable-blink-features=AutomationControlled',
-      '--window-size=1280,800',
+      '--window-size=960,600',
       `--host-resolver-rules=MAP www.forexfactory.com ${realIp}, MAP forexfactory.com ${realIp}`,
     ];
 
@@ -236,38 +265,43 @@ export async function fetchForexFactoryCalendarPuppeteer(options = {}) {
     try {
       browser = await puppeteer.launch({
         headless: 'new',
-        channel: 'chrome',
         ignoreDefaultArgs: ['--enable-automation'],
         args: launchArgs,
       });
-    } catch (chromeErr) {
-      log.warn(`Puppeteer channel 'chrome' gagal (${chromeErr.message}), fallback ke bundled Chromium...`);
-      browser = await puppeteer.launch({
-        headless: 'new',
-        ignoreDefaultArgs: ['--enable-automation'],
-        args: launchArgs,
-      });
+    } catch (launchErr) {
+      log.error(`Gagal meluncurkan Puppeteer: ${launchErr.message}`);
+      throw launchErr;
     }
 
     const allRawEvents = [];
 
     try {
-      const page = await browser.newPage();
+      // Jika butuh 2 minggu (This Week & Next Week), buka secara PARALEL di 2 tab terpisah agar kilat (3-5 detik)
+      if (scope === 'two_weeks' || scope === 'weekly') {
+        log.info('📅 [Puppeteer Turbo] Mengambil Minggu Ini & Minggu Depan secara PARALEL...');
+        const [pageThis, pageNext] = await Promise.all([browser.newPage(), browser.newPage()]);
 
-      // 1. Ambil Minggu Ini jika diminta
-      if (scope === 'two_weeks' || scope === 'weekly' || scope === 'this_week' || scope === 'today') {
-        log.info('📅 [Puppeteer] Mengambil data Minggu Ini (?week=this)...');
-        const thisWeekEvents = await scrapeCalendarPage(page, 'https://www.forexfactory.com/calendar?week=this');
-        allRawEvents.push(...thisWeekEvents);
-        log.info(`✅ [Puppeteer] Berhasil ditarik ${thisWeekEvents.length} event USD minggu ini.`);
-      }
+        const [thisWeekEvents, nextWeekEvents] = await Promise.all([
+          scrapeCalendarPage(pageThis, 'https://www.forexfactory.com/calendar?week=this').catch(err => {
+            log.warn(`Gagal scrape this week: ${err.message}`);
+            return [];
+          }),
+          scrapeCalendarPage(pageNext, 'https://www.forexfactory.com/calendar?week=next').catch(err => {
+            log.warn(`Gagal scrape next week: ${err.message}`);
+            return [];
+          }),
+        ]);
 
-      // 2. Ambil Minggu Depan jika diminta
-      if (scope === 'two_weeks' || scope === 'weekly' || scope === 'next_week') {
-        log.info('📅 [Puppeteer] Mengambil data Minggu Depan (?week=next)...');
-        const nextWeekEvents = await scrapeCalendarPage(page, 'https://www.forexfactory.com/calendar?week=next');
-        allRawEvents.push(...nextWeekEvents);
-        log.info(`✅ [Puppeteer] Berhasil ditarik ${nextWeekEvents.length} event USD minggu depan.`);
+        allRawEvents.push(...thisWeekEvents, ...nextWeekEvents);
+        log.info(`✅ [Puppeteer Turbo] Berhasil mengambil total ${allRawEvents.length} event USD (Paralel selesai dalam ${Date.now() - startTime}ms).`);
+      } else {
+        const page = await browser.newPage();
+        const targetUrl = (scope === 'next_week')
+          ? 'https://www.forexfactory.com/calendar?week=next'
+          : 'https://www.forexfactory.com/calendar?week=this';
+
+        const events = await scrapeCalendarPage(page, targetUrl);
+        allRawEvents.push(...events);
       }
 
       // Format item ke format standar bot

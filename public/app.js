@@ -499,6 +499,18 @@ function initRealtimeSSE() {
       }
     });
 
+    evtSource.addEventListener('CALENDAR_SYNCED', (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        console.log('📅 [SSE] CALENDAR_SYNCED diterima:', payload);
+        showToast(`✅ Kalender Berhasil Disinkronkan (${payload.itemCount || 0} items)!`, true);
+        fetchNewsData(false);
+        if (btnSyncCalendar) btnSyncCalendar.classList.remove('loading');
+      } catch (e) {
+        console.error('SSE CALENDAR_SYNCED parse error:', e);
+      }
+    });
+
     evtSource.onopen = () => {
       console.log('⚡ SSE Stream Terhubung (0 Delay Active)');
       if (systemStatus) systemStatus.textContent = '⚡ 0-DELAY SSE CONNECTED';
@@ -560,20 +572,25 @@ if (btnRefresh) {
 if (btnSyncCalendar) {
   btnSyncCalendar.addEventListener('click', async () => {
     btnSyncCalendar.classList.add('loading');
-    showToast('⏳ Menyinkronkan kalender ekonomi via Puppeteer Stealth ($0 Cost)... Mohon tunggu.');
+    showToast('⏳ Menyinkronkan kalender ekonomi ($0 Cost, Mode Turbo)...');
     try {
       const scope = (activeTime === 'next_week') ? 'two_weeks' : 'this_week';
-      const res = await fetch(`/api/calendar/sync?scope=${scope}&force=true`, { method: 'POST' });
+      const res = await fetch(`/api/calendar/sync?scope=${scope}&force=true&async=true`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
-        showToast(`✅ Kalender Berhasil Disinkronkan (${data.itemCount} items) tanpa kuota limit!`);
-        await fetchNewsData(false);
+        if (data.status === 'processing') {
+          showToast('🚀 Sinkronisasi berjalan di background. Data otomatis terupdate dalam beberapa detik...', true);
+        } else {
+          showToast(`✅ Kalender Berhasil Disinkronkan (${data.itemCount} items)!`);
+          await fetchNewsData(false);
+          btnSyncCalendar.classList.remove('loading');
+        }
       } else {
         showToast(`⚠️ ${data.message || data.error}`, false);
+        btnSyncCalendar.classList.remove('loading');
       }
     } catch (e) {
       showToast('❌ Gagal sinkronisasi kalender: ' + e.message, false);
-    } finally {
       btnSyncCalendar.classList.remove('loading');
     }
   });

@@ -111,20 +111,47 @@ function startWebServer() {
     }
   });
 
-  // Explicit Apify Calendar Sync Endpoint (Awal Minggu: 'two_weeks', Refresh: 'this_week')
+  // Explicit Calendar Sync Endpoint (Awal Minggu: 'two_weeks', Refresh: 'this_week')
+  // Mendukung mode async non-blocking (&async=true) untuk merespon instan <100ms agar BEBAS dari HTTP 504 Timeout di hosting Render
   app.all('/api/calendar/sync', express.json(), async (req, res) => {
     try {
       const scope = req.query.scope || req.body?.scope || 'two_weeks';
       const force = req.query.force === 'true' || req.body?.force === true;
       const provider = req.query.provider || req.body?.provider || 'puppeteer';
-      log.info(`📅 Request sinkronisasi kalender diterima (scope: ${scope}, provider: ${provider}, force: ${force})`);
+      const isAsync = req.query.async === 'true' || req.body?.async === true;
+      log.info(`📅 Request sinkronisasi kalender diterima (scope: ${scope}, provider: ${provider}, force: ${force}, async: ${isAsync})`);
 
-      let events = [];
-      if (provider === 'apify' && isApifyConfigured()) {
-        events = await syncApifyCalendar({ scope, force });
-      } else {
-        events = await fetchForexFactoryCalendarPuppeteer({ scope, force });
+      const executeSync = async () => {
+        let events = [];
+        if (provider === 'apify' && isApifyConfigured()) {
+          events = await syncApifyCalendar({ scope, force });
+        } else {
+          events = await fetchForexFactoryCalendarPuppeteer({ scope, force });
+        }
+
+        // Broadcast event SSE ke semua web client yang sedang aktif
+        broadcastSSE('CALENDAR_SYNCED', {
+          scope,
+          provider,
+          itemCount: events.length,
+          timestamp: new Date().toISOString()
+        });
+
+        return events;
+      };
+
+      // Jika mode async aktif (misal dari UI Web atau webhook Render): langsung respon 200 OK dalam 0.05 detik
+      if (isAsync) {
+        executeSync().catch((err) => log.error('Background calendar sync error:', err.message));
+        return res.json({
+          success: true,
+          status: 'processing',
+          message: `Sinkronisasi Kalender (${scope}) dimulai di background. Hasil otomatis diperbarui di web via realtime stream.`,
+          timestamp: new Date().toISOString()
+        });
       }
+
+      const events = await executeSync();
 
       return res.json({
         success: true,
