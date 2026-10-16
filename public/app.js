@@ -158,11 +158,6 @@ function renderDashboard() {
   // 1. Source Filtering
   let filtered = unifiedNewsEvents.filter(item => {
     if (activeSource === 'calendar' && item.itemType !== 'calendar') return false;
-    if (activeSource === 'tradingview') {
-      const src = (item.source || '').toLowerCase();
-      const cat = (item.category || '').toLowerCase();
-      return src.includes('tradingview') || cat.includes('tradingview');
-    }
     if (activeSource === 'investing' && item.itemType !== 'investing') return false;
     return true;
   });
@@ -351,11 +346,18 @@ function renderInvestingCard(item) {
   const impactClass = rawImpact.includes('high') ? 'high' : rawImpact.includes('medium') ? 'medium' : 'low';
   const impactLabel = impactClass === 'high' ? '🔴 HIGH IMPACT' : impactClass === 'medium' ? '🟠 MEDIUM IMPACT' : '🟡 LOW IMPACT';
 
+  const srcLower = (item.source || '').toLowerCase();
+  let badgeClass = 'inv';
+  if (srcLower.includes('reuters')) badgeClass = 'reuters';
+  else if (srcLower.includes('bloomberg')) badgeClass = 'bloomberg';
+  else if (srcLower.includes('cnbc')) badgeClass = 'cnbc';
+  else if (srcLower.includes('marketwatch')) badgeClass = 'marketwatch';
+
   return `
     <div class="signal-card investing-card">
       <div class="signal-card-header">
         <div class="event-info">
-          <span class="source-badge inv"><i class="fa-solid fa-coins color-gold"></i> XAU/USD GOLD • ${item.source || 'Investing.com'}</span>
+          <span class="source-badge ${badgeClass}"><i class="fa-solid fa-coins color-gold"></i> XAU/USD GOLD • ${item.source || 'Market News'}</span>
           <h3 class="news-title">${item.title}</h3>
           <span class="time-tag"><i class="fa-regular fa-clock"></i> ${item.timeWIB || 'Hari Ini (WIB)'}</span>
         </div>
